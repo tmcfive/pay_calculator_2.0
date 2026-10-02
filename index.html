@@ -273,15 +273,71 @@ h1{
 .selection-edit{border:0;background:transparent;text-decoration:underline;cursor:pointer;font:inherit;font-size:12px;white-space:nowrap}
 @media(max-width:600px){.selection-summary-grid{grid-template-columns:1fr}.selection-summary{padding:12px}}
 
+
+.results-toolbar{display:none;position:relative;min-height:38px;margin:0 0 12px;align-items:center}
+.results-toolbar.active{display:flex}
+.results-back{position:absolute;left:0;border:0;background:transparent;text-decoration:underline;cursor:pointer;font:inherit;opacity:.72;padding:7px 0}
+.qualifications-tab{margin:0 auto;border:1px solid #c7d0dc;background:#f5f7fa;border-radius:8px;padding:7px 18px;font:inherit;font-weight:700;cursor:pointer}
+.qualifications-tab.open{background:#e8edf3}
+#resultsSelections{display:none;margin-bottom:28px}
+#resultsSelections.open{display:block}
+
+
+.step-status-row{display:none;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:10px 0 26px}
+.step-status-row.active{display:grid}
+.step-status-box{border:1px solid #d5dbe3;border-radius:10px;background:#f8fafc;padding:14px 12px;text-align:center}
+.step-status-label{font-size:12px;font-weight:700;color:var(--muted);margin-bottom:6px}
+.step-status-value{font-size:18px;font-weight:800;font-variant-numeric:tabular-nums}
+@media(max-width:600px){
+ .step-status-row{gap:6px;margin:8px 0 20px}
+ .step-status-box{padding:10px 5px;border-radius:8px}
+ .step-status-label{font-size:8px;line-height:1.15;min-height:19px}
+ .step-status-value{font-size:11px;line-height:1.15}
+}
+
+
+.stepbox{position:relative;cursor:pointer}
+.stepbox.step-clickable:hover{background:#f4f7fb}
+.step-date-bubble{display:none;position:absolute;z-index:20;left:50%;top:calc(100% + 12px);transform:translateX(-50%);min-width:170px;padding:11px 14px;border:1px solid #cfd6df;border-radius:12px;background:#fff;box-shadow:0 8px 24px rgba(16,24,40,.14);text-align:center;font-size:13px;font-weight:700;line-height:1.35}
+.step-date-bubble.open{display:block}
+.step-date-bubble::before{content:"";position:absolute;left:50%;top:-7px;width:12px;height:12px;background:#fff;border-left:1px solid #cfd6df;border-top:1px solid #cfd6df;transform:translateX(-50%) rotate(45deg)}
+.step-date-bubble-label{display:block;font-size:11px;color:var(--muted);margin-bottom:3px}
+.step-date-bubble-value{display:block;font-size:14px;color:var(--text)}
+
+
+.step,.row,.field,#resultsSelections{overflow:visible!important}
+.step{position:relative}
+#step.stepbox{overflow:visible!important;z-index:30}
+#stepDateBubble{pointer-events:auto!important;z-index:9999!important}
+
+
+.wizard-step.active + .wizard-step.active{margin-top:10px}
+
+
+#wizardDate{margin-top:22px}
+#wizardDegree{margin-top:22px}
+#wizardSpecial{margin-top:22px}
+
+
+.contract-increase-wrap{display:flex;justify-content:flex-end;margin:18px 0 28px}
+.contract-increase-box{width:min(100%,360px);border:1px solid #cfd6df;border-radius:10px;background:#f8fafc;padding:14px 16px}
+.contract-increase-line{display:flex;justify-content:space-between;align-items:center;gap:18px;font-weight:800}
+.contract-increase-line span:last-child{font-variant-numeric:tabular-nums;white-space:nowrap}
+@media(max-width:600px){
+ .contract-increase-wrap{margin:14px 0 22px}
+ .contract-increase-box{width:58%;padding:10px}
+ .contract-increase-line{font-size:9px;gap:6px}
+}
+
 </style>
 </head>
 <body>
 <div class="wrap"><div class="card">
 <h1>Local 1795 Pay Calculator</h1>
-
-
+<div class="results-toolbar" id="resultsToolbar">
+  <button type="button" class="qualifications-tab" id="qualificationsTab" aria-expanded="false">View Qualifications</button>
+</div>
 <div class="wizard-progress" id="wizardProgress">Step 1 of 5</div>
-<button type="button" class="wizard-back" id="wizardBack">← Back</button>
 
 <div class="wizard-step active" id="wizardRank">
 <h2>Current Rank</h2>
@@ -304,7 +360,9 @@ h1{
 <select id="hireYear" aria-label="Year"><option value="">Year</option></select>
 </div>
 <div class="helper" id="helper"></div></div>
-<div class="step"><label>Current Step</label><div class="stepbox" id="step">—</div></div>
+<div class="step"><label>Current Step</label><div class="stepbox step-clickable" id="step" role="button" tabindex="0" aria-expanded="false"><span id="stepValue">—</span>
+<div class="step-date-bubble" id="stepDateBubble"><span class="step-date-bubble-label">Next Step Date</span><span class="step-date-bubble-value" id="stepDateBubbleValue">—</span></div>
+</div></div>
 </div>
 
 
@@ -330,7 +388,7 @@ h1{
 </div>
 
 <div class="wizard-step" id="wizardSpecial">
-<h2>Special Assignments</h2>
+<h2 style="text-align:center;text-decoration:underline;">Special Assignments</h2>
 <div class="special-role-row">
   <div class="special-role-field">
     <h2>Fire Prevention</h2>
@@ -353,7 +411,7 @@ h1{
 </div>
 
 <div class="wizard-results" id="wizardResults">
-<div id="resultsSelections" style="margin-bottom:28px"></div>
+<div id="resultsSelections"></div>
 <div class="comp fy27-comp">
 <div class="comp-grid fy-grid">
 <div class="comp-column">
@@ -398,7 +456,7 @@ h1{
 <div class="line"><span>Holiday Pay</span><span id="annualHolidayPay">$ —</span></div>
 <div class="line"><span>Clothing</span><span class="clothing-value">$800.00</span></div>
 <div class="line total-line"><span>Total Annual Pay</span><span id="annualTotal">$ —</span></div>
-<div class="line previous-line"><span>Previous FY Annual Pay</span><span id="previousAnnualPay">$ —</span></div>
+<div class="line previous-line fy27-previous-annual-line"><span>Previous FY Annual Pay</span><span id="previousAnnualPay">$ —</span></div>
 <div class="line increase-line"><span>Increase from Previous FY</span><span id="annualIncrease">—%</span></div>
 </div>
 </div>
@@ -500,6 +558,11 @@ h1{
 <div class="line increase-line"><span>Increase from Previous FY</span><span id="fy29AnnualIncrease">—%</span></div>
 </div>
 </div>
+</div>
+<div class="contract-increase-wrap">
+  <div class="contract-increase-box">
+    <div class="contract-increase-line"><span>Total Contract Increase</span><span id="totalContractIncrease">—%</span></div>
+  </div>
 </div>
 <div class="fy-divider" aria-hidden="true"></div>
 <div class="comp fy26-comp">
@@ -665,7 +728,8 @@ function ids(fy){
 const fyResults={};
 function calcFY(fy,hire){
  const I=ids(fy), chart=payCharts[fy];
- const startYear=2000+fy-1, start=new Date(startYear,6,1), end=new Date(startYear+1,5,30);
+ const startYear=2000+fy-1, fyStart=new Date(startYear,6,1), end=new Date(startYear+1,5,30);
+ const start=(hire>fyStart)?hire:fyStart;
  const isOfficer=(rank==="Lieutenant"||rank==="Deputy Chief");
  const isFY26=(fy===26);
  const startStep=isFY26?stepForFY26(rank,yearsAsOf(hire,start)):(isOfficer?officerStepAsOf(start):stepFor(rank,yearsAsOf(hire,start)));
@@ -758,11 +822,13 @@ function calcFY(fy,hire){
  const d2=change?daysBetween(change,afterEnd):0;
  const prorate=(x,y)=>(x/7*d1)+(y/7*d2);
  const annualizationFactor=52;
- // Weight the two rates by the exact number of calendar days before/after the step
- // change, then annualize the resulting weekly rate by the FY's required week factor.
  const totalDays=d1+d2;
+ const partialFirstFY=hire>fyStart;
+ // Full FYs retain the established 52-week annualization. If the employee was hired
+ // after the FY began, pay only the exact employed portion of that first FY.
  const weightedAnnual=(before,after)=>{
    if(!Number.isFinite(before)||!Number.isFinite(after)||!totalDays)return 0;
+   if(partialFirstFY)return (before/7*d1)+(after/7*d2);
    return (((before*d1)+(after*d2))/totalDays)*annualizationFactor;
  };
  const annualBase=weightedAnnual(A.base,B.base);
@@ -773,13 +839,29 @@ function calcFY(fy,hire){
  const annualEdu=weightedAnnual(A.edu,B.edu);
   const annualEmsCoor=weightedAnnual(A.emsCoor,B.emsCoor);
  // ProBoard is an established annual stipend and is not a weekly rate multiplied by the annualization factor.
- const annualCert=cert*275;
+ const employedFYFraction=partialFirstFY?Math.min(1,totalDays/daysBetween(fyStart,new Date(end.getFullYear(),end.getMonth(),end.getDate()+1))):1;
+ const annualCert=(cert*275)*employedFYFraction;
  // Holiday uses the FY's day-weighted average eligible weekly compensation; education remains excluded.
  const eligibleA=A.base+A.cert+A.emt+A.night+A.tech, eligibleB=B.base+B.cert+B.emt+B.night+B.tech;
  const avgEligible=(eligibleA*d1+eligibleB*d2)/(d1+d2);
- const holiday=(firePrevention==="Yes")?0:avgEligible*3.25;
- const clothing=(fy===26?680:(fy===29?1175:800));
+ const holiday=(firePrevention==="Yes")?0:(avgEligible*3.25*employedFYFraction);
+ const clothing=(fy===26?680:(fy===29?1175:800))*employedFYFraction;
  const annualTotal=annualBase+annualCert+annualEmt+annualNight+annualTech+annualLongevity+annualEdu+annualEmsCoor+holiday+clothing;
+
+ // For an employee hired after the FY began, preserve the prorated annualTotal for
+ // display, but also calculate a full-FY equivalent used only for next-FY % comparisons.
+ const fullFYAnnualBase=partialFirstFY?weightedAnnual(A.base,B.base)/employedFYFraction:annualBase;
+ const fullFYAnnualEmt=partialFirstFY?weightedAnnual(A.emt,B.emt)/employedFYFraction:annualEmt;
+ const fullFYAnnualNight=partialFirstFY?weightedAnnual(A.night,B.night)/employedFYFraction:annualNight;
+ const fullFYAnnualTech=partialFirstFY?weightedAnnual(A.tech,B.tech)/employedFYFraction:annualTech;
+ const fullFYAnnualLongevity=partialFirstFY?weightedAnnual(A.longevity,B.longevity)/employedFYFraction:annualLongevity;
+ const fullFYAnnualEdu=partialFirstFY?weightedAnnual(A.edu,B.edu)/employedFYFraction:annualEdu;
+ const fullFYAnnualEmsCoor=partialFirstFY?weightedAnnual(A.emsCoor,B.emsCoor)/employedFYFraction:annualEmsCoor;
+ const fullFYAnnualCert=partialFirstFY?cert*275:annualCert;
+ const fullFYHoliday=partialFirstFY?((firePrevention==="Yes")?0:avgEligible*3.25):holiday;
+ const fullFYClothing=partialFirstFY?(fy===26?680:(fy===29?1175:800)):clothing;
+ const comparisonAnnualTotal=fullFYAnnualBase+fullFYAnnualCert+fullFYAnnualEmt+fullFYAnnualNight+fullFYAnnualTech+fullFYAnnualLongevity+fullFYAnnualEdu+fullFYAnnualEmsCoor+fullFYHoliday+fullFYClothing;
+
  setText(I.ab,money(annualBase));setText(I.ac,money(annualCert));setText(I.ae,money(annualEmt));setText(I.an,money(annualNight));if(I.al)setText(I.al,money(annualLongevity));setText(I.at,money(annualTech));setText(I.ad,money(annualEdu));setText(I.ax,money(annualEmsCoor));setText(I.ah,money(holiday));setText(I.aa,money(annualTotal));
 
  // Annual comparisons: FY28 vs FY27 and FY29 vs FY28.
@@ -787,13 +869,17 @@ function calcFY(fy,hire){
  const annualIncId=fy===27?"annualIncrease":`fy${fy}AnnualIncrease`;
  const previousFY=fyResults[fy-1];
  if(previousFY && previousFY.annualTotal!==undefined){
-   setText(annualPrevId,money(previousFY.annualTotal));
-   setText(annualIncId,pctChange(annualTotal,previousFY.annualTotal));
+   const comparisonPreviousAnnual=(fy===27 && previousFY.comparisonAnnualTotal!==undefined)
+     ? previousFY.comparisonAnnualTotal
+     : previousFY.annualTotal;
+   setText(annualPrevId,money(comparisonPreviousAnnual));
+   setText(annualIncId,pctChange(annualTotal,comparisonPreviousAnnual));
  }else{
    setText(annualPrevId,"$ —");
    setText(annualIncId,"—%");
  }
  fyResults[fy].annualTotal=annualTotal;
+ fyResults[fy].comparisonAnnualTotal=comparisonAnnualTotal;
 }
 function clearFY(fy){
  document.querySelectorAll(`.fy${fy}-start-step,.fy${fy}-post-step`).forEach(e=>e.textContent="—");
@@ -824,21 +910,64 @@ function enforceFirePreventionEligibility(){
    noBtn.classList.add("selected");
  }
 }
+
+function addYearsSafe(d,years){
+ const out=new Date(d.getFullYear()+years,d.getMonth(),d.getDate());
+ if(out.getMonth()!==d.getMonth())return new Date(d.getFullYear()+years,d.getMonth()+1,0);
+ return out;
+}
+function nextStepDateFor(hire,asof){
+ if(!hire||!rank)return null;
+ if(rank==="Lieutenant"||rank==="Deputy Chief"){
+   const s=officerStepAsOf(asof);
+   if(s>=6)return null;
+   const julyThis=new Date(asof.getFullYear(),6,1);
+   return asof<julyThis?julyThis:new Date(asof.getFullYear()+1,6,1);
+ }
+ const thresholds=[1,2,3,5,10,15,20,25];
+ for(const yrs of thresholds){
+   const d=addYearsSafe(hire,yrs);
+   if(d>asof)return d;
+ }
+ return null;
+}
+function updateStepStatus(hire,current){
+ const next=(hire&&current)?nextStepDateFor(hire,new Date()):null;
+ setText("stepDateBubbleValue",next?displayDate(next):"Max Step");
+}
+
+
+function updateTotalContractIncrease(){
+ const ids=["annualIncrease","fy28AnnualIncrease","fy29AnnualIncrease"];
+ const vals=ids.map(id=>{
+   const raw=document.getElementById(id)?.textContent?.trim()||"";
+   const n=parseFloat(raw.replace("%",""));
+   return Number.isFinite(n)?n:null;
+ });
+ setText("totalContractIncrease",vals.every(v=>v!==null)?`${vals.reduce((a,b)=>a+b,0).toFixed(2)}%`:"—%");
+}
+
 function update(){
  enforceFirePreventionEligibility();
  Object.keys(fyResults).forEach(k=>delete fyResults[k]);
  document.querySelectorAll(".ems-coor-line").forEach(el=>el.style.display=(emsCoordinator==="Yes"?"":"none"));
  const hire=selectedDate(),helper=document.getElementById("helper");
  helper.textContent="";
+ const fy26StartDate=new Date(2025,6,1);
+ document.querySelectorAll(".fy27-previous-annual-line").forEach(el=>{
+   el.style.display=(hire&&hire>fy26StartDate)?"none":"";
+ });
  if(hire && hire>new Date()){helper.textContent="Date cannot be in the future.";}
  const current=(hire&&rank&&hire<=new Date())
    ?((rank==="Lieutenant"||rank==="Deputy Chief")?officerStepAsOf(new Date()):stepFor(rank,yearsAsOf(hire,new Date())))
    :null;
- setText("step",current?`Step ${current}`:"—");
+ setText("stepValue",current?`Step ${current}`:"—");
+ updateStepStatus(hire,current);
  [26,27,28,29].forEach(fy=>{
    const fyEnd=new Date(2000+fy,5,30);
    if(hire&&rank&&hire<=fyEnd)calcFY(fy,hire); else clearFY(fy);
  });
+ updateTotalContractIncrease();
 }
 function exclusive(container,attr,setter){
  document.querySelectorAll(`#${container} button`).forEach(b=>b.onclick=()=>{
@@ -856,6 +985,34 @@ for(let d=1;d<=31;d++)daySel.add(new Option(d,d));
 const currentYear=new Date().getFullYear();
 for(let y=currentYear;y>=1988;y--)yearSel.add(new Option(y,y));
 [monthSel,daySel,yearSel].forEach(el=>el.addEventListener("change",update));
+const currentStepBox=document.getElementById("step");
+const stepDateBubble=document.getElementById("stepDateBubble");
+function toggleStepBubble(force){
+ if(!currentStepBox||!stepDateBubble)return;
+ const open=(typeof force==="boolean")?force:!stepDateBubble.classList.contains("open");
+ stepDateBubble.classList.toggle("open",open);
+ currentStepBox.setAttribute("aria-expanded",open?"true":"false");
+}
+if(currentStepBox&&stepDateBubble){
+ currentStepBox.addEventListener("click",function(e){
+   e.preventDefault();
+   e.stopPropagation();
+   toggleStepBubble();
+ });
+ stepDateBubble.addEventListener("click",function(e){e.stopPropagation();});
+ currentStepBox.addEventListener("keydown",function(e){
+   if(e.key==="Enter"||e.key===" "){
+     e.preventDefault();
+     e.stopPropagation();
+     toggleStepBubble();
+   }else if(e.key==="Escape"){
+     toggleStepBubble(false);
+   }
+ });
+ document.addEventListener("click",function(e){
+   if(!currentStepBox.contains(e.target))toggleStepBubble(false);
+ });
+}
 update();
 
 document.querySelectorAll('.special-role-buttons button').forEach(btn=>{
@@ -880,17 +1037,19 @@ document.querySelectorAll('.special-role-buttons button').forEach(btn=>{
  const steps=["wizardRank","wizardDate","wizardCerts","wizardDegree","wizardSpecial"];
  let current=0;
  const progress=document.getElementById("wizardProgress");
- const back=document.getElementById("wizardBack");
  const results=document.getElementById("wizardResults");
 
  function showStep(n){
    current=Math.max(0,Math.min(n,steps.length-1));
-   steps.forEach((id,i)=>document.getElementById(id).classList.toggle("active",i===current));
+   steps.forEach((id,i)=>{
+     const step=document.getElementById(id);
+     step.classList.toggle("active",i<=current);
+   });
    results.classList.remove("active");
    progress.style.display="";
    progress.textContent=`Step ${current+1} of ${steps.length}`;
-   back.classList.toggle("show",current>0);
-   window.scrollTo({top:0,behavior:"smooth"});
+   const newest=document.getElementById(steps[current]);
+   if(current>0 && newest) newest.scrollIntoView({behavior:"smooth",block:"nearest"});
  }
 
  function moveControlsToResults(){
@@ -921,9 +1080,13 @@ document.querySelectorAll('.special-role-buttons button').forEach(btn=>{
  function showResults(){
    steps.forEach(id=>document.getElementById(id).classList.remove("active"));
    progress.style.display="none";
-   back.classList.add("show");
    results.classList.add("active");
    moveControlsToResults();
+   document.getElementById("resultsToolbar").classList.add("active");
+   document.getElementById("resultsSelections").classList.remove("open");
+   const qTab=document.getElementById("qualificationsTab");
+   qTab.classList.remove("open");
+   qTab.setAttribute("aria-expanded","false");
    update();
    window.scrollTo({top:0,behavior:"smooth"});
  }
@@ -952,16 +1115,16 @@ document.querySelectorAll('.special-role-buttons button').forEach(btn=>{
  document.getElementById("wizardShowResults").addEventListener("click",showResults);
 
 
- back.addEventListener("click",()=>{
-   if(results.classList.contains("active")){
-     results.classList.remove("active");
-     restoreWizardSteps();
-     progress.style.display="";
-     showStep(4);
-   }else{
-     showStep(current-1);
-   }
+
+ const qualificationsTab=document.getElementById("qualificationsTab");
+ qualificationsTab.addEventListener("click",()=>{
+   const panel=document.getElementById("resultsSelections");
+   const isOpen=panel.classList.toggle("open");
+   qualificationsTab.classList.toggle("open",isOpen);
+   qualificationsTab.setAttribute("aria-expanded",isOpen?"true":"false");
  });
+
+
 })();
 
 </script>
