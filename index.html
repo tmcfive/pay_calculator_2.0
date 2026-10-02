@@ -1,0 +1,968 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Local 1795 Pay Calculator</title>
+<style>
+:root{--text:#172033;--muted:#667085;--border:#d0d5dd;--accent:#2563eb;--accentbg:#eff6ff;--panel:#fff;--bg:#f5f7fb}
+*{box-sizing:border-box} body{margin:0;background:var(--bg);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--text)}
+.wrap{max-width:1240px;margin:38px auto;padding:18px}.card{background:var(--panel);border:1px solid var(--border);border-radius:18px;padding:26px;box-shadow:0 8px 28px rgba(16,24,40,.07)}
+h1{font-size:24px;margin:0 0 26px} h2{font-size:16px;margin:24px 0 10px}.buttons{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+button{background:white;border:1px solid var(--border);border-radius:10px;padding:12px 8px;font-size:15px;cursor:pointer;color:var(--text)}
+button.selected{border:2px solid var(--accent);background:var(--accentbg);color:var(--accent);font-weight:650}
+.row{display:grid;grid-template-columns:1fr 180px;gap:14px;align-items:end}.field label,.step label{display:block;font-size:14px;font-weight:600;margin-bottom:7px}
+input,select{width:100%;padding:11px;border:1px solid var(--border);border-radius:9px;font:inherit;background:white;color:var(--text)}
+.date-selects{display:grid;grid-template-columns:1.35fr .85fr 1fr;gap:8px}.stepbox{height:44px;border:1px solid var(--border);border-radius:9px;display:flex;align-items:center;padding:0 12px;font-weight:700;background:#fafafa}
+.helper{font-size:12px;color:var(--muted);margin-top:6px;min-height:16px}.four{grid-template-columns:repeat(4,1fr)}
+.comp{
+  margin-top:38px;
+  padding:28px 22px 22px;
+  border:2px solid #c7d2e3;
+  border-top:8px solid var(--accent);
+  border-radius:14px;
+  background:#fbfcfe;
+  box-shadow:0 5px 16px rgba(16,24,40,.05);
+  position:relative;
+}
+.comp:first-of-type{margin-top:30px}
+.comp-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
+.comp-column{min-width:0}
+.comp-title{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.comp-title h2{margin-right:auto;line-height:1.25}
+.comp-title h2 small{font-size:11px;color:var(--muted);font-weight:600}
+.comp + .comp{margin-top:54px}
+.comp-title h2 .fy27-start-date,.comp-title h2 .fy27-post-date,
+.comp-title h2 .fy28-start-date,.comp-title h2 .fy28-post-date,
+.comp-title h2 .fy29-start-date,.comp-title h2 .fy29-post-date{
+  white-space:nowrap;
+}.step-badge{border:1px solid var(--accent);background:var(--accentbg);color:var(--accent);border-radius:8px;padding:5px 9px;font-size:12px;font-weight:750;white-space:nowrap}.line{display:flex;justify-content:space-between;gap:12px;padding:13px 2px;border-bottom:1px solid #eaecf0}.line span:first-child{font-size:14px}.line span:last-child{font-variant-numeric:tabular-nums;font-weight:700;white-space:nowrap}.not-weekly{font-weight:500!important;color:var(--muted);font-size:13px}.total-line{margin-top:8px;border-top:2px solid var(--text);font-weight:800;font-size:16px;padding-top:15px}.previous-line{font-weight:700}.increase-line{font-weight:700;border-bottom:0}
+@media(max-width:600px){
+  .buttons{grid-template-columns:1fr}
+  .four{grid-template-columns:repeat(4,1fr)}
+  .row{grid-template-columns:1fr}
+  .wrap{margin:10px auto;padding:10px}
+  .card{padding:18px}
+  .comp{margin-top:30px;padding:16px 7px 12px;border-top-width:6px;border-radius:10px}
+  .comp + .comp{margin-top:34px}
+  .comp-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}
+  .comp-column{min-width:0}
+  .comp-title{
+    display:grid;
+    grid-template-rows:40px 18px;
+    align-items:start;
+    min-height:62px;
+  }
+  .comp-title h2{
+    font-size:9px;
+    line-height:1.15;
+    margin:0;
+    padding-right:2px;
+    overflow-wrap:normal;
+    word-break:normal;
+  }
+  .comp-title h2 small{font-size:7px;line-height:1.1}
+  .comp-title .badge{
+    justify-self:start;
+    align-self:end;
+    display:inline-block;
+    font-size:7px;
+    line-height:1;
+    padding:3px 4px;
+    white-space:nowrap;
+    max-width:100%;
+  }
+  .comp .line{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) minmax(38px,auto);
+    align-items:center;
+    column-gap:3px;
+    min-height:31px;
+    box-sizing:border-box;
+    font-size:7.5px;
+    line-height:1.15;
+    padding:4px 0;
+  }
+  .comp .line span:first-child{
+    min-width:0;
+    overflow-wrap:normal;
+    word-break:normal;
+    hyphens:none;
+  }
+  .comp .line span:last-child{
+    min-width:0;
+    text-align:right;
+    font-size:7.5px;
+    line-height:1.05;
+    white-space:normal;
+  }
+  .comp .line span:last-child:not([id]){
+    max-width:44px;
+    justify-self:end;
+  }
+  .comp .total{font-size:8px;min-height:34px}
+}
+
+/* Keep annual compensation line items aligned with the weekly-rate line items. */
+.fy-grid > .comp-column:nth-child(3) .comp-title{
+  min-height:76px;
+  align-items:flex-start;
+}
+.fy-grid > .comp-column:nth-child(1) .comp-title,
+.fy-grid > .comp-column:nth-child(2) .comp-title{
+  min-height:76px;
+  align-items:flex-start;
+}
+
+
+
+
+@media(max-width:600px){
+  /* Annual Clothing is an actual annual dollar amount, not "Not paid weekly". */
+  .comp-column:nth-child(3) .clothing-value{
+    font-size:7.5px !important;
+    white-space:nowrap !important;
+    max-width:none !important;
+  }
+  .comp-column:nth-child(3) .clothing-value::after{content:none !important;}
+}
+
+@media(max-width:600px){
+  /* Uniform typography and protected label/value columns for every compensation line item. */
+  .comp .line{
+    grid-template-columns:minmax(0,1fr) 47px;
+    column-gap:4px;
+    min-height:32px;
+    font-family:inherit;
+    font-size:7.5px;
+    font-style:normal;
+    font-weight:400;
+    line-height:1.15;
+  }
+  .comp .line > span:first-child,
+  .comp .line > span:first-child::after{
+    min-width:0;
+    max-width:100%;
+    font-family:inherit !important;
+    font-size:7.5px !important;
+    font-style:normal !important;
+    font-weight:400 !important;
+    line-height:1.15 !important;
+    letter-spacing:normal !important;
+    word-break:normal;
+    overflow-wrap:normal;
+  }
+  .comp .line > span:last-child,
+  .comp .line > span:last-child::after{
+    width:47px;
+    max-width:47px;
+    box-sizing:border-box;
+    justify-self:end;
+    text-align:right;
+    font-family:inherit !important;
+    font-size:7.5px !important;
+    font-style:normal !important;
+    font-weight:600 !important;
+    line-height:1.15 !important;
+    letter-spacing:normal !important;
+    white-space:normal;
+    overflow-wrap:normal;
+    word-break:normal;
+  }
+  .comp .line > span[id]:last-child{
+    white-space:nowrap;
+  }
+  .comp .line .clothing-value{
+    width:47px !important;
+    max-width:47px !important;
+    white-space:nowrap !important;
+  }
+  .comp .total,
+  .comp .total > span,
+  .comp .total > span::after{
+    font-family:inherit !important;
+    font-style:normal !important;
+  }
+}
+
+.mobile-comp-label{display:none}
+@media(max-width:600px){
+  .comp .desktop-comp-label{display:none !important}
+  .comp .mobile-comp-label{
+    display:inline !important;
+    font-family:inherit !important;
+    font-size:7.5px !important;
+    font-style:normal !important;
+    font-weight:400 !important;
+    line-height:1.15 !important;
+  }
+}
+
+@media(max-width:600px){
+  .comp .npw-line1,
+  .comp .npw-line2{
+    display:block;
+    width:100%;
+    font-family:inherit !important;
+    font-size:7.5px !important;
+    font-style:normal !important;
+    font-weight:600 !important;
+    line-height:1.05 !important;
+    text-align:right;
+  }
+}
+/* Main calculator title */
+h1{
+  text-align:center;
+  text-decoration:underline;
+  text-underline-offset:5px;
+}
+
+.special-role-row{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:18px}
+.special-role-field h2{margin-top:0}
+.special-role-buttons{grid-template-columns:1fr 1fr!important}
+@media(max-width:600px){
+ .special-role-row{grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+ .special-role-field h2{font-size:12px;line-height:1.2;min-height:29px;margin-bottom:6px}
+ .special-role-buttons{grid-template-columns:1fr 1fr!important;gap:5px}
+ .special-role-buttons button{font-size:12px;padding:9px 4px}
+}
+
+.fy26-comp .prev,
+.fy26-comp .increase{display:none !important;}
+
+.fy-divider{height:10px;border-top:5px solid #667085;border-bottom:2px solid #c7d2e3;margin:68px 0 18px;background:#eef1f5;border-radius:3px;}
+@media(max-width:600px){.fy-divider{height:8px;margin:44px 0 14px;border-top-width:4px;border-bottom-width:2px;}}
+
+
+
+/* Increase-from-Previous-FY VALUE only, first two (weekly) columns */
+.comp-column:nth-child(1) .increase-line > span:last-child,
+.comp-column:nth-child(2) .increase-line > span:last-child{
+  font-size:75% !important;
+  font-style:italic !important;
+}
+@media(max-width:600px){
+  .comp .comp-column:nth-child(1) .increase-line > span:last-child,
+  .comp .comp-column:nth-child(2) .increase-line > span:last-child{
+    font-size:5.625px !important;
+    font-style:italic !important;
+    line-height:1.15 !important;
+  }
+}
+
+/* Version 2 progressive questionnaire */
+.wizard-step{display:none;animation:wizardFade .18s ease-out}
+.wizard-step.active{display:block}
+.wizard-step h2{margin-top:8px}
+.wizard-progress{font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;opacity:.58;margin:2px 0 12px}
+.wizard-back{display:none;margin:4px 0 14px;border:0;background:transparent;text-decoration:underline;cursor:pointer;font:inherit;opacity:.72}
+.wizard-back.show{display:inline-block}
+.wizard-results{display:none}
+.wizard-results.active{display:block}
+@keyframes wizardFade{from{opacity:.25;transform:translateY(5px)}to{opacity:1;transform:none}}
+
+
+.selection-summary{display:none;margin:4px 0 26px;padding:18px;border:1px solid #cfd6df;border-radius:12px;background:#f8fafc}
+.selection-summary.active{display:block}
+.selection-summary h2{margin:0 0 12px}
+.selection-summary-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.selection-item{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 12px;background:#fff;border:1px solid #e2e8f0;border-radius:8px}
+.selection-item-label{font-size:12px;font-weight:700;opacity:.62}
+.selection-item-value{font-weight:700;text-align:right}
+.selection-edit{border:0;background:transparent;text-decoration:underline;cursor:pointer;font:inherit;font-size:12px;white-space:nowrap}
+@media(max-width:600px){.selection-summary-grid{grid-template-columns:1fr}.selection-summary{padding:12px}}
+
+</style>
+</head>
+<body>
+<div class="wrap"><div class="card">
+<h1>Local 1795 Pay Calculator</h1>
+
+
+<div class="wizard-progress" id="wizardProgress">Step 1 of 5</div>
+<button type="button" class="wizard-back" id="wizardBack">← Back</button>
+
+<div class="wizard-step active" id="wizardRank">
+<h2>Current Rank</h2>
+<div class="buttons" id="ranks">
+<button data-rank="Firefighter">Firefighter</button>
+<button data-rank="Lieutenant">Lieutenant</button>
+<button data-rank="Deputy Chief">Deputy Chief</button>
+</div>
+
+
+</div>
+
+<div class="wizard-step" id="wizardDate">
+<h2>Date of Hire/Promotion</h2>
+<div class="row">
+<div class="field"><label>Date</label>
+<div class="date-selects">
+<select id="hireMonth" aria-label="Month"><option value="">Month</option></select>
+<select id="hireDay" aria-label="Day"><option value="">Day</option></select>
+<select id="hireYear" aria-label="Year"><option value="">Year</option></select>
+</div>
+<div class="helper" id="helper"></div></div>
+<div class="step"><label>Current Step</label><div class="stepbox" id="step">—</div></div>
+</div>
+
+
+</div>
+
+<div class="wizard-step" id="wizardCerts">
+<h2>ProBoard Certifications</h2>
+<div class="buttons four" id="certs">
+<button data-cert="1">1</button><button data-cert="2">2</button><button data-cert="3">3</button><button data-cert="4">4</button>
+</div>
+
+
+</div>
+
+<div class="wizard-step" id="wizardDegree">
+<h2>College Degree</h2>
+<div class="buttons" id="degrees">
+<button data-degree="None">None</button>
+<button data-degree="Associate's">Associate’s</button>
+<button data-degree="Bachelor's">Bachelor’s</button>
+</div>
+
+</div>
+
+<div class="wizard-step" id="wizardSpecial">
+<h2>Special Assignments</h2>
+<div class="special-role-row">
+  <div class="special-role-field">
+    <h2>Fire Prevention</h2>
+    <div class="buttons special-role-buttons" data-role-group="fire-prevention">
+      <button type="button" class="selected" data-role="fire-prevention" data-value="No">No</button>
+      <button type="button" data-role="fire-prevention" data-value="Yes">YES</button>
+    </div>
+  </div>
+  <div class="special-role-field">
+    <h2>EMS Coordinator</h2>
+    <div class="buttons special-role-buttons" data-role-group="ems-coordinator">
+      <button type="button" class="selected" data-role="ems-coordinator" data-value="No">No</button>
+      <button type="button" data-role="ems-coordinator" data-value="Yes">YES</button>
+    </div>
+  </div>
+</div>
+
+
+<div style="margin-top:18px"><button type="button" id="wizardShowResults">View Compensation</button></div>
+</div>
+
+<div class="wizard-results" id="wizardResults">
+<div id="resultsSelections" style="margin-bottom:28px"></div>
+<div class="comp fy27-comp">
+<div class="comp-grid fy-grid">
+<div class="comp-column">
+<div class="comp-title"><h2>FY27 Weekly Compensation as of <span class="fy27-start-date">July 1, 2026</span></h2><span class="step-badge">Step <span class="fy27-start-step">—</span></span></div>
+<div class="line"><span>Base Pay</span><span id="base">$ —</span></div>
+<div class="line"><span><span class="desktop-comp-label">ProBoard Certifications</span><span class="mobile-comp-label">ProBoard Certs</span></span><span id="certPay">$0.00</span></div>
+<div class="line"><span>EMT Pay</span><span id="emt">$0.00</span></div>
+<div class="line"><span><span class="desktop-comp-label">Night Differential</span><span class="mobile-comp-label">Night Diff.</span></span><span id="night">$ —</span></div>
+<div class="line"><span><span class="desktop-comp-label">Technology Stipend</span><span class="mobile-comp-label">Tech.<br>Stipend</span></span><span id="tech">$ —</span></div>
+<div class="line"><span>College Degree</span><span id="degreePay">$0.00</span></div>
+<div class="line ems-coor-line" style="display:none"><span>EMS Coor. Pay</span><span id="emsCoorPay">$0.00</span></div>
+<div class="line"><span>Holiday Pay</span><span class="not-weekly"><span class="npw-line1">Not paid</span><span class="npw-line2">weekly</span></span></div>
+<div class="line"><span>Clothing</span><span class="not-weekly"><span class="npw-line1">Not paid</span><span class="npw-line2">weekly</span></span></div>
+<div class="line total-line"><span>Total Weekly Pay</span><span id="weeklyTotal">$ —</span></div>
+<div class="line previous-line"><span>Previous FY Pay</span><span id="previousWeeklyPay">$ —</span></div>
+<div class="line increase-line"><span>Increase from Previous FY</span><span id="weeklyIncrease">—%</span></div>
+</div>
+<div class="comp-column">
+<div class="comp-title"><h2>FY27 Weekly Compensation as of <span class="fy27-post-date">—</span></h2><span class="step-badge">Step <span class="fy27-post-step">—</span></span></div>
+<div class="line"><span>Base Pay</span><span id="fy27PostBase">$ —</span></div>
+<div class="line"><span><span class="desktop-comp-label">ProBoard Certifications</span><span class="mobile-comp-label">ProBoard Certs</span></span><span id="fy27PostCert">$0.00</span></div>
+<div class="line"><span>EMT Pay</span><span id="fy27PostEmt">$0.00</span></div>
+<div class="line"><span><span class="desktop-comp-label">Night Differential</span><span class="mobile-comp-label">Night Diff.</span></span><span id="fy27PostNight">$ —</span></div>
+<div class="line"><span><span class="desktop-comp-label">Technology Stipend</span><span class="mobile-comp-label">Tech.<br>Stipend</span></span><span id="fy27PostTech">$ —</span></div>
+<div class="line"><span>College Degree</span><span id="fy27PostDegree">$0.00</span></div>
+<div class="line ems-coor-line" style="display:none"><span>EMS Coor. Pay</span><span id="fy27PostEmsCoor">$0.00</span></div>
+<div class="line"><span>Holiday Pay</span><span class="not-weekly"><span class="npw-line1">Not paid</span><span class="npw-line2">weekly</span></span></div>
+<div class="line"><span>Clothing</span><span class="not-weekly"><span class="npw-line1">Not paid</span><span class="npw-line2">weekly</span></span></div>
+<div class="line total-line"><span>Total Weekly Pay</span><span id="fy27PostTotal">$ —</span></div>
+<div class="line previous-line"><span>Previous FY Pay</span><span id="fy27PostPreviousWeeklyPay">$ —</span></div>
+<div class="line increase-line"><span>Increase from Previous FY</span><span id="fy27PostWeeklyIncrease">—%</span></div>
+</div>
+<div class="comp-column">
+<div class="comp-title"><h2>FY27 Annual Compensation</h2><span class="step-badge">FY27</span></div>
+<div class="line"><span>Base Pay</span><span id="annualBase">$ —</span></div>
+<div class="line"><span><span class="desktop-comp-label">ProBoard Certifications</span><span class="mobile-comp-label">ProBoard Certs</span></span><span id="annualCertPay">$0.00</span></div>
+<div class="line"><span>EMT Pay</span><span id="annualEmt">$0.00</span></div>
+<div class="line"><span><span class="desktop-comp-label">Night Differential</span><span class="mobile-comp-label">Night Diff.</span></span><span id="annualNight">$ —</span></div>
+<div class="line"><span><span class="desktop-comp-label">Technology Stipend</span><span class="mobile-comp-label">Tech.<br>Stipend</span></span><span id="annualTech">$ —</span></div>
+<div class="line"><span>College Degree</span><span id="annualDegreePay">$0.00</span></div>
+<div class="line ems-coor-line" style="display:none"><span>EMS Coor. Pay</span><span id="annualEmsCoorPay">$0.00</span></div>
+<div class="line"><span>Holiday Pay</span><span id="annualHolidayPay">$ —</span></div>
+<div class="line"><span>Clothing</span><span class="clothing-value">$800.00</span></div>
+<div class="line total-line"><span>Total Annual Pay</span><span id="annualTotal">$ —</span></div>
+<div class="line previous-line"><span>Previous FY Annual Pay</span><span id="previousAnnualPay">$ —</span></div>
+<div class="line increase-line"><span>Increase from Previous FY</span><span id="annualIncrease">—%</span></div>
+</div>
+</div>
+</div>
+<div class="comp fy28-comp">
+<div class="comp-grid fy-grid">
+<div class="comp-column">
+<div class="comp-title"><h2>FY28 Weekly Compensation as of <span class="fy28-start-date">July 1, 2027</span></h2><span class="step-badge">Step <span class="fy28-start-step">—</span></span></div>
+<div class="line"><span>Base Pay</span><span id="fy28Base">$ —</span></div>
+<div class="line"><span><span class="desktop-comp-label">ProBoard Certifications</span><span class="mobile-comp-label">ProBoard Certs</span></span><span id="fy28CertPay">$0.00</span></div>
+<div class="line"><span>EMT Pay</span><span id="fy28Emt">$0.00</span></div>
+<div class="line"><span><span class="desktop-comp-label">Night Differential</span><span class="mobile-comp-label">Night Diff.</span></span><span id="fy28Night">$ —</span></div>
+<div class="line"><span><span class="desktop-comp-label">Technology Stipend</span><span class="mobile-comp-label">Tech.<br>Stipend</span></span><span id="fy28Tech">$ —</span></div>
+<div class="line"><span>College Degree</span><span id="fy28DegreePay">$0.00</span></div>
+<div class="line ems-coor-line" style="display:none"><span>EMS Coor. Pay</span><span id="fy28EmsCoorPay">$0.00</span></div>
+<div class="line"><span>Holiday Pay</span><span class="not-weekly"><span class="npw-line1">Not paid</span><span class="npw-line2">weekly</span></span></div>
+<div class="line"><span>Clothing</span><span class="not-weekly"><span class="npw-line1">Not paid</span><span class="npw-line2">weekly</span></span></div>
+<div class="line total-line"><span>Total Weekly Pay</span><span id="fy28WeeklyTotal">$ —</span></div>
+<div class="line previous-line"><span>Previous FY Pay</span><span id="fy28PreviousWeeklyPay">$ —</span></div>
+<div class="line increase-line"><span>Increase from Previous FY</span><span id="fy28WeeklyIncrease">—%</span></div>
+</div>
+<div class="comp-column">
+<div class="comp-title"><h2>FY28 Weekly Compensation as of <span class="fy28-post-date">—</span></h2><span class="step-badge">Step <span class="fy28-post-step">—</span></span></div>
+<div class="line"><span>Base Pay</span><span id="fy28PostBase">$ —</span></div>
+<div class="line"><span><span class="desktop-comp-label">ProBoard Certifications</span><span class="mobile-comp-label">ProBoard Certs</span></span><span id="fy28PostCert">$0.00</span></div>
+<div class="line"><span>EMT Pay</span><span id="fy28PostEmt">$0.00</span></div>
+<div class="line"><span><span class="desktop-comp-label">Night Differential</span><span class="mobile-comp-label">Night Diff.</span></span><span id="fy28PostNight">$ —</span></div>
+<div class="line"><span><span class="desktop-comp-label">Technology Stipend</span><span class="mobile-comp-label">Tech.<br>Stipend</span></span><span id="fy28PostTech">$ —</span></div>
+<div class="line"><span>College Degree</span><span id="fy28PostDegree">$0.00</span></div>
+<div class="line ems-coor-line" style="display:none"><span>EMS Coor. Pay</span><span id="fy28PostEmsCoor">$0.00</span></div>
+<div class="line"><span>Holiday Pay</span><span class="not-weekly"><span class="npw-line1">Not paid</span><span class="npw-line2">weekly</span></span></div>
+<div class="line"><span>Clothing</span><span class="not-weekly"><span class="npw-line1">Not paid</span><span class="npw-line2">weekly</span></span></div>
+<div class="line total-line"><span>Total Weekly Pay</span><span id="fy28PostTotal">$ —</span></div>
+<div class="line previous-line"><span>Previous FY Pay</span><span id="fy28PostPreviousWeeklyPay">$ —</span></div>
+<div class="line increase-line"><span>Increase from Previous FY</span><span id="fy28PostWeeklyIncrease">—%</span></div>
+</div>
+<div class="comp-column">
+<div class="comp-title"><h2>FY28 Annual Compensation</h2><span class="step-badge">FY28</span></div>
+<div class="line"><span>Base Pay</span><span id="fy28AnnualBase">$ —</span></div>
+<div class="line"><span><span class="desktop-comp-label">ProBoard Certifications</span><span class="mobile-comp-label">ProBoard Certs</span></span><span id="fy28AnnualCertPay">$0.00</span></div>
+<div class="line"><span>EMT Pay</span><span id="fy28AnnualEmt">$0.00</span></div>
+<div class="line"><span><span class="desktop-comp-label">Night Differential</span><span class="mobile-comp-label">Night Diff.</span></span><span id="fy28AnnualNight">$ —</span></div>
+<div class="line"><span><span class="desktop-comp-label">Technology Stipend</span><span class="mobile-comp-label">Tech.<br>Stipend</span></span><span id="fy28AnnualTech">$ —</span></div>
+<div class="line"><span>College Degree</span><span id="fy28AnnualDegreePay">$0.00</span></div>
+<div class="line ems-coor-line" style="display:none"><span>EMS Coor. Pay</span><span id="fy28AnnualEmsCoorPay">$0.00</span></div>
+<div class="line"><span>Holiday Pay</span><span id="fy28AnnualHolidayPay">$ —</span></div>
+<div class="line"><span>Clothing</span><span class="clothing-value">$800.00</span></div>
+<div class="line total-line"><span>Total Annual Pay</span><span id="fy28AnnualTotal">$ —</span></div>
+<div class="line previous-line"><span>Previous FY Annual Pay</span><span id="fy28PreviousAnnualPay">$ —</span></div>
+<div class="line increase-line"><span>Increase from Previous FY</span><span id="fy28AnnualIncrease">—%</span></div>
+</div>
+</div>
+</div>
+<div class="comp fy29-comp">
+<div class="comp-grid fy-grid">
+<div class="comp-column">
+<div class="comp-title"><h2>FY29 Weekly Compensation as of <span class="fy29-start-date">July 1, 2028</span></h2><span class="step-badge">Step <span class="fy29-start-step">—</span></span></div>
+<div class="line"><span>Base Pay</span><span id="fy29Base">$ —</span></div>
+<div class="line"><span><span class="desktop-comp-label">ProBoard Certifications</span><span class="mobile-comp-label">ProBoard Certs</span></span><span id="fy29CertPay">$0.00</span></div>
+<div class="line"><span>EMT Pay</span><span id="fy29Emt">$0.00</span></div>
+<div class="line"><span><span class="desktop-comp-label">Night Differential</span><span class="mobile-comp-label">Night Diff.</span></span><span id="fy29Night">$ —</span></div>
+<div class="line"><span><span class="desktop-comp-label">Technology Stipend</span><span class="mobile-comp-label">Tech.<br>Stipend</span></span><span id="fy29Tech">$ —</span></div>
+<div class="line"><span>College Degree</span><span id="fy29DegreePay">$0.00</span></div>
+<div class="line ems-coor-line" style="display:none"><span>EMS Coor. Pay</span><span id="fy29EmsCoorPay">$0.00</span></div>
+<div class="line"><span>Holiday Pay</span><span class="not-weekly"><span class="npw-line1">Not paid</span><span class="npw-line2">weekly</span></span></div>
+<div class="line"><span>Clothing</span><span class="not-weekly"><span class="npw-line1">Not paid</span><span class="npw-line2">weekly</span></span></div>
+<div class="line total-line"><span>Total Weekly Pay</span><span id="fy29WeeklyTotal">$ —</span></div>
+<div class="line previous-line"><span>Previous FY Pay</span><span id="fy29PreviousWeeklyPay">$ —</span></div>
+<div class="line increase-line"><span>Increase from Previous FY</span><span id="fy29WeeklyIncrease">—%</span></div>
+</div>
+<div class="comp-column">
+<div class="comp-title"><h2>FY29 Weekly Compensation as of <span class="fy29-post-date">—</span></h2><span class="step-badge">Step <span class="fy29-post-step">—</span></span></div>
+<div class="line"><span>Base Pay</span><span id="fy29PostBase">$ —</span></div>
+<div class="line"><span><span class="desktop-comp-label">ProBoard Certifications</span><span class="mobile-comp-label">ProBoard Certs</span></span><span id="fy29PostCert">$0.00</span></div>
+<div class="line"><span>EMT Pay</span><span id="fy29PostEmt">$0.00</span></div>
+<div class="line"><span><span class="desktop-comp-label">Night Differential</span><span class="mobile-comp-label">Night Diff.</span></span><span id="fy29PostNight">$ —</span></div>
+<div class="line"><span><span class="desktop-comp-label">Technology Stipend</span><span class="mobile-comp-label">Tech.<br>Stipend</span></span><span id="fy29PostTech">$ —</span></div>
+<div class="line"><span>College Degree</span><span id="fy29PostDegree">$0.00</span></div>
+<div class="line ems-coor-line" style="display:none"><span>EMS Coor. Pay</span><span id="fy29PostEmsCoor">$0.00</span></div>
+<div class="line"><span>Holiday Pay</span><span class="not-weekly"><span class="npw-line1">Not paid</span><span class="npw-line2">weekly</span></span></div>
+<div class="line"><span>Clothing</span><span class="not-weekly"><span class="npw-line1">Not paid</span><span class="npw-line2">weekly</span></span></div>
+<div class="line total-line"><span>Total Weekly Pay</span><span id="fy29PostTotal">$ —</span></div>
+<div class="line previous-line"><span>Previous FY Pay</span><span id="fy29PostPreviousWeeklyPay">$ —</span></div>
+<div class="line increase-line"><span>Increase from Previous FY</span><span id="fy29PostWeeklyIncrease">—%</span></div>
+</div>
+<div class="comp-column">
+<div class="comp-title"><h2>FY29 Annual Compensation</h2><span class="step-badge">FY29</span></div>
+<div class="line"><span>Base Pay</span><span id="fy29AnnualBase">$ —</span></div>
+<div class="line"><span><span class="desktop-comp-label">ProBoard Certifications</span><span class="mobile-comp-label">ProBoard Certs</span></span><span id="fy29AnnualCertPay">$0.00</span></div>
+<div class="line"><span>EMT Pay</span><span id="fy29AnnualEmt">$0.00</span></div>
+<div class="line"><span><span class="desktop-comp-label">Night Differential</span><span class="mobile-comp-label">Night Diff.</span></span><span id="fy29AnnualNight">$ —</span></div>
+<div class="line"><span><span class="desktop-comp-label">Technology Stipend</span><span class="mobile-comp-label">Tech.<br>Stipend</span></span><span id="fy29AnnualTech">$ —</span></div>
+<div class="line"><span>College Degree</span><span id="fy29AnnualDegreePay">$0.00</span></div>
+<div class="line ems-coor-line" style="display:none"><span>EMS Coor. Pay</span><span id="fy29AnnualEmsCoorPay">$0.00</span></div>
+<div class="line"><span>Holiday Pay</span><span id="fy29AnnualHolidayPay">$ —</span></div>
+<div class="line"><span>Clothing</span><span class="clothing-value">$1,175.00</span></div>
+<div class="line total-line"><span>Total Annual Pay</span><span id="fy29AnnualTotal">$ —</span></div>
+<div class="line previous-line"><span>Previous FY Annual Pay</span><span id="fy29PreviousAnnualPay">$ —</span></div>
+<div class="line increase-line"><span>Increase from Previous FY</span><span id="fy29AnnualIncrease">—%</span></div>
+</div>
+</div>
+</div>
+<div class="fy-divider" aria-hidden="true"></div>
+<div class="comp fy26-comp">
+<div class="comp-grid fy-grid">
+<div class="comp-column">
+<div class="comp-title"><h2>FY26 Weekly Compensation as of <span class="fy26-start-date">July 1, 2025</span></h2><span class="step-badge">Step <span class="fy26-start-step">—</span></span></div>
+<div class="line"><span>Base Pay</span><span id="fy26Base">$ —</span></div>
+<div class="line"><span><span class="desktop-comp-label">ProBoard Certifications</span><span class="mobile-comp-label">ProBoard Certs</span></span><span id="fy26CertPay">$0.00</span></div>
+<div class="line"><span>EMT Pay</span><span id="fy26Emt">$0.00</span></div>
+<div class="line"><span><span class="desktop-comp-label">Night Differential</span><span class="mobile-comp-label">Night Diff.</span></span><span id="fy26Night">$ —</span></div>
+<div class="line"><span>College Degree</span><span id="fy26DegreePay">$0.00</span></div>
+<div class="line ems-coor-line" style="display:none"><span>EMS Coor. Pay</span><span id="fy26EmsCoorPay">$0.00</span></div>
+<div class="line"><span>Longevity Pay</span><span class="not-weekly"><span class="npw-line1">Not paid</span><span class="npw-line2">weekly</span></span></div>
+<div class="line"><span>Holiday Pay</span><span class="not-weekly"><span class="npw-line1">Not paid</span><span class="npw-line2">weekly</span></span></div>
+<div class="line"><span>Clothing</span><span class="not-weekly"><span class="npw-line1">Not paid</span><span class="npw-line2">weekly</span></span></div>
+<div class="line total-line"><span>Total Weekly Pay</span><span id="fy26WeeklyTotal">$ —</span></div>
+</div>
+<div class="comp-column">
+<div class="comp-title"><h2>FY26 Weekly Compensation as of <span class="fy26-post-date">—</span></h2><span class="step-badge">Step <span class="fy26-post-step">—</span></span></div>
+<div class="line"><span>Base Pay</span><span id="fy26PostBase">$ —</span></div>
+<div class="line"><span><span class="desktop-comp-label">ProBoard Certifications</span><span class="mobile-comp-label">ProBoard Certs</span></span><span id="fy26PostCert">$0.00</span></div>
+<div class="line"><span>EMT Pay</span><span id="fy26PostEmt">$0.00</span></div>
+<div class="line"><span><span class="desktop-comp-label">Night Differential</span><span class="mobile-comp-label">Night Diff.</span></span><span id="fy26PostNight">$ —</span></div>
+<div class="line"><span>College Degree</span><span id="fy26PostDegree">$0.00</span></div>
+<div class="line ems-coor-line" style="display:none"><span>EMS Coor. Pay</span><span id="fy26PostEmsCoor">$0.00</span></div>
+<div class="line"><span>Longevity Pay</span><span class="not-weekly"><span class="npw-line1">Not paid</span><span class="npw-line2">weekly</span></span></div>
+<div class="line"><span>Holiday Pay</span><span class="not-weekly"><span class="npw-line1">Not paid</span><span class="npw-line2">weekly</span></span></div>
+<div class="line"><span>Clothing</span><span class="not-weekly"><span class="npw-line1">Not paid</span><span class="npw-line2">weekly</span></span></div>
+<div class="line total-line"><span>Total Weekly Pay</span><span id="fy26PostTotal">$ —</span></div>
+</div>
+<div class="comp-column">
+<div class="comp-title"><h2>FY26 Annual Compensation</h2><span class="step-badge">FY26</span></div>
+<div class="line"><span>Base Pay</span><span id="fy26AnnualBase">$ —</span></div>
+<div class="line"><span><span class="desktop-comp-label">ProBoard Certifications</span><span class="mobile-comp-label">ProBoard Certs</span></span><span id="fy26AnnualCertPay">$0.00</span></div>
+<div class="line"><span>EMT Pay</span><span id="fy26AnnualEmt">$0.00</span></div>
+<div class="line"><span><span class="desktop-comp-label">Night Differential</span><span class="mobile-comp-label">Night Diff.</span></span><span id="fy26AnnualNight">$ —</span></div>
+<div class="line"><span>College Degree</span><span id="fy26AnnualDegreePay">$0.00</span></div>
+<div class="line ems-coor-line" style="display:none"><span>EMS Coor. Pay</span><span id="fy26AnnualEmsCoorPay">$0.00</span></div>
+<div class="line"><span>Longevity Pay</span><span id="fy26AnnualLongevity">$0.00</span></div>
+<div class="line"><span>Holiday Pay</span><span id="fy26AnnualHolidayPay">$ —</span></div>
+<div class="line"><span>Clothing</span><span>$680.00</span></div>
+<div class="line total-line"><span>Total Annual Pay</span><span id="fy26AnnualTotal">$ —</span></div>
+</div>
+</div>
+</div>
+</div><!-- /wizardResults -->
+</div></div>
+
+<script>
+const payCharts={
+  26:{
+    Firefighter:{1:1252.49,2:1326.21,3:1399.73,4:1473.46},
+    Lieutenant:{1:1440.40,2:1525.05,3:1609.83,4:1694.54},
+    "Deputy Chief":{1:1690.56,2:1790.28,3:1889.76,4:1989.23}
+  },
+  27:{
+    Firefighter:{1:1265.01,2:1339.47,3:1413.73,4:1488.19,5:1525.39,6:1563.53,7:1602.62,8:1642.68,9:1683.75},
+    Lieutenant:{1:1799.97,2:1844.96,3:1891.09,4:1938.37,5:1986.83,6:2036.50},
+    "Deputy Chief":{1:2069.96,2:2121.71,3:2174.75,4:2229.12,5:2284.85,6:2341.97}
+  },
+  28:{
+    Firefighter:{1:1290.31,2:1366.26,3:1442.00,4:1517.95,5:1555.90,6:1594.80,7:1634.67,8:1675.54,9:1717.43},
+    Lieutenant:{1:1835.97,2:1881.86,3:1928.91,4:1977.13,5:2026.56,6:2077.23},
+    "Deputy Chief":{1:2111.36,2:2164.14,3:2218.25,4:2273.70,5:2330.55,6:2388.81}
+  },
+  29:{
+    Firefighter:{1:1316.12,2:1393.58,3:1470.84,4:1548.31,5:1587.02,6:1626.70,7:1667.36,8:1709.05,9:1751.77},
+    Lieutenant:{1:1872.68,2:1919.50,3:1967.49,4:2016.68,5:2067.09,6:2118.77},
+    "Deputy Chief":{1:2153.59,2:2207.43,3:2262.61,4:2319.18,5:2377.16,6:2436.59}
+  }
+};
+let rank="",cert=0,degree="";
+let firePrevention="No";
+let emsCoordinator="No";
+const money=v=>new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',minimumFractionDigits:2,maximumFractionDigits:2}).format(v);
+const daysBetween=(a,b)=>Math.round((b-a)/86400000);
+function yearsAsOf(hire,asof){
+ let y=asof.getFullYear()-hire.getFullYear();
+ const ann=new Date(asof.getFullYear(),hire.getMonth(),hire.getDate());
+ if(asof<ann)y--;
+ return y;
+}
+function stepFor(r,years){
+ if(years<0)return null;
+ if(r==="Firefighter"){
+  if(years<1)return 1;if(years<2)return 2;if(years<3)return 3;if(years<5)return 4;
+  if(years<10)return 5;if(years<15)return 6;if(years<20)return 7;if(years<25)return 8;return 9;
+ }
+ if(years<1)return 1;if(years<2)return 2;if(years<3)return 3;if(years<4)return 4;if(years<5)return 5;return 6;
+}
+// Lieutenants and Deputy Chiefs are locked to Step 1 as of July 1, 2026.
+// Their promotion date does not control step advancement after that point.
+// They advance one step each July 1, capped at Step 6.
+function officerStepAsOf(asof){
+ const reset=new Date(2026,6,1);
+ if(asof<reset)return 1;
+ const julyYear=asof.getMonth()>=6?asof.getFullYear():asof.getFullYear()-1;
+ return Math.min(6,1+(julyYear-2026));
+}
+function stepForFY26(r,years){
+ if(years<0)return null;
+ if(r==="Firefighter"){
+   if(years<1)return 1;
+   if(years<2)return 2;
+   if(years<3)return 3;
+   return 4;
+ }
+ // FY26 Lieutenant and Deputy Chief: 0-1 year = Step 3; 1+ years = Step 4.
+ return years<1?3:4;
+}
+function fy26LongevityAnnual(years){
+ if(years<10)return 0;
+ if(years<15)return 950;
+ if(years<20)return 1200;
+ if(years<25)return 1450;
+ if(years<30)return 1700;
+ return 1950;
+}
+function anniversaryInFY(hire,start,end){
+ const candidates=[
+  new Date(start.getFullYear(),hire.getMonth(),hire.getDate()),
+  new Date(end.getFullYear(),hire.getMonth(),hire.getDate())
+ ];
+ return candidates.find(d=>d>start && d<=end) || null;
+}
+function setText(id,v){const el=document.getElementById(id);if(el)el.textContent=v}
+function dollarChange(cur,prev){
+ if(!Number.isFinite(cur)||!Number.isFinite(prev))return "—";
+ const diff=cur-prev;
+ const sign=diff>0?"+":diff<0?"-":"";
+ return `${sign}$${Math.abs(diff).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2})}/week`;
+}
+function pctChange(cur,prev){
+ if(!Number.isFinite(cur)||!Number.isFinite(prev)||prev===0)return "—";
+ return `${(((cur-prev)/prev)*100).toFixed(2)}%`;
+}
+function displayDate(d){return d.toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"});}
+function selectedDate(){
+ const m=+document.getElementById("hireMonth").value,d=+document.getElementById("hireDay").value,y=+document.getElementById("hireYear").value;
+ if(!m||!d||!y)return null;
+ const x=new Date(y,m-1,d);
+ if(x.getFullYear()!==y||x.getMonth()!==m-1||x.getDate()!==d)return null;
+ return x;
+}
+function ids(fy){
+ const p=`fy${fy}`;
+ if(fy===26)return {
+  sb:"fy26Base",sc:"fy26CertPay",se:"fy26Emt",sn:"fy26Night",st:"fy26Tech",sd:"fy26DegreePay",sx:"fy26EmsCoorPay",sw:"fy26WeeklyTotal",
+  pb:"fy26PostBase",pc:"fy26PostCert",pe:"fy26PostEmt",pn:"fy26PostNight",pt:"fy26PostTech",pd:"fy26PostDegree",px:"fy26PostEmsCoor",pw:"fy26PostTotal",
+  ab:"fy26AnnualBase",ac:"fy26AnnualCertPay",ae:"fy26AnnualEmt",an:"fy26AnnualNight",al:"fy26AnnualLongevity",at:"fy26AnnualTech",ad:"fy26AnnualDegreePay",ax:"fy26AnnualEmsCoorPay",ah:"fy26AnnualHolidayPay",aa:"fy26AnnualTotal"
+ };
+ if(fy===27)return {
+  sb:"base",sc:"certPay",se:"emt",sn:"night",st:"tech",sd:"degreePay",sx:"emsCoorPay",sw:"weeklyTotal",
+  pb:"fy27PostBase",pc:"fy27PostCert",pe:"fy27PostEmt",pn:"fy27PostNight",pt:"fy27PostTech",pd:"fy27PostDegree",px:"fy27PostEmsCoor",pw:"fy27PostTotal",
+  ab:"annualBase",ac:"annualCertPay",ae:"annualEmt",an:"annualNight",at:"annualTech",ad:"annualDegreePay",ax:"annualEmsCoorPay",ah:"annualHolidayPay",aa:"annualTotal"
+ };
+ return {
+  sb:`${p}Base`,sc:`${p}CertPay`,se:`${p}Emt`,sn:`${p}Night`,st:`${p}Tech`,sd:`${p}DegreePay`,sx:`${p}EmsCoorPay`,sw:`${p}WeeklyTotal`,
+  pb:`${p}PostBase`,pc:`${p}PostCert`,pe:`${p}PostEmt`,pn:`${p}PostNight`,pt:`${p}PostTech`,pd:`${p}PostDegree`,px:`${p}PostEmsCoor`,pw:`${p}PostTotal`,
+  ab:`${p}AnnualBase`,ac:`${p}AnnualCertPay`,ae:`${p}AnnualEmt`,an:`${p}AnnualNight`,at:`${p}AnnualTech`,ad:`${p}AnnualDegreePay`,ax:`${p}AnnualEmsCoorPay`,ah:`${p}AnnualHolidayPay`,aa:`${p}AnnualTotal`
+ };
+}
+const fyResults={};
+function calcFY(fy,hire){
+ const I=ids(fy), chart=payCharts[fy];
+ const startYear=2000+fy-1, start=new Date(startYear,6,1), end=new Date(startYear+1,5,30);
+ const isOfficer=(rank==="Lieutenant"||rank==="Deputy Chief");
+ const isFY26=(fy===26);
+ const startStep=isFY26?stepForFY26(rank,yearsAsOf(hire,start)):(isOfficer?officerStepAsOf(start):stepFor(rank,yearsAsOf(hire,start)));
+ const ann=isFY26?anniversaryInFY(hire,start,end):(isOfficer?null:anniversaryInFY(hire,start,end));
+ const annStep=ann?(isFY26?stepForFY26(rank,yearsAsOf(hire,ann)):stepFor(rank,yearsAsOf(hire,ann))):startStep;
+ const postStep=isFY26?((ann&&annStep!==startStep)?annStep:startStep):(isOfficer?startStep:((ann&&annStep!==startStep)?annStep:startStep));
+ const longevityStartAnnual=isFY26?fy26LongevityAnnual(yearsAsOf(hire,start)):0;
+ const longevityAnnAnnual=(isFY26&&ann)?fy26LongevityAnnual(yearsAsOf(hire,ann)):longevityStartAnnual;
+ const longevityChanges=isFY26&&ann&&longevityAnnAnnual!==longevityStartAnnual;
+ const actualStepDate=(ann&&((annStep!==startStep)||longevityChanges))?ann:null;
+ document.querySelectorAll(`.fy${fy}-start-date`).forEach(e=>e.textContent=displayDate(start));
+ document.querySelectorAll(`.fy${fy}-post-date`).forEach(e=>{
+   if(isOfficer && !isFY26)e.textContent="No mid-year step increase";
+   else e.textContent=actualStepDate?displayDate(actualStepDate):"No step increase this FY";
+ });
+ const firePreventionMultiplier=(firePrevention==="Yes"&&fy!==26&&rank==="Lieutenant")?1.15:
+   (firePrevention==="Yes"&&rank==="Deputy Chief")?1.10:1;
+ const fy26FirePreventionFixedBase=(firePrevention==="Yes"&&fy===26&&rank==="Lieutenant")?1813.16:
+   (firePrevention==="Yes"&&fy===26&&rank==="Deputy Chief")?2128.48:null;
+ const startBase=fy26FirePreventionFixedBase??(chart?.[rank]?.[startStep]*firePreventionMultiplier),
+       postBase=fy26FirePreventionFixedBase??(chart?.[rank]?.[postStep]*firePreventionMultiplier);
+ if(!Number.isFinite(startBase)||!Number.isFinite(postBase)){clearFY(fy);return;}
+ const lt1=chart.Lieutenant[1],lt6=chart.Lieutenant[6];
+ // FY26 EMT Pay is always 8% of FY26 Lieutenant Step 4 for every employee.
+ // FY27+ retains the existing 8% of Lieutenant Step 1 rule.
+ const emtBase=(fy===26)?chart.Lieutenant[4]:lt1;
+ const emt=emtBase*.08, certW=(cert*275)/52;
+  const emsCoor=(emsCoordinator==="Yes")?(fy===26?40:100):0;
+ let edu=0;
+ if(fy===26){
+   // FY26 education is a fixed annual amount regardless of rank:
+   // Associate's $2,500; Bachelor's $4,500.
+   if(degree==="Associate's")edu=2500/52;
+   if(degree==="Bachelor's")edu=4500/52;
+ }else if(Number.isFinite(lt6)){
+   if(degree==="Associate's")edu=lt6*.025;
+   if(degree==="Bachelor's")edu=lt6*.04;
+ }
+ const fy26NightRates={Firefighter:19.19,Lieutenant:20.42,"Deputy Chief":21.65};
+ // All FYs: round each weekly component to displayed cents before annualizing.
+ const roundCents=v=>Math.round((v+Number.EPSILON)*100)/100;
+ const weekly=(base,longevityAnnual=0)=>{
+   const night=(firePrevention==="Yes"&&(rank==="Lieutenant"||rank==="Deputy Chief"))
+    ? 0
+    : ((fy===26)?fy26NightRates[rank]:base*.02);
+   const tech=(fy===26)?0:base*.01;
+   const longevity=(fy===26)?longevityAnnual/52:0;
+   const w={
+     base:roundCents(base),
+     cert:roundCents(certW),
+     emt:roundCents(emt),
+     night:roundCents(night),
+     tech:roundCents(tech),
+     longevity:roundCents(longevity),
+     edu:roundCents(edu),
+     emsCoor:roundCents(emsCoor)
+   };
+   w.total=roundCents(w.base+w.cert+w.emt+w.night+w.tech+w.edu+w.emsCoor);
+   return w;
+ };
+ const A=weekly(startBase,longevityStartAnnual),B=weekly(postBase,longevityAnnAnnual);
+ document.querySelectorAll(`.fy${fy}-start-step`).forEach(e=>e.textContent=startStep);
+ document.querySelectorAll(`.fy${fy}-post-step`).forEach(e=>e.textContent=postStep);
+ setText(I.sb,money(A.base));setText(I.sc,money(A.cert));setText(I.se,money(A.emt));setText(I.sn,money(A.night));setText(I.st,money(A.tech));setText(I.sd,money(A.edu));setText(I.sx,money(A.emsCoor));setText(I.sw,money(A.total));
+ setText(I.pb,money(B.base));setText(I.pc,money(B.cert));setText(I.pe,money(B.emt));setText(I.pn,money(B.night));setText(I.pt,money(B.tech));setText(I.pd,money(B.edu));setText(I.px,money(B.emsCoor));setText(I.pw,money(B.total));
+
+ // Weekly comparisons: FY28 vs FY27, FY29 vs FY28.
+ // Compare the matching July 1 rate to the prior FY July 1 rate, and the matching
+ // post-anniversary rate to the prior FY post-anniversary rate.
+ const startPrevId=fy===27?"previousWeeklyPay":`fy${fy}PreviousWeeklyPay`;
+ const startIncId=fy===27?"weeklyIncrease":`fy${fy}WeeklyIncrease`;
+ const postPrevId=`fy${fy}PostPreviousWeeklyPay`;
+ const postIncId=`fy${fy}PostWeeklyIncrease`;
+ const prev=fyResults[fy-1];
+ if(prev){
+   setText(startPrevId,money(prev.startTotal));
+   setText(startIncId,dollarChange(A.total,prev.startTotal));
+   setText(postPrevId,money(prev.postTotal));
+   setText(postIncId,dollarChange(B.total,prev.postTotal));
+ }else{
+   setText(startPrevId,"$ —");setText(startIncId,"—%");
+   setText(postPrevId,"$ —");setText(postIncId,"—%");
+ }
+ fyResults[fy]={startTotal:A.total,postTotal:B.total};
+
+ // Exact day-level proration. New step takes effect on the anniversary date.
+ const change=(ann && ((postStep!==startStep)||longevityChanges))?ann:null;
+ const afterEnd=new Date(end.getFullYear(),end.getMonth(),end.getDate()+1);
+ const d1=change?daysBetween(start,change):daysBetween(start,afterEnd);
+ const d2=change?daysBetween(change,afterEnd):0;
+ const prorate=(x,y)=>(x/7*d1)+(y/7*d2);
+ const annualizationFactor=52;
+ // Weight the two rates by the exact number of calendar days before/after the step
+ // change, then annualize the resulting weekly rate by the FY's required week factor.
+ const totalDays=d1+d2;
+ const weightedAnnual=(before,after)=>{
+   if(!Number.isFinite(before)||!Number.isFinite(after)||!totalDays)return 0;
+   return (((before*d1)+(after*d2))/totalDays)*annualizationFactor;
+ };
+ const annualBase=weightedAnnual(A.base,B.base);
+ const annualEmt=weightedAnnual(A.emt,B.emt);
+ const annualNight=weightedAnnual(A.night,B.night);
+ const annualTech=weightedAnnual(A.tech,B.tech);
+ const annualLongevity=weightedAnnual(A.longevity,B.longevity);
+ const annualEdu=weightedAnnual(A.edu,B.edu);
+  const annualEmsCoor=weightedAnnual(A.emsCoor,B.emsCoor);
+ // ProBoard is an established annual stipend and is not a weekly rate multiplied by the annualization factor.
+ const annualCert=cert*275;
+ // Holiday uses the FY's day-weighted average eligible weekly compensation; education remains excluded.
+ const eligibleA=A.base+A.cert+A.emt+A.night+A.tech, eligibleB=B.base+B.cert+B.emt+B.night+B.tech;
+ const avgEligible=(eligibleA*d1+eligibleB*d2)/(d1+d2);
+ const holiday=(firePrevention==="Yes")?0:avgEligible*3.25;
+ const clothing=(fy===26?680:(fy===29?1175:800));
+ const annualTotal=annualBase+annualCert+annualEmt+annualNight+annualTech+annualLongevity+annualEdu+annualEmsCoor+holiday+clothing;
+ setText(I.ab,money(annualBase));setText(I.ac,money(annualCert));setText(I.ae,money(annualEmt));setText(I.an,money(annualNight));if(I.al)setText(I.al,money(annualLongevity));setText(I.at,money(annualTech));setText(I.ad,money(annualEdu));setText(I.ax,money(annualEmsCoor));setText(I.ah,money(holiday));setText(I.aa,money(annualTotal));
+
+ // Annual comparisons: FY28 vs FY27 and FY29 vs FY28.
+ const annualPrevId=fy===27?"previousAnnualPay":`fy${fy}PreviousAnnualPay`;
+ const annualIncId=fy===27?"annualIncrease":`fy${fy}AnnualIncrease`;
+ const previousFY=fyResults[fy-1];
+ if(previousFY && previousFY.annualTotal!==undefined){
+   setText(annualPrevId,money(previousFY.annualTotal));
+   setText(annualIncId,pctChange(annualTotal,previousFY.annualTotal));
+ }else{
+   setText(annualPrevId,"$ —");
+   setText(annualIncId,"—%");
+ }
+ fyResults[fy].annualTotal=annualTotal;
+}
+function clearFY(fy){
+ document.querySelectorAll(`.fy${fy}-start-step,.fy${fy}-post-step`).forEach(e=>e.textContent="—");
+ const I=ids(fy);
+ ["sb","sn","st","sw","pb","pn","pt","pw","ab","an","at","ah","aa"].forEach(k=>setText(I[k],"$ —"));
+ if(I.al)setText(I.al,"$0.00");
+ ["sc","se","sd","pc","pe","pd","ac","ae","ad"].forEach(k=>setText(I[k],"$0.00"));
+ const startPrevId=fy===27?"previousWeeklyPay":`fy${fy}PreviousWeeklyPay`;
+ const startIncId=fy===27?"weeklyIncrease":`fy${fy}WeeklyIncrease`;
+ setText(startPrevId,"$ —");setText(startIncId,"—%");
+ setText(`fy${fy}PostPreviousWeeklyPay`,"$ —");setText(`fy${fy}PostWeeklyIncrease`,"—%");
+ const annualPrevId=fy===27?"previousAnnualPay":`fy${fy}PreviousAnnualPay`;
+ const annualIncId=fy===27?"annualIncrease":`fy${fy}AnnualIncrease`;
+ setText(annualPrevId,"$ —");setText(annualIncId,"—%");
+ delete fyResults[fy];
+}
+function enforceFirePreventionEligibility(){
+ const yesBtn=document.querySelector('.special-role-buttons button[data-role="fire-prevention"][data-value="Yes"]');
+ const noBtn=document.querySelector('.special-role-buttons button[data-role="fire-prevention"][data-value="No"]');
+ if(!yesBtn||!noBtn)return;
+ const isFirefighter=rank==="Firefighter";
+ yesBtn.disabled=isFirefighter;
+ yesBtn.style.opacity=isFirefighter?".45":"";
+ yesBtn.style.cursor=isFirefighter?"not-allowed":"";
+ if(isFirefighter && firePrevention==="Yes"){
+   firePrevention="No";
+   document.querySelectorAll('.special-role-buttons button[data-role="fire-prevention"]').forEach(b=>b.classList.remove("selected"));
+   noBtn.classList.add("selected");
+ }
+}
+function update(){
+ enforceFirePreventionEligibility();
+ Object.keys(fyResults).forEach(k=>delete fyResults[k]);
+ document.querySelectorAll(".ems-coor-line").forEach(el=>el.style.display=(emsCoordinator==="Yes"?"":"none"));
+ const hire=selectedDate(),helper=document.getElementById("helper");
+ helper.textContent="";
+ if(hire && hire>new Date()){helper.textContent="Date cannot be in the future.";}
+ const current=(hire&&rank&&hire<=new Date())
+   ?((rank==="Lieutenant"||rank==="Deputy Chief")?officerStepAsOf(new Date()):stepFor(rank,yearsAsOf(hire,new Date())))
+   :null;
+ setText("step",current?`Step ${current}`:"—");
+ [26,27,28,29].forEach(fy=>{
+   const fyEnd=new Date(2000+fy,5,30);
+   if(hire&&rank&&hire<=fyEnd)calcFY(fy,hire); else clearFY(fy);
+ });
+}
+function exclusive(container,attr,setter){
+ document.querySelectorAll(`#${container} button`).forEach(b=>b.onclick=()=>{
+  document.querySelectorAll(`#${container} button`).forEach(x=>x.classList.remove("selected"));
+  b.classList.add("selected");setter(b.dataset[attr]);update();
+ });
+}
+exclusive("ranks","rank",v=>rank=v);
+exclusive("certs","cert",v=>cert=Number(v));
+exclusive("degrees","degree",v=>degree=v);
+const monthNames=["January","February","March","April","May","June","July","August","September","October","November","December"];
+const monthSel=document.getElementById("hireMonth"),daySel=document.getElementById("hireDay"),yearSel=document.getElementById("hireYear");
+monthNames.forEach((name,i)=>monthSel.add(new Option(name,i+1)));
+for(let d=1;d<=31;d++)daySel.add(new Option(d,d));
+const currentYear=new Date().getFullYear();
+for(let y=currentYear;y>=1988;y--)yearSel.add(new Option(y,y));
+[monthSel,daySel,yearSel].forEach(el=>el.addEventListener("change",update));
+update();
+
+document.querySelectorAll('.special-role-buttons button').forEach(btn=>{
+ btn.addEventListener('click',()=>{
+   const role=btn.dataset.role;
+   document.querySelectorAll('.special-role-buttons button[data-role="'+role+'"]').forEach(b=>b.classList.remove('selected'));
+   btn.classList.add('selected');
+   if(role==="fire-prevention"){
+     firePrevention=btn.dataset.value;
+     update();
+   }
+   if(role==="ems-coordinator"){
+     emsCoordinator=btn.dataset.value;
+     update();
+   }
+ });
+});
+
+
+// Version 2 progressive questionnaire
+(function(){
+ const steps=["wizardRank","wizardDate","wizardCerts","wizardDegree","wizardSpecial"];
+ let current=0;
+ const progress=document.getElementById("wizardProgress");
+ const back=document.getElementById("wizardBack");
+ const results=document.getElementById("wizardResults");
+
+ function showStep(n){
+   current=Math.max(0,Math.min(n,steps.length-1));
+   steps.forEach((id,i)=>document.getElementById(id).classList.toggle("active",i===current));
+   results.classList.remove("active");
+   progress.style.display="";
+   progress.textContent=`Step ${current+1} of ${steps.length}`;
+   back.classList.toggle("show",current>0);
+   window.scrollTo({top:0,behavior:"smooth"});
+ }
+
+ function moveControlsToResults(){
+   const target=document.getElementById("resultsSelections");
+   ["wizardRank","wizardDate","wizardCerts","wizardDegree","wizardSpecial"].forEach(id=>{
+     const step=document.getElementById(id);
+     if(step) target.appendChild(step);
+   });
+   target.querySelectorAll(".wizard-step").forEach(step=>{
+     step.classList.add("active");
+     step.style.display="block";
+   });
+   const viewBtn=document.getElementById("wizardShowResults");
+   if(viewBtn) viewBtn.style.display="none";
+ }
+
+ function restoreWizardSteps(){
+   const card=document.querySelector(".card");
+   const results=document.getElementById("wizardResults");
+   ["wizardRank","wizardDate","wizardCerts","wizardDegree","wizardSpecial"].forEach(id=>{
+     const step=document.getElementById(id);
+     if(step) card.insertBefore(step,results);
+   });
+   const viewBtn=document.getElementById("wizardShowResults");
+   if(viewBtn) viewBtn.style.display="";
+ }
+
+ function showResults(){
+   steps.forEach(id=>document.getElementById(id).classList.remove("active"));
+   progress.style.display="none";
+   back.classList.add("show");
+   results.classList.add("active");
+   moveControlsToResults();
+   update();
+   window.scrollTo({top:0,behavior:"smooth"});
+ }
+
+ document.getElementById("ranks").addEventListener("click",e=>{
+   if(e.target.closest("button[data-rank]") && !results.classList.contains("active")) setTimeout(()=>showStep(1),0);
+ });
+
+ function dateComplete(){
+   return document.getElementById("hireMonth").value &&
+          document.getElementById("hireDay").value &&
+          document.getElementById("hireYear").value;
+ }
+ ["hireMonth","hireDay","hireYear"].forEach(id=>{
+   document.getElementById(id).addEventListener("change",()=>{
+     if(dateComplete() && !results.classList.contains("active")) setTimeout(()=>showStep(2),0);
+   });
+ });
+
+ document.getElementById("certs").addEventListener("click",e=>{
+   if(e.target.closest("button[data-cert]") && !results.classList.contains("active")) setTimeout(()=>showStep(3),0);
+ });
+ document.getElementById("degrees").addEventListener("click",e=>{
+   if(e.target.closest("button[data-degree]") && !results.classList.contains("active")) setTimeout(()=>showStep(4),0);
+ });
+ document.getElementById("wizardShowResults").addEventListener("click",showResults);
+
+
+ back.addEventListener("click",()=>{
+   if(results.classList.contains("active")){
+     results.classList.remove("active");
+     restoreWizardSteps();
+     progress.style.display="";
+     showStep(4);
+   }else{
+     showStep(current-1);
+   }
+ });
+})();
+
+</script>
+</body></html>
