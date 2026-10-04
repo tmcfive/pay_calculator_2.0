@@ -497,6 +497,307 @@ h1{
   }
 }
 
+
+/* Desktop selection alignment and compensation header cleanup. */
+@media(min-width:601px){
+  /* Match the bottom of Current Step's value box to the date selector boxes. */
+  #wizardDate .row{
+    align-items:end;
+  }
+  #wizardDate .step{
+    align-self:end;
+  }
+
+  /* Weekly header: rank/step badge finishes on the same baseline as the
+     Compensation-as-of heading/date rather than floating higher. */
+  .comp .comp-title{
+    align-items:flex-end;
+  }
+  .comp .comp-title .step-badge{
+    align-self:flex-end;
+    margin-bottom:0;
+  }
+
+  /* Same prominent final action used on mobile. */
+  .wizard-results-action{
+    display:flex;
+    justify-content:center;
+    width:100%;
+    margin-top:30px !important;
+    padding-bottom:28px;
+  }
+  #wizardShowResults{
+    display:block;
+    width:min(88%,340px);
+    min-height:54px;
+    margin:0 auto;
+    padding:14px 22px;
+    font-size:17px;
+    font-weight:800;
+    text-align:center;
+    border-radius:11px;
+    background:#198754 !important;
+    border-color:#198754 !important;
+    color:#fff !important;
+  }
+  #wizardShowResults:hover,
+  #wizardShowResults:focus{
+    background:#157347 !important;
+    border-color:#146c43 !important;
+    color:#fff !important;
+  }
+}
+
+
+@media(min-width:601px){
+  /* Exact Current Step alignment: the date field includes a helper row below
+     the selectors, so reserve that same helper-row height below Current Step.
+     This makes the bottom of the step box match the bottom of Month/Day/Year. */
+  #wizardDate .step{
+    align-self:end !important;
+    padding-bottom:22px;
+    box-sizing:border-box;
+  }
+}
+
+
+/* Align weekly rank/step badges with the TOP of the "Compensation as of" heading. */
+.comp .comp-column:nth-child(1) .comp-title,
+.comp .comp-column:nth-child(2) .comp-title{
+  align-items:flex-start;
+}
+.comp .comp-column:nth-child(1) .comp-title .step-badge,
+.comp .comp-column:nth-child(2) .comp-title .step-badge{
+  align-self:flex-start;
+  margin-top:0;
+  margin-bottom:0;
+}
+
+
+/* Center weekly rank/step badges vertically against the full
+   "Weekly Compensation as of [date]" heading block. */
+.comp .comp-column:nth-child(1) .comp-title,
+.comp .comp-column:nth-child(2) .comp-title{
+  align-items:center !important;
+}
+.comp .comp-column:nth-child(1) .comp-title .step-badge,
+.comp .comp-column:nth-child(2) .comp-title .step-badge{
+  align-self:center !important;
+  margin-top:0 !important;
+  margin-bottom:0 !important;
+}
+
+
+/* Compact weekly compensation headers: keep heading at the very top of each
+   compensation column and eliminate inherited fixed/minimum header space. */
+.comp .comp-column:nth-child(1) .comp-title,
+.comp .comp-column:nth-child(2) .comp-title{
+  min-height:0 !important;
+  height:auto !important;
+  margin-top:0 !important;
+  padding-top:0 !important;
+  margin-bottom:7px !important;
+}
+.comp .comp-column:nth-child(1) .comp-title h2,
+.comp .comp-column:nth-child(2) .comp-title h2{
+  margin-top:0 !important;
+  padding-top:0 !important;
+  align-self:start !important;
+}
+
+
+/* Top-align every compensation header element across weekly and annual columns. */
+.comp .comp-title{
+  min-height:0 !important;
+  height:auto !important;
+  margin-top:0 !important;
+  padding-top:0 !important;
+  align-items:flex-start !important;
+}
+.comp .comp-title h2{
+  margin-top:0 !important;
+  padding-top:0 !important;
+  align-self:flex-start !important;
+}
+.comp .comp-title .step-badge{
+  align-self:flex-start !important;
+  margin-top:0 !important;
+  margin-bottom:0 !important;
+}
+
+
+/* Keep all three compensation columns on identical row tracks.
+   Headers remain top-aligned, but share enough height for the tallest weekly
+   "Compensation as of" heading so every line item begins on the same baseline. */
+.comp .fy-grid > .comp-column .comp-title{
+  min-height:52px !important;
+  height:52px !important;
+  box-sizing:border-box;
+  align-items:flex-start !important;
+  margin-bottom:7px !important;
+}
+.comp .fy-grid > .comp-column .line{
+  box-sizing:border-box;
+  min-height:38px;
+}
+.comp .fy-grid > .comp-column .total{
+  box-sizing:border-box;
+  min-height:38px;
+}
+
+@media(max-width:600px){
+  /* Mobile uses the same shared header and line tracks at its smaller scale. */
+  .comp .fy-grid > .comp-column .comp-title{
+    min-height:42px !important;
+    height:42px !important;
+    margin-bottom:7px !important;
+  }
+  .comp .fy-grid > .comp-column .line{
+    min-height:32px !important;
+  }
+  .comp .fy-grid > .comp-column .total{
+    min-height:34px !important;
+  }
+}
+
+
+/* Lock the divider and total row to the same track in every compensation column. */
+.comp .fy-grid > .comp-column .total-line{
+  box-sizing:border-box !important;
+  height:56px !important;
+  min-height:56px !important;
+  margin-top:8px !important;
+  padding-top:15px !important;
+  padding-bottom:13px !important;
+  border-top:2px solid var(--text) !important;
+  align-items:center !important;
+}
+
+@media(max-width:600px){
+  .comp .fy-grid > .comp-column .total-line{
+    height:48px !important;
+    min-height:48px !important;
+    margin-top:8px !important;
+    padding-top:12px !important;
+    padding-bottom:8px !important;
+  }
+}
+
+
+/* Preserve conditional FY layout: when there is no step/rank change,
+   the middle weekly compensation column must remain hidden. */
+.comp.fy-two-columns .comp-grid > .comp-column:nth-child(2){
+  display:none !important;
+}
+
+
+/* Fine alignment only: the Annual divider/Total row sits slightly lower than
+   Weekly, so nudge only that row upward without changing any column structure. */
+.comp .fy-grid > .comp-column:nth-child(3) > .total-line{
+  transform:translateY(-3px);
+}
+
+
+/* Totals are aligned by JS across visible columns; remove individual nudges. */
+.comp .fy-grid > .comp-column:nth-child(3) > .total-line{
+  transform:none !important;
+}
+
+
+/* Structural divider alignment.
+   Each visible compensation column reserves the SAME vertical space from the
+   header through Clothing. The total row therefore starts at exactly the same
+   coordinate in Weekly and Annual columns. */
+.comp .fy-grid{
+  align-items:stretch;
+}
+.comp .fy-grid > .comp-column{
+  position:relative;
+}
+
+/* Remove all prior per-column/nudge effects from the total boundary. */
+.comp .fy-grid > .comp-column > .total-line{
+  transform:none !important;
+  margin-top:8px !important;
+}
+
+/* Desktop: exact shared tracks through every pre-total line. */
+@media(min-width:601px){
+  .comp .fy-grid > .comp-column > .comp-title{
+    height:52px !important;
+    min-height:52px !important;
+    margin-bottom:7px !important;
+    box-sizing:border-box !important;
+  }
+  .comp .fy-grid > .comp-column > .line:not(.total-line):not(.previous-line):not(.increase-line){
+    height:38px !important;
+    min-height:38px !important;
+    box-sizing:border-box !important;
+  }
+  .comp .fy-grid > .comp-column > .total-line{
+    height:56px !important;
+    min-height:56px !important;
+    box-sizing:border-box !important;
+  }
+}
+
+/* Mobile: same principle at the mobile row dimensions. */
+@media(max-width:600px){
+  .comp .fy-grid > .comp-column > .comp-title{
+    height:42px !important;
+    min-height:42px !important;
+    margin-bottom:7px !important;
+    box-sizing:border-box !important;
+  }
+  .comp .fy-grid > .comp-column > .line:not(.total-line):not(.previous-line):not(.increase-line){
+    height:32px !important;
+    min-height:32px !important;
+    box-sizing:border-box !important;
+  }
+  .comp .fy-grid > .comp-column > .total-line{
+    height:48px !important;
+    min-height:48px !important;
+    box-sizing:border-box !important;
+  }
+}
+
+
+/* Step badge is independently anchored to the top of the compensation header.
+   Header text may wrap to one or two lines without moving the badge. */
+.comp .fy-grid > .comp-column .comp-title{
+  position:relative !important;
+  display:block !important;
+  padding-right:58px !important;
+  box-sizing:border-box !important;
+}
+.comp .fy-grid > .comp-column .comp-title h2{
+  display:block !important;
+  margin-top:0 !important;
+  padding-top:0 !important;
+}
+.comp .fy-grid > .comp-column .comp-title .step-badge{
+  position:absolute !important;
+  top:0 !important;
+  right:0 !important;
+  margin:0 !important;
+  align-self:auto !important;
+  justify-self:auto !important;
+}
+
+/* Annual headers have no step badge, so they do not need reserved badge space. */
+.comp .fy-grid > .comp-column:nth-child(3) .comp-title{
+  padding-right:0 !important;
+}
+
+@media(max-width:600px){
+  .comp .fy-grid > .comp-column .comp-title{
+    padding-right:42px !important;
+  }
+  .comp .fy-grid > .comp-column:nth-child(3) .comp-title{
+    padding-right:0 !important;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -623,7 +924,7 @@ h1{
 <div class="line increase-line"><span>Increase from Previous FY</span><span id="fy27PostWeeklyIncrease">—%</span></div>
 </div>
 <div class="comp-column">
-<div class="comp-title"><h2>FY27 Annual Compensation</h2><span class="step-badge">FY27</span></div>
+<div class="comp-title"><h2>FY27 Annual Compensation</h2></div>
 <div class="line"><span>Base Pay</span><span id="annualBase">$ —</span></div>
 <div class="line"><span><span class="desktop-comp-label">ProBoard Certifications</span><span class="mobile-comp-label">ProBoard Certs</span></span><span id="annualCertPay">$0.00</span></div>
 <div class="line"><span>EMT Pay</span><span id="annualEmt">$0.00</span></div>
@@ -672,7 +973,7 @@ h1{
 <div class="line increase-line"><span>Increase from Previous FY</span><span id="fy28PostWeeklyIncrease">—%</span></div>
 </div>
 <div class="comp-column">
-<div class="comp-title"><h2>FY28 Annual Compensation</h2><span class="step-badge">FY28</span></div>
+<div class="comp-title"><h2>FY28 Annual Compensation</h2></div>
 <div class="line"><span>Base Pay</span><span id="fy28AnnualBase">$ —</span></div>
 <div class="line"><span><span class="desktop-comp-label">ProBoard Certifications</span><span class="mobile-comp-label">ProBoard Certs</span></span><span id="fy28AnnualCertPay">$0.00</span></div>
 <div class="line"><span>EMT Pay</span><span id="fy28AnnualEmt">$0.00</span></div>
@@ -721,7 +1022,7 @@ h1{
 <div class="line increase-line"><span>Increase from Previous FY</span><span id="fy29PostWeeklyIncrease">—%</span></div>
 </div>
 <div class="comp-column">
-<div class="comp-title"><h2>FY29 Annual Compensation</h2><span class="step-badge">FY29</span></div>
+<div class="comp-title"><h2>FY29 Annual Compensation</h2></div>
 <div class="line"><span>Base Pay</span><span id="fy29AnnualBase">$ —</span></div>
 <div class="line"><span><span class="desktop-comp-label">ProBoard Certifications</span><span class="mobile-comp-label">ProBoard Certs</span></span><span id="fy29AnnualCertPay">$0.00</span></div>
 <div class="line"><span>EMT Pay</span><span id="fy29AnnualEmt">$0.00</span></div>
@@ -772,7 +1073,7 @@ h1{
 <div class="line total-line"><span>Total Weekly Pay</span><span id="fy26PostTotal">$ —</span></div>
 </div>
 <div class="comp-column">
-<div class="comp-title"><h2>FY26 Annual Compensation</h2><span class="step-badge">FY26</span></div>
+<div class="comp-title"><h2>FY26 Annual Compensation</h2></div>
 <div class="line"><span>Base Pay</span><span id="fy26AnnualBase">$ —</span></div>
 <div class="line"><span><span class="desktop-comp-label">ProBoard Certifications</span><span class="mobile-comp-label">ProBoard Certs</span></span><span id="fy26AnnualCertPay">$0.00</span></div>
 <div class="line"><span>EMT Pay</span><span id="fy26AnnualEmt">$0.00</span></div>
@@ -1358,7 +1659,17 @@ document.querySelectorAll('.special-role-buttons button').forEach(btn=>{
  }
 
  document.getElementById("ranks").addEventListener("click",e=>{
-   if(e.target.closest("button[data-rank]") && !results.classList.contains("active")) setTimeout(()=>showStep(1),0);
+   if(e.target.closest("button[data-rank]") && !results.classList.contains("active")){
+     setTimeout(()=>{
+       // Rank changes can add/remove the promotion-date requirement. Re-check
+       // values already entered instead of forcing the user to change a date again.
+       if(dateComplete()){
+         showStep(2);
+       }else{
+         showStep(1);
+       }
+     },0);
+   }
  });
 
  function dateComplete(){
@@ -1373,7 +1684,9 @@ document.querySelectorAll('.special-role-buttons button').forEach(btn=>{
  }
  ["hireMonth","hireDay","hireYear","promotionMonth","promotionDay","promotionYear"].forEach(id=>{
    document.getElementById(id).addEventListener("change",()=>{
-     if(dateComplete() && !results.classList.contains("active")) setTimeout(()=>showStep(2),0);
+     if(!results.classList.contains("active")){
+       setTimeout(()=>showStep(dateComplete()?2:1),0);
+     }
    });
  });
 
@@ -1397,6 +1710,45 @@ document.querySelectorAll('.special-role-buttons button').forEach(btn=>{
 
 
 })();
+
+
+function syncCompTotalRows(){
+  document.querySelectorAll(".comp .fy-grid").forEach(grid=>{
+    const cols=[...grid.querySelectorAll(":scope > .comp-column")]
+      .filter(col=>getComputedStyle(col).display!=="none");
+    if(cols.length<2)return;
+
+    // Reset first so measurements reflect natural layout.
+    cols.forEach(col=>{
+      const total=col.querySelector(":scope > .total-line");
+      if(total) total.style.marginTop="";
+    });
+
+    const positions=cols.map(col=>{
+      const total=col.querySelector(":scope > .total-line");
+      return total ? total.getBoundingClientRect().top : null;
+    }).filter(v=>v!==null);
+
+    if(!positions.length)return;
+    const target=Math.max(...positions);
+
+    cols.forEach(col=>{
+      const total=col.querySelector(":scope > .total-line");
+      if(!total)return;
+      const top=total.getBoundingClientRect().top;
+      const current=parseFloat(getComputedStyle(total).marginTop)||0;
+      total.style.marginTop=`${current + (target-top)}px`;
+    });
+  });
+}
+
+function scheduleCompTotalSync(){
+  requestAnimationFrame(()=>requestAnimationFrame(syncCompTotalRows));
+}
+// disabled: replaced by shared CSS divider boundary
+// disabled: replaced by shared CSS divider boundary
+
+// Previous total-row observer disabled; divider alignment is now structural.
 
 </script>
 </body></html>
