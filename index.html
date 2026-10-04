@@ -1257,6 +1257,15 @@ h1{
   }
 }
 
+
+/* Mobile officer path only: 13px from the Date of Hire selection boxes
+   above to the Date of Promotion label. */
+@media(max-width:600px){
+  #wizardDate:has(#promotionDateRow:not([style*="display:none"])) #promotionDateRow{
+    margin-top:13px !important;
+  }
+}
+
 </style>
 </head>
 <body>
