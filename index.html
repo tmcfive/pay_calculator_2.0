@@ -1179,6 +1179,50 @@ h1{
   }
 }
 
+
+@media(max-width:600px){
+  #wizardDate:has(#promotionDateRow:not([style*="display:none"])) #promotionDateRow{
+    margin-top:1.5px !important;
+  }
+
+  #wizardDate:has(#promotionDateRow:not([style*="display:none"])) .step{
+    margin-top:1.5px !important;
+  }
+
+  #wizardDate:has(#promotionDateRow[style*="display:none"]) .step{
+    margin-top:0.75px !important;
+  }
+}
+
+
+/* Match Date of Promotion and Current Step label typography exactly to
+   the existing Date of Hire field label. */
+#promotionDateRow > label,
+#wizardDate .step > label{
+  font:inherit !important;
+  font-weight:700 !important;
+  font-size:inherit !important;
+  line-height:normal !important;
+  letter-spacing:normal !important;
+  text-transform:none !important;
+}
+
+
+/* Match these labels to the SECOND "Date of Hire" field label directly above
+   the Month/Day/Year selects — not to the Date of Hire section heading. */
+#promotionDateRow > label,
+#wizardDate .step > label{
+  display:block !important;
+  font-family:inherit !important;
+  font-size:inherit !important;
+  font-style:normal !important;
+  font-weight:700 !important;
+  line-height:normal !important;
+  letter-spacing:normal !important;
+  text-decoration:none !important;
+  text-transform:none !important;
+}
+
 </style>
 </head>
 <body>
