@@ -1235,6 +1235,17 @@ h1{
   }
 }
 
+
+/* Mobile: 5px gap from the relevant date-selection boxes to Current Step. */
+@media(max-width:600px){
+  #wizardDate:has(#promotionDateRow[style*="display:none"]) .step{
+    margin-top:5px !important;
+  }
+  #wizardDate:has(#promotionDateRow:not([style*="display:none"])) .step{
+    margin-top:5px !important;
+  }
+}
+
 </style>
 </head>
 <body>
