@@ -885,6 +885,20 @@ h1{
   }
 }
 
+
+/* ACTUAL mobile Current Step spacing fix:
+   eliminate the label-to-box gap, but preserve the same overall step-row
+   footprint by transferring that space below the box. */
+@media(max-width:600px){
+  #wizardDate .step label{
+    margin-bottom:0 !important;
+  }
+  #wizardDate .stepbox{
+    margin-top:0 !important;
+    margin-bottom:6px !important;
+  }
+}
+
 </style>
 </head>
 <body>
