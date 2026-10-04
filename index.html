@@ -899,6 +899,55 @@ h1{
   }
 }
 
+
+/* MOBILE: position the entire Current Step unit directly beneath the Month box.
+   This is a visual move only; it does not alter the date section's layout
+   footprint, so ProBoard Certifications remains at the same vertical position. */
+@media(max-width:600px){
+  #wizardDate .row{
+    position:relative !important;
+  }
+
+  #wizardDate .step{
+    position:absolute !important;
+    left:0 !important;
+    top:100% !important;
+    width:calc((100% - 16px) / 3) !important;
+    margin:4px 0 0 0 !important;
+    padding:0 !important;
+    align-self:auto !important;
+    justify-content:flex-start !important;
+    z-index:2;
+  }
+
+  #wizardDate .step label{
+    display:block !important;
+    margin:0 0 2px 0 !important;
+    padding:0 !important;
+  }
+
+  #wizardDate .stepbox{
+    width:100% !important;
+    margin:0 !important;
+    box-sizing:border-box !important;
+  }
+
+  /* Reserve the same Current Step footprint below the date controls so the
+     following ProBoard row does not move upward. */
+  #wizardDate{
+    padding-bottom:58px !important;
+  }
+
+  /* When an officer is selected, the promotion-date row becomes the lower
+     date row. Move Current Step down with it so it sits beneath Promotion Month. */
+  #wizardDate:has(#promotionDateRow:not([style*="display:none"])) .step{
+    transform:translateY(74px) !important;
+  }
+  #wizardDate:has(#promotionDateRow:not([style*="display:none"])){
+    padding-bottom:132px !important;
+  }
+}
+
 </style>
 </head>
 <body>
