@@ -1273,7 +1273,7 @@ h1{
   width:100%;
   margin:10px 0 16px;
 }
-.results.active .fy-summary-tabs{display:block;}
+#wizardResults.active .fy-summary-tabs{display:block;}
 .fy-summary-tab{
   width:100%;
   display:grid;
@@ -1307,10 +1307,10 @@ h1{
 .fy-summary-tab strong{font-size:17px;}
 
 /* FY27–FY29 full breakdowns begin collapsed; clicking a summary line opens one. */
-.results.fy-summary-mode .comp[data-summary-fy="27"],
-.results.fy-summary-mode .comp[data-summary-fy="28"],
-.results.fy-summary-mode .comp[data-summary-fy="29"]{display:none !important;}
-.results.fy-summary-mode .comp[data-summary-fy].summary-open{display:block !important;}
+#wizardResults.fy-summary-mode .comp[data-summary-fy="27"],
+#wizardResults.fy-summary-mode .comp[data-summary-fy="28"],
+#wizardResults.fy-summary-mode .comp[data-summary-fy="29"]{display:none !important;}
+#wizardResults.fy-summary-mode .comp[data-summary-fy].summary-open{display:block !important;}
 
 @media(max-width:600px){
   .fy-summary-tab{
@@ -1325,6 +1325,172 @@ h1{
   .fy-summary-annual{text-align:right;}
   .fy-summary-tab .summary-label{display:block;margin-bottom:2px;font-size:10px;}
   .fy-summary-tab strong{font-size:14px;}
+}
+
+
+/* FY summary tabs: expanded breakdown drops directly beneath the clicked tab. */
+.fy-summary-tab{
+  position:relative;
+}
+.fy-summary-tabs > .comp.summary-open{
+  display:block !important;
+  width:100%;
+  margin:-1px 0 10px !important;
+  padding-top:10px;
+  border:1px solid #c7d2e3;
+  border-top:0;
+  border-radius:0 0 8px 8px;
+  box-sizing:border-box;
+}
+.fy-summary-tab.active{
+  margin-bottom:0;
+  border-radius:8px 8px 0 0;
+}
+@media(max-width:600px){
+  .fy-summary-tab{
+    grid-template-columns:52px minmax(0,1fr) minmax(0,1fr);
+  }
+}
+
+
+/* Summary change lines requested beneath FY27-FY29 Weekly and Annual values. */
+.fy-summary-weekly,.fy-summary-annual{
+  flex-wrap:wrap;
+}
+.fy-summary-tab .summary-change{
+  display:block;
+  flex-basis:100%;
+  margin-top:3px;
+  font-size:12px;
+  line-height:1.15;
+  color:var(--muted,#667085);
+  font-weight:600;
+}
+.fy-summary-annual .summary-change{text-align:right;}
+
+/* FY26 is also a tab, but remains below the existing FY29/FY26 divider. */
+#wizardResults.fy-summary-mode .comp[data-summary-fy="26"]{display:none !important;}
+#wizardResults.fy-summary-mode .comp[data-summary-fy="26"].summary-open{display:block !important;}
+.fy26-summary-tabs{margin-top:0;}
+
+@media(max-width:600px){
+  .fy-summary-tab .summary-change{
+    font-size:10px;
+    margin-top:2px;
+  }
+}
+
+
+/* Inline-expanding FY tabs: the clicked summary tab becomes the full FY card. */
+.fy-summary-tab-wrap{
+  width:100%;
+  margin:0 0 8px;
+  border:1px solid #c7d2e3;
+  border-radius:8px;
+  background:#fff;
+  box-sizing:border-box;
+  overflow:hidden;
+}
+.fy-summary-tab-wrap > .fy-summary-tab{
+  margin:0 !important;
+  border:0 !important;
+  border-radius:0 !important;
+  box-shadow:none !important;
+}
+.fy-summary-tab-wrap.active{
+  border-color:var(--blue,#1f5f99);
+  box-shadow:0 0 0 1px var(--blue,#1f5f99);
+}
+.fy-summary-tab-wrap > .comp.summary-open{
+  display:block !important;
+  width:100%;
+  margin:0 !important;
+  padding:10px 0 0;
+  border:0 !important;
+  border-top:1px solid #c7d2e3 !important;
+  border-radius:0 !important;
+  box-sizing:border-box;
+}
+
+
+/* Expanded FY breakdown: move compensation line text 10px farther inward
+   from the left and right edges of the tab border. */
+.fy-summary-tab-wrap > .comp.summary-open .comp-column > .line{
+  padding-left:10px !important;
+  padding-right:10px !important;
+  box-sizing:border-box;
+}
+
+
+/* Expanded FY breakdown: inset the Weekly Compensation as of heading
+   10px from the left edge of the tab border as well. */
+.fy-summary-tab-wrap > .comp.summary-open .comp-column:nth-child(1) > .comp-title,
+.fy-summary-tab-wrap > .comp.summary-open .comp-column:nth-child(2) > .comp-title{
+  padding-left:10px !important;
+  box-sizing:border-box;
+}
+
+
+/* When all 3 compensation columns are visible, give the left weekly header
+   the same usable text width/wrapping behavior as the middle weekly header. */
+@media(min-width:601px){
+  .fy-summary-tab-wrap > .comp.summary-open:not(.fy-two-columns)
+  .fy-grid > .comp-column:nth-child(1) > .comp-title h2{
+    width:100% !important;
+    max-width:100% !important;
+    white-space:normal !important;
+    overflow-wrap:normal !important;
+    word-break:normal !important;
+  }
+
+  .fy-summary-tab-wrap > .comp.summary-open:not(.fy-two-columns)
+  .fy-grid > .comp-column:nth-child(1) > .comp-title{
+    padding-right:0 !important;
+  }
+
+  .fy-summary-tab-wrap > .comp.summary-open:not(.fy-two-columns)
+  .fy-grid > .comp-column:nth-child(1) > .comp-title .step-badge{
+    position:static !important;
+    display:inline-flex !important;
+    margin-top:3px !important;
+  }
+}
+
+
+/* 3-column layout correction:
+   ONLY the left weekly header text gets the wrapping adjustment.
+   Keep its step bubble aligned exactly like the other desktop step bubbles. */
+@media(min-width:601px){
+  .fy-summary-tab-wrap > .comp.summary-open:not(.fy-two-columns)
+  .fy-grid > .comp-column:nth-child(1) > .comp-title{
+    position:relative !important;
+    display:block !important;
+    padding-left:10px !important;
+    padding-right:58px !important;
+    box-sizing:border-box !important;
+  }
+
+  .fy-summary-tab-wrap > .comp.summary-open:not(.fy-two-columns)
+  .fy-grid > .comp-column:nth-child(1) > .comp-title h2{
+    display:block !important;
+    width:100% !important;
+    max-width:100% !important;
+    white-space:normal !important;
+    overflow-wrap:normal !important;
+    word-break:normal !important;
+  }
+
+  .fy-summary-tab-wrap > .comp.summary-open:not(.fy-two-columns)
+  .fy-grid > .comp-column:nth-child(1) > .comp-title .step-badge{
+    position:absolute !important;
+    top:0 !important;
+    right:0 !important;
+    left:auto !important;
+    margin:0 !important;
+    display:inline-flex !important;
+    align-self:auto !important;
+    justify-self:auto !important;
+  }
 }
 
 </style>
@@ -1424,23 +1590,23 @@ h1{
 <div id="fySummaryTabs" class="fy-summary-tabs" aria-label="Fiscal year compensation summaries">
   <button type="button" class="fy-summary-tab" data-fy-summary="27" aria-expanded="false">
     <span class="fy-summary-year">FY27</span>
-    <span class="fy-summary-weekly"><span class="summary-label">Weekly</span><strong id="fy27SummaryWeekly">—</strong></span>
-    <span class="fy-summary-annual"><span class="summary-label">Annual</span><strong id="fy27SummaryAnnual">—</strong></span>
+    <span class="fy-summary-weekly"><span class="summary-label">Weekly</span><strong id="fy27SummaryWeekly">—</strong><small id="fy27SummaryWeeklyIncrease" class="summary-change">—</small></span>
+    <span class="fy-summary-annual"><span class="summary-label">Annual</span><strong id="fy27SummaryAnnual">—</strong><small id="fy27SummaryAnnualIncrease" class="summary-change">—</small></span>
   </button>
   <button type="button" class="fy-summary-tab" data-fy-summary="28" aria-expanded="false">
     <span class="fy-summary-year">FY28</span>
-    <span class="fy-summary-weekly"><span class="summary-label">Weekly</span><strong id="fy28SummaryWeekly">—</strong></span>
-    <span class="fy-summary-annual"><span class="summary-label">Annual</span><strong id="fy28SummaryAnnual">—</strong></span>
+    <span class="fy-summary-weekly"><span class="summary-label">Weekly</span><strong id="fy28SummaryWeekly">—</strong><small id="fy28SummaryWeeklyIncrease" class="summary-change">—</small></span>
+    <span class="fy-summary-annual"><span class="summary-label">Annual</span><strong id="fy28SummaryAnnual">—</strong><small id="fy28SummaryAnnualIncrease" class="summary-change">—</small></span>
   </button>
   <button type="button" class="fy-summary-tab" data-fy-summary="29" aria-expanded="false">
     <span class="fy-summary-year">FY29</span>
-    <span class="fy-summary-weekly"><span class="summary-label">Weekly</span><strong id="fy29SummaryWeekly">—</strong></span>
-    <span class="fy-summary-annual"><span class="summary-label">Annual</span><strong id="fy29SummaryAnnual">—</strong></span>
+    <span class="fy-summary-weekly"><span class="summary-label">Weekly</span><strong id="fy29SummaryWeekly">—</strong><small id="fy29SummaryWeeklyIncrease" class="summary-change">—</small></span>
+    <span class="fy-summary-annual"><span class="summary-label">Annual</span><strong id="fy29SummaryAnnual">—</strong><small id="fy29SummaryAnnualIncrease" class="summary-change">—</small></span>
   </button>
 </div>
 
 <div class="comp fy27-comp" data-summary-fy="27">
-<div class="fy-stripe-header">FY27</div>
+
 <div class="comp-grid fy-grid">
 <div class="comp-column">
 <div class="comp-title"><h2><span class="desktop-weekly-label">Weekly Compensation as of <span class="fy27-start-date">July 1, 2026</span></span><span class="mobile-weekly-label">Weekly Comp. as of <span class="fy27-start-date">July 1, 2026</span></span></h2><span class="step-badge"><span class="fy27-start-step">—</span></span></div>
@@ -1490,7 +1656,7 @@ h1{
 </div>
 </div>
 <div class="comp fy28-comp" data-summary-fy="28">
-<div class="fy-stripe-header">FY28</div>
+
 <div class="comp-grid fy-grid">
 <div class="comp-column">
 <div class="comp-title"><h2><span class="desktop-weekly-label">Weekly Compensation as of <span class="fy28-start-date">July 1, 2027</span></span><span class="mobile-weekly-label">Weekly Comp. as of <span class="fy28-start-date">July 1, 2027</span></span></h2><span class="step-badge"><span class="fy28-start-step">—</span></span></div>
@@ -1540,7 +1706,7 @@ h1{
 </div>
 </div>
 <div class="comp fy29-comp" data-summary-fy="29">
-<div class="fy-stripe-header">FY29</div>
+
 <div class="comp-grid fy-grid">
 <div class="comp-column">
 <div class="comp-title"><h2><span class="desktop-weekly-label">Weekly Compensation as of <span class="fy29-start-date">July 1, 2028</span></span><span class="mobile-weekly-label">Weekly Comp. as of <span class="fy29-start-date">July 1, 2028</span></span></h2><span class="step-badge"><span class="fy29-start-step">—</span></span></div>
@@ -1595,8 +1761,17 @@ h1{
   </div>
 </div>
 <div class="fy-divider" aria-hidden="true"></div>
-<div class="comp fy26-comp">
-<div class="fy-stripe-header">FY26</div>
+
+<div id="fy26SummaryTabs" class="fy-summary-tabs fy26-summary-tabs">
+  <button type="button" class="fy-summary-tab" data-fy-summary="26" aria-expanded="false">
+    <span class="fy-summary-year">FY26</span>
+    <span class="fy-summary-weekly"><span class="summary-label">Weekly</span><strong id="fy26SummaryWeekly">—</strong></span>
+    <span class="fy-summary-annual"><span class="summary-label">Annual</span><strong id="fy26SummaryAnnual">—</strong></span>
+  </button>
+</div>
+
+<div class="comp fy26-comp" data-summary-fy="26">
+
 <div class="comp-grid fy-grid">
 <div class="comp-column">
 <div class="comp-title"><h2><span class="desktop-weekly-label">Weekly Compensation as of <span class="fy26-start-date">July 1, 2025</span></span><span class="mobile-weekly-label">Weekly Comp. as of <span class="fy26-start-date">July 1, 2025</span></span></h2><span class="step-badge"><span class="fy26-start-step">—</span></span></div>
@@ -2152,7 +2327,24 @@ document.querySelectorAll('.special-role-buttons button').forEach(btn=>{
  const progress=document.getElementById("wizardProgress");
  const results=document.getElementById("wizardResults");
 
- function showStep(n){
+ 
+function scrollToTrueBottom(){
+  const go=()=>{
+    const maxY=Math.max(
+      document.documentElement.scrollHeight,
+      document.body ? document.body.scrollHeight : 0
+    )-window.innerHeight;
+    window.scrollTo({top:Math.max(0,maxY),behavior:"smooth"});
+  };
+  /* Run after layout settles, then once more after the smooth-scroll target can
+     reflect any newly revealed controls/button height. */
+  requestAnimationFrame(()=>{
+    requestAnimationFrame(go);
+    setTimeout(go,180);
+  });
+}
+
+function showStep(n){
    current=Math.max(0,Math.min(n,steps.length-1));
    steps.forEach((id,i)=>{
      const step=document.getElementById(id);
@@ -2163,11 +2355,7 @@ document.querySelectorAll('.special-role-buttons button').forEach(btn=>{
    progress.textContent=`Step ${current+1} of ${steps.length}`;
    const newest=document.getElementById(steps[current]);
    if(current>0 && newest){
-     if(window.matchMedia("(max-width:600px)").matches){
-       requestAnimationFrame(()=>window.scrollTo({top:document.documentElement.scrollHeight,behavior:"smooth"}));
-     }else{
-       newest.scrollIntoView({behavior:"smooth",block:"nearest"});
-     }
+     scrollToTrueBottom();
    }
  }
 
@@ -2304,53 +2492,115 @@ function scheduleCompTotalSync(){
 
 </script>
 <script>
-
 (function(){
-  const resultsEl=document.getElementById("results");
+  const resultsEl=document.getElementById("wizardResults");
   const tabs=[...document.querySelectorAll(".fy-summary-tab")];
+  const breakdowns={};
+  const originalAnchors={};
+  const wraps={};
 
-  function moneyTextFrom(id){
+  [26,27,28,29].forEach(fy=>{
+    const btn=document.querySelector(`.fy-summary-tab[data-fy-summary="${fy}"]`);
+    const panel=document.querySelector(`.comp[data-summary-fy="${fy}"]`);
+    if(btn && panel){
+      breakdowns[fy]=panel;
+
+      const panelAnchor=document.createComment(`FY${fy} original breakdown position`);
+      panel.parentNode.insertBefore(panelAnchor,panel);
+      originalAnchors[fy]=panelAnchor;
+
+      const wrap=document.createElement("div");
+      wrap.className="fy-summary-tab-wrap";
+      wrap.dataset.fyWrap=fy;
+      btn.parentNode.insertBefore(wrap,btn);
+      wrap.appendChild(btn);
+      wraps[fy]=wrap;
+    }
+  });
+
+  function value(id){
     const el=document.getElementById(id);
     return el ? el.textContent.trim() : "—";
   }
+  function firstValue(ids){
+    for(const id of ids){
+      const v=value(id);
+      if(v && v!=="—") return v;
+    }
+    return "—";
+  }
 
   function refreshFYSummaries(){
-    /* Summary weekly rate uses the FY's final/current weekly total shown by the
-       existing calculator. Annual uses the existing FY annual total. */
     const map={
-      27:{weekly:["postTotal","startTotal"],annual:"annualTotal"},
-      28:{weekly:["fy28PostTotal","fy28StartTotal"],annual:"fy28AnnualTotal"},
-      29:{weekly:["fy29PostTotal","fy29StartTotal"],annual:"fy29AnnualTotal"}
+      26:{weekly:["fy26PostTotal","fy26WeeklyTotal"],annual:"fy26AnnualTotal"},
+      27:{weekly:["fy27PostTotal","weeklyTotal"],annual:"annualTotal",
+          weeklyIncrease:["fy27PostWeeklyIncrease","weeklyIncrease"],annualIncrease:"annualIncrease"},
+      28:{weekly:["fy28PostTotal","fy28WeeklyTotal"],annual:"fy28AnnualTotal",
+          weeklyIncrease:["fy28PostWeeklyIncrease","fy28WeeklyIncrease"],annualIncrease:"fy28AnnualIncrease"},
+      29:{weekly:["fy29PostTotal","fy29WeeklyTotal"],annual:"fy29AnnualTotal",
+          weeklyIncrease:["fy29PostWeeklyIncrease","fy29WeeklyIncrease"],annualIncrease:"fy29AnnualIncrease"}
     };
     Object.entries(map).forEach(([fy,cfg])=>{
-      let weekly="—";
-      for(const id of cfg.weekly){
-        const v=moneyTextFrom(id);
-        if(v && v!=="—"){weekly=v;break;}
+      const w=document.getElementById(`fy${fy}SummaryWeekly`);
+      const a=document.getElementById(`fy${fy}SummaryAnnual`);
+      if(w) w.textContent=firstValue(cfg.weekly);
+      if(a) a.textContent=value(cfg.annual);
+      if(cfg.weeklyIncrease){
+        const wi=document.getElementById(`fy${fy}SummaryWeeklyIncrease`);
+        if(wi) wi.textContent=`Increase from Previous FY: ${firstValue(cfg.weeklyIncrease)}`;
       }
-      document.getElementById(`fy${fy}SummaryWeekly`).textContent=weekly;
-      document.getElementById(`fy${fy}SummaryAnnual`).textContent=moneyTextFrom(cfg.annual);
+      if(cfg.annualIncrease){
+        const ai=document.getElementById(`fy${fy}SummaryAnnualIncrease`);
+        if(ai) ai.textContent=`Increase from Previous FY: ${value(cfg.annualIncrease)}`;
+      }
     });
   }
 
-  function closeAllFYBreakdowns(){
-    document.querySelectorAll('.comp[data-summary-fy]').forEach(el=>el.classList.remove("summary-open"));
-    tabs.forEach(b=>{b.classList.remove("active");b.setAttribute("aria-expanded","false");});
+  function closeFY(fy){
+    const btn=document.querySelector(`.fy-summary-tab[data-fy-summary="${fy}"]`);
+    const panel=breakdowns[fy], wrap=wraps[fy];
+    if(btn){
+      btn.classList.remove("active");
+      btn.setAttribute("aria-expanded","false");
+    }
+    if(wrap) wrap.classList.remove("active");
+    if(panel){
+      panel.classList.remove("summary-open");
+      const anchor=originalAnchors[fy];
+      if(anchor && anchor.parentNode) anchor.parentNode.insertBefore(panel,anchor.nextSibling);
+    }
   }
+  function closeAllFYBreakdowns(){ [26,27,28,29].forEach(closeFY); }
 
   tabs.forEach(btn=>btn.addEventListener("click",()=>{
-    const fy=btn.dataset.fySummary;
-    const target=document.querySelector(`.comp[data-summary-fy="${fy}"]`);
+    const fy=Number(btn.dataset.fySummary);
+    const panel=breakdowns[fy], wrap=wraps[fy];
     const opening=!btn.classList.contains("active");
-    closeAllFYBreakdowns();
-    if(opening && target){
+
+    if(opening && panel && wrap){
+      /* Each FY tab toggles independently. Opening one does not close any
+         other FY tabs, so multiple fiscal-year breakdowns can remain open. */
+      wrap.appendChild(panel);
+      panel.classList.add("summary-open");
+      wrap.classList.add("active");
       btn.classList.add("active");
       btn.setAttribute("aria-expanded","true");
-      target.classList.add("summary-open");
+    }else{
+      closeFY(fy);
     }
   }));
 
-  const show=document.getElementById("wizardShowResults");
+  
+const finalWizardSection=document.getElementById("wizardSpecial");
+if(finalWizardSection){
+  const finalSelectionScroll=()=>setTimeout(scrollToTrueBottom,0);
+  finalWizardSection.addEventListener("click",e=>{
+    if(e.target.closest("button, input, select, label")) finalSelectionScroll();
+  });
+  finalWizardSection.addEventListener("change",finalSelectionScroll);
+}
+
+const show=document.getElementById("wizardShowResults");
   if(show){
     show.addEventListener("click",()=>{
       requestAnimationFrame(()=>{
@@ -2361,14 +2611,17 @@ function scheduleCompTotalSync(){
     });
   }
 
-  /* Keep summaries synchronized when qualifications are edited after results exist. */
+  const watchIds=[
+    "fy26WeeklyTotal","fy26PostTotal","fy26AnnualTotal",
+    "weeklyTotal","fy27PostTotal","annualTotal","weeklyIncrease","fy27PostWeeklyIncrease","annualIncrease",
+    "fy28WeeklyTotal","fy28PostTotal","fy28AnnualTotal","fy28WeeklyIncrease","fy28PostWeeklyIncrease","fy28AnnualIncrease",
+    "fy29WeeklyTotal","fy29PostTotal","fy29AnnualTotal","fy29WeeklyIncrease","fy29PostWeeklyIncrease","fy29AnnualIncrease"
+  ];
   const obs=new MutationObserver(()=>refreshFYSummaries());
-  ["startTotal","postTotal","annualTotal","fy28StartTotal","fy28PostTotal","fy28AnnualTotal",
-   "fy29StartTotal","fy29PostTotal","fy29AnnualTotal"].forEach(id=>{
-     const el=document.getElementById(id);
-     if(el)obs.observe(el,{childList:true,characterData:true,subtree:true});
+  watchIds.forEach(id=>{
+    const el=document.getElementById(id);
+    if(el) obs.observe(el,{childList:true,characterData:true,subtree:true});
   });
 })();
-
 </script>
 </body></html>
