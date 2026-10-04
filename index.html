@@ -1130,6 +1130,55 @@ h1{
   }
 }
 
+
+/* Mobile visible-gap correction.
+   Remove the OTHER contributors to the visible gaps (helper height/margins and
+   label spacing), rather than only shrinking one margin property. */
+@media(max-width:600px){
+
+  /* Empty helper rows under the date selectors must not reserve vertical space. */
+  #wizardDate #helper:empty,
+  #wizardDate #promotionHelper:empty{
+    display:none !important;
+    height:0 !important;
+    min-height:0 !important;
+    margin:0 !important;
+    padding:0 !important;
+    line-height:0 !important;
+  }
+
+  /* OFFICERS: make Date of Promotion begin essentially immediately after the
+     Date of Hire selector row. This targets the actual visible gap. */
+  #wizardDate:has(#promotionDateRow:not([style*="display:none"])) #promotionDateRow{
+    margin-top:1px !important;
+    padding-top:0 !important;
+  }
+
+  /* Keep the promotion label close to its own selector row. */
+  #wizardDate:has(#promotionDateRow:not([style*="display:none"])) #promotionDateRow > label{
+    margin-top:0 !important;
+    margin-bottom:3px !important;
+    padding-top:0 !important;
+  }
+
+  /* OFFICERS: Current Step begins almost immediately after Promotion selectors.
+     Remove helper-space contribution and use only a tiny explicit gap. */
+  #wizardDate:has(#promotionDateRow:not([style*="display:none"])) .step{
+    margin-top:1px !important;
+  }
+
+  /* FIREFIGHTER: Current Step begins almost immediately after Hire selectors.
+     Remove helper-space contribution and use a sub-pixel/tiny explicit gap. */
+  #wizardDate:has(#promotionDateRow[style*="display:none"]) .step{
+    margin-top:0.5px !important;
+  }
+
+  /* Do not change spacing after the complete Date/Current Step section. */
+  #wizardDate + #wizardCerts{
+    margin-top:22px !important;
+  }
+}
+
 </style>
 </head>
 <body>
