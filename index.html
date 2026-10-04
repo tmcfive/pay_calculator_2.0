@@ -2237,6 +2237,13 @@ input:focus{
   }
 }
 
+
+/* Step Increase: center in the actual horizontal gap between the weekly
+   dollar amount's right edge and annual amount's left edge. */
+.fy-summary-tab .fy-step-increase-notice{
+  font-weight:400 !important;
+}
+
 </style>
 </head>
 <body>
@@ -3433,6 +3440,36 @@ const show=document.getElementById("wizardShowResults");
   window.addEventListener("resize",centerMobileHeaderLogos);
   requestAnimationFrame(centerMobileHeaderLogos);
   setTimeout(centerMobileHeaderLogos,100);
+})();
+</script>
+
+
+<script>
+(function(){
+  function positionStepIncreaseNotices(){
+    document.querySelectorAll('.fy-summary-tab .fy-step-increase-notice.visible').forEach(notice=>{
+      const tab=notice.closest('.fy-summary-tab');
+      const weekly=tab?.querySelector('.fy-summary-weekly strong');
+      const annual=tab?.querySelector('.fy-summary-annual strong');
+      if(!tab||!weekly||!annual) return;
+
+      const tr=tab.getBoundingClientRect();
+      const wr=weekly.getBoundingClientRect();
+      const ar=annual.getBoundingClientRect();
+
+      /* Exact midpoint between the weekly value's furthest-right edge
+         and the annual value's furthest-left edge. */
+      const midpoint=(wr.right+ar.left)/2;
+      notice.style.left=`${midpoint-tr.left}px`;
+      notice.style.transform='translateX(-50%)';
+    });
+  }
+
+  window.addEventListener('resize',positionStepIncreaseNotices);
+  document.addEventListener('click',()=>requestAnimationFrame(positionStepIncreaseNotices));
+  document.addEventListener('change',()=>requestAnimationFrame(positionStepIncreaseNotices));
+  requestAnimationFrame(positionStepIncreaseNotices);
+  setTimeout(positionStepIncreaseNotices,120);
 })();
 </script>
 
