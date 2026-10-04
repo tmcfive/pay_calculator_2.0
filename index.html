@@ -842,6 +842,49 @@ h1{
   }
 }
 
+
+/* Fiscal-year section header stripe. */
+.fy-stripe-header{
+  background:var(--blue, #1f5f99);
+  color:#fff;
+  font-weight:800;
+  text-align:left;
+  padding:7px 10px;
+  margin:0 0 12px;
+  border-radius:4px 4px 0 0;
+  letter-spacing:.2px;
+}
+
+/* Desktop keeps the existing full wording (without FY prefix). */
+.mobile-weekly-label{display:none;}
+
+@media(max-width:600px){
+  .desktop-weekly-label{display:none !important;}
+  .mobile-weekly-label{display:inline !important;}
+  .fy-stripe-header{
+    padding:6px 9px;
+    margin-bottom:10px;
+  }
+}
+
+
+/* Mobile Current Step placement:
+   keep the existing row footprint/spacing, but pin the value box directly
+   beneath its label instead of letting it sit toward the bottom of the row. */
+@media(max-width:600px){
+  #wizardDate .step{
+    align-self:flex-start !important;
+    justify-content:flex-start !important;
+  }
+  #wizardDate .step label{
+    margin-top:0 !important;
+    margin-bottom:2px !important;
+  }
+  #wizardDate .stepbox{
+    margin-top:0 !important;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -936,9 +979,10 @@ h1{
 <div class="wizard-results" id="wizardResults">
 <div id="resultsSelections"></div>
 <div class="comp fy27-comp">
+<div class="fy-stripe-header">FY27</div>
 <div class="comp-grid fy-grid">
 <div class="comp-column">
-<div class="comp-title"><h2>FY27 Weekly Compensation as of <span class="fy27-start-date">July 1, 2026</span></h2><span class="step-badge"><span class="fy27-start-step">—</span></span></div>
+<div class="comp-title"><h2><span class="desktop-weekly-label">Weekly Compensation as of <span class="fy27-start-date">July 1, 2026</span></span><span class="mobile-weekly-label">Weekly Comp. as of <span class="fy27-start-date">July 1, 2026</span></span></h2><span class="step-badge"><span class="fy27-start-step">—</span></span></div>
 <div class="line"><span>Base Pay</span><span id="base">$ —</span></div>
 <div class="line"><span><span class="desktop-comp-label">ProBoard Certifications</span><span class="mobile-comp-label">ProBoard Certs</span></span><span id="certPay">$0.00</span></div>
 <div class="line"><span>EMT Pay</span><span id="emt">$0.00</span></div>
@@ -953,7 +997,7 @@ h1{
 <div class="line increase-line"><span>Increase from Previous FY</span><span id="weeklyIncrease">—%</span></div>
 </div>
 <div class="comp-column">
-<div class="comp-title"><h2>FY27 Weekly Compensation as of <span class="fy27-post-date">—</span></h2><span class="step-badge"><span class="fy27-post-step">—</span></span></div>
+<div class="comp-title"><h2><span class="desktop-weekly-label">Weekly Compensation as of <span class="fy27-post-date">—</span></span><span class="mobile-weekly-label">Weekly Comp. as of <span class="fy27-post-date">—</span></span></h2><span class="step-badge"><span class="fy27-post-step">—</span></span></div>
 <div class="line"><span>Base Pay</span><span id="fy27PostBase">$ —</span></div>
 <div class="line"><span><span class="desktop-comp-label">ProBoard Certifications</span><span class="mobile-comp-label">ProBoard Certs</span></span><span id="fy27PostCert">$0.00</span></div>
 <div class="line"><span>EMT Pay</span><span id="fy27PostEmt">$0.00</span></div>
@@ -968,7 +1012,7 @@ h1{
 <div class="line increase-line"><span>Increase from Previous FY</span><span id="fy27PostWeeklyIncrease">—%</span></div>
 </div>
 <div class="comp-column">
-<div class="comp-title"><h2>FY27 Annual Compensation</h2></div>
+<div class="comp-title"><h2>Annual Compensation</h2></div>
 <div class="line"><span>Base Pay</span><span id="annualBase">$ —</span></div>
 <div class="line"><span><span class="desktop-comp-label">ProBoard Certifications</span><span class="mobile-comp-label">ProBoard Certs</span></span><span id="annualCertPay">$0.00</span></div>
 <div class="line"><span>EMT Pay</span><span id="annualEmt">$0.00</span></div>
@@ -985,9 +1029,10 @@ h1{
 </div>
 </div>
 <div class="comp fy28-comp">
+<div class="fy-stripe-header">FY28</div>
 <div class="comp-grid fy-grid">
 <div class="comp-column">
-<div class="comp-title"><h2>FY28 Weekly Compensation as of <span class="fy28-start-date">July 1, 2027</span></h2><span class="step-badge"><span class="fy28-start-step">—</span></span></div>
+<div class="comp-title"><h2><span class="desktop-weekly-label">Weekly Compensation as of <span class="fy28-start-date">July 1, 2027</span></span><span class="mobile-weekly-label">Weekly Comp. as of <span class="fy28-start-date">July 1, 2027</span></span></h2><span class="step-badge"><span class="fy28-start-step">—</span></span></div>
 <div class="line"><span>Base Pay</span><span id="fy28Base">$ —</span></div>
 <div class="line"><span><span class="desktop-comp-label">ProBoard Certifications</span><span class="mobile-comp-label">ProBoard Certs</span></span><span id="fy28CertPay">$0.00</span></div>
 <div class="line"><span>EMT Pay</span><span id="fy28Emt">$0.00</span></div>
@@ -1002,7 +1047,7 @@ h1{
 <div class="line increase-line"><span>Increase from Previous FY</span><span id="fy28WeeklyIncrease">—%</span></div>
 </div>
 <div class="comp-column">
-<div class="comp-title"><h2>FY28 Weekly Compensation as of <span class="fy28-post-date">—</span></h2><span class="step-badge"><span class="fy28-post-step">—</span></span></div>
+<div class="comp-title"><h2><span class="desktop-weekly-label">Weekly Compensation as of <span class="fy28-post-date">—</span></span><span class="mobile-weekly-label">Weekly Comp. as of <span class="fy28-post-date">—</span></span></h2><span class="step-badge"><span class="fy28-post-step">—</span></span></div>
 <div class="line"><span>Base Pay</span><span id="fy28PostBase">$ —</span></div>
 <div class="line"><span><span class="desktop-comp-label">ProBoard Certifications</span><span class="mobile-comp-label">ProBoard Certs</span></span><span id="fy28PostCert">$0.00</span></div>
 <div class="line"><span>EMT Pay</span><span id="fy28PostEmt">$0.00</span></div>
@@ -1017,7 +1062,7 @@ h1{
 <div class="line increase-line"><span>Increase from Previous FY</span><span id="fy28PostWeeklyIncrease">—%</span></div>
 </div>
 <div class="comp-column">
-<div class="comp-title"><h2>FY28 Annual Compensation</h2></div>
+<div class="comp-title"><h2>Annual Compensation</h2></div>
 <div class="line"><span>Base Pay</span><span id="fy28AnnualBase">$ —</span></div>
 <div class="line"><span><span class="desktop-comp-label">ProBoard Certifications</span><span class="mobile-comp-label">ProBoard Certs</span></span><span id="fy28AnnualCertPay">$0.00</span></div>
 <div class="line"><span>EMT Pay</span><span id="fy28AnnualEmt">$0.00</span></div>
@@ -1034,9 +1079,10 @@ h1{
 </div>
 </div>
 <div class="comp fy29-comp">
+<div class="fy-stripe-header">FY29</div>
 <div class="comp-grid fy-grid">
 <div class="comp-column">
-<div class="comp-title"><h2>FY29 Weekly Compensation as of <span class="fy29-start-date">July 1, 2028</span></h2><span class="step-badge"><span class="fy29-start-step">—</span></span></div>
+<div class="comp-title"><h2><span class="desktop-weekly-label">Weekly Compensation as of <span class="fy29-start-date">July 1, 2028</span></span><span class="mobile-weekly-label">Weekly Comp. as of <span class="fy29-start-date">July 1, 2028</span></span></h2><span class="step-badge"><span class="fy29-start-step">—</span></span></div>
 <div class="line"><span>Base Pay</span><span id="fy29Base">$ —</span></div>
 <div class="line"><span><span class="desktop-comp-label">ProBoard Certifications</span><span class="mobile-comp-label">ProBoard Certs</span></span><span id="fy29CertPay">$0.00</span></div>
 <div class="line"><span>EMT Pay</span><span id="fy29Emt">$0.00</span></div>
@@ -1051,7 +1097,7 @@ h1{
 <div class="line increase-line"><span>Increase from Previous FY</span><span id="fy29WeeklyIncrease">—%</span></div>
 </div>
 <div class="comp-column">
-<div class="comp-title"><h2>FY29 Weekly Compensation as of <span class="fy29-post-date">—</span></h2><span class="step-badge"><span class="fy29-post-step">—</span></span></div>
+<div class="comp-title"><h2><span class="desktop-weekly-label">Weekly Compensation as of <span class="fy29-post-date">—</span></span><span class="mobile-weekly-label">Weekly Comp. as of <span class="fy29-post-date">—</span></span></h2><span class="step-badge"><span class="fy29-post-step">—</span></span></div>
 <div class="line"><span>Base Pay</span><span id="fy29PostBase">$ —</span></div>
 <div class="line"><span><span class="desktop-comp-label">ProBoard Certifications</span><span class="mobile-comp-label">ProBoard Certs</span></span><span id="fy29PostCert">$0.00</span></div>
 <div class="line"><span>EMT Pay</span><span id="fy29PostEmt">$0.00</span></div>
@@ -1066,7 +1112,7 @@ h1{
 <div class="line increase-line"><span>Increase from Previous FY</span><span id="fy29PostWeeklyIncrease">—%</span></div>
 </div>
 <div class="comp-column">
-<div class="comp-title"><h2>FY29 Annual Compensation</h2></div>
+<div class="comp-title"><h2>Annual Compensation</h2></div>
 <div class="line"><span>Base Pay</span><span id="fy29AnnualBase">$ —</span></div>
 <div class="line"><span><span class="desktop-comp-label">ProBoard Certifications</span><span class="mobile-comp-label">ProBoard Certs</span></span><span id="fy29AnnualCertPay">$0.00</span></div>
 <div class="line"><span>EMT Pay</span><span id="fy29AnnualEmt">$0.00</span></div>
@@ -1089,9 +1135,10 @@ h1{
 </div>
 <div class="fy-divider" aria-hidden="true"></div>
 <div class="comp fy26-comp">
+<div class="fy-stripe-header">FY26</div>
 <div class="comp-grid fy-grid">
 <div class="comp-column">
-<div class="comp-title"><h2>FY26 Weekly Compensation as of <span class="fy26-start-date">July 1, 2025</span></h2><span class="step-badge"><span class="fy26-start-step">—</span></span></div>
+<div class="comp-title"><h2><span class="desktop-weekly-label">Weekly Compensation as of <span class="fy26-start-date">July 1, 2025</span></span><span class="mobile-weekly-label">Weekly Comp. as of <span class="fy26-start-date">July 1, 2025</span></span></h2><span class="step-badge"><span class="fy26-start-step">—</span></span></div>
 <div class="line"><span>Base Pay</span><span id="fy26Base">$ —</span></div>
 <div class="line"><span><span class="desktop-comp-label">ProBoard Certifications</span><span class="mobile-comp-label">ProBoard Certs</span></span><span id="fy26CertPay">$0.00</span></div>
 <div class="line"><span>EMT Pay</span><span id="fy26Emt">$0.00</span></div>
@@ -1104,7 +1151,7 @@ h1{
 <div class="line total-line"><span>Total Weekly Pay</span><span id="fy26WeeklyTotal">$ —</span></div>
 </div>
 <div class="comp-column">
-<div class="comp-title"><h2>FY26 Weekly Compensation as of <span class="fy26-post-date">—</span></h2><span class="step-badge"><span class="fy26-post-step">—</span></span></div>
+<div class="comp-title"><h2><span class="desktop-weekly-label">Weekly Compensation as of <span class="fy26-post-date">—</span></span><span class="mobile-weekly-label">Weekly Comp. as of <span class="fy26-post-date">—</span></span></h2><span class="step-badge"><span class="fy26-post-step">—</span></span></div>
 <div class="line"><span>Base Pay</span><span id="fy26PostBase">$ —</span></div>
 <div class="line"><span><span class="desktop-comp-label">ProBoard Certifications</span><span class="mobile-comp-label">ProBoard Certs</span></span><span id="fy26PostCert">$0.00</span></div>
 <div class="line"><span>EMT Pay</span><span id="fy26PostEmt">$0.00</span></div>
@@ -1117,7 +1164,7 @@ h1{
 <div class="line total-line"><span>Total Weekly Pay</span><span id="fy26PostTotal">$ —</span></div>
 </div>
 <div class="comp-column">
-<div class="comp-title"><h2>FY26 Annual Compensation</h2></div>
+<div class="comp-title"><h2>Annual Compensation</h2></div>
 <div class="line"><span>Base Pay</span><span id="fy26AnnualBase">$ —</span></div>
 <div class="line"><span><span class="desktop-comp-label">ProBoard Certifications</span><span class="mobile-comp-label">ProBoard Certs</span></span><span id="fy26AnnualCertPay">$0.00</span></div>
 <div class="line"><span>EMT Pay</span><span id="fy26AnnualEmt">$0.00</span></div>
