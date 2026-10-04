@@ -948,6 +948,51 @@ h1{
   }
 }
 
+
+/* FINAL mobile Current Step relationship:
+   Current Step sits immediately beneath the relevant Month selector.
+   The reserved whitespace is AFTER Current Step, so ProBoard does not move. */
+@media(max-width:600px){
+  /* Give the field a stable positioning context. */
+  #wizardDate .field{
+    position:relative !important;
+  }
+
+  /* Current Step is positioned from the top of the date row, not its bottom. */
+  #wizardDate .step{
+    position:absolute !important;
+    left:0 !important;
+    top:82px !important; /* directly below Hire Month selector */
+    width:calc((100% - 16px) / 3) !important;
+    margin:0 !important;
+    padding:0 !important;
+    transform:none !important;
+  }
+
+  #wizardDate .step label{
+    margin:0 0 2px 0 !important;
+  }
+
+  #wizardDate .stepbox{
+    margin:0 !important;
+  }
+
+  /* Preserve generous space AFTER Current Step so ProBoard stays separated. */
+  #wizardDate{
+    padding-bottom:92px !important;
+  }
+
+  /* Officers: Promotion Month is the relevant month selector. */
+  #wizardDate:has(#promotionDateRow:not([style*="display:none"])) .step{
+    top:172px !important; /* directly below Promotion Month selector */
+    transform:none !important;
+  }
+
+  #wizardDate:has(#promotionDateRow:not([style*="display:none"])){
+    padding-bottom:92px !important;
+  }
+}
+
 </style>
 </head>
 <body>
