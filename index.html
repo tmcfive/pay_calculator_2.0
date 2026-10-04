@@ -1759,13 +1759,207 @@ input:focus{
   pointer-events:none;
 }
 
+
+/* Corrected qualifications divider:
+   its position is measured from the actual visible bottom of the Fire Prevention /
+   EMS Coordinator bubbles to the actual top border of FY27. It overlays the existing
+   gap, so no spacing changes. 5px = 500% of the original 1px thickness. */
+#resultsSelections.open::after{
+  content:none !important;
+}
+#wizardResults{
+  position:relative;
+}
+#qualificationsGapDivider{
+  display:none;
+  position:absolute;
+  left:0;
+  right:0;
+  height:5px;
+  background:#000;
+  pointer-events:none;
+  z-index:20;
+}
+#qualificationsGapDivider.visible{
+  display:block;
+}
+
+
+/* FY26 + qualifications controls replacing the old FY26 tab/divider. */
+.fy-divider{display:none !important;}
+.fy26-summary-actions{
+  display:grid !important;
+  grid-template-columns:1fr 1fr !important;
+  gap:10px !important;
+  width:100% !important;
+  margin:18px 0 8px !important;
+}
+.fy26-summary-actions .fy26-action-button{
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  min-height:46px !important;
+  margin:0 !important;
+  padding:10px 14px !important;
+  border:1px solid var(--red-theme) !important;
+  border-radius:8px !important;
+  background:#f8e6e8 !important;
+  color:var(--red-theme-dark) !important;
+  font:inherit !important;
+  font-weight:800 !important;
+  cursor:pointer !important;
+  box-sizing:border-box !important;
+}
+.fy26-summary-actions .fy26-action-button:hover,
+.fy26-summary-actions .fy26-action-button:focus{
+  background:#f3d5d9 !important;
+}
+.fy26-summary-actions .fy-summary-year{
+  display:inline !important;
+  width:auto !important;
+  min-width:0 !important;
+  margin:0 !important;
+  padding:0 !important;
+  background:transparent !important;
+  color:inherit !important;
+}
+.fy-summary-tab-wrap[data-fy-wrap="26"]{
+  border:0 !important;
+  border-radius:0 !important;
+  box-shadow:none !important;
+  background:#fff !important;
+  overflow:visible !important;
+}
+.fy-summary-tab-wrap[data-fy-wrap="26"].active{
+  border:0 !important;
+  box-shadow:none !important;
+}
+.fy-summary-tab-wrap[data-fy-wrap="26"] > .comp.summary-open{
+  margin-top:0 !important;
+  border:1px solid var(--red-theme) !important;
+  border-radius:8px !important;
+  padding-top:10px !important;
+}
+/* Old toolbar has no control now and must occupy no space. */
+.results-toolbar{display:none !important;}
+
+
+/* Close tab shown only at the bottom of the opened Qualifications section. */
+#qualificationsCloseTab{
+  display:none;
+  width:max-content;
+  margin:14px auto 0;
+  padding:7px 22px;
+  border:1px solid var(--red-theme);
+  border-radius:8px;
+  background:#f8e6e8;
+  color:var(--red-theme-dark);
+  font:inherit;
+  font-weight:800;
+  cursor:pointer;
+}
+#resultsSelections.open #qualificationsCloseTab{
+  display:block;
+}
+#qualificationsCloseTab:hover,
+#qualificationsCloseTab:focus{
+  background:#f3d5d9;
+}
+
+
+/* Styled Qualifications divider:
+   same measured position and 5px footprint, but visually integrated with the red theme. */
+#qualificationsGapDivider{
+  height:5px !important;
+  background:linear-gradient(
+    to right,
+    transparent 0%,
+    #f3d5d9 8%,
+    var(--red-theme) 24%,
+    var(--red-theme) 76%,
+    #f3d5d9 92%,
+    transparent 100%
+  ) !important;
+  border-radius:999px !important;
+  box-shadow:0 1px 2px rgba(0,0,0,.14) !important;
+}
+#qualificationsGapDivider::after{
+  content:"";
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:11px;
+  height:11px;
+  transform:translate(-50%,-50%) rotate(45deg);
+  background:#fff;
+  border:2px solid var(--red-theme);
+  border-radius:2px;
+  box-sizing:border-box;
+}
+
+
+/* Divider color revision: navy base while preserving shape, shadow, and positioning. */
+#qualificationsGapDivider{
+  background:linear-gradient(
+    to right,
+    transparent 0%,
+    #cbd5e1 8%,
+    #17365d 24%,
+    #17365d 76%,
+    #cbd5e1 92%,
+    transparent 100%
+  ) !important;
+}
+#qualificationsGapDivider::after{
+  border-color:#17365d !important;
+}
+
+/* Keep the Close control at the actual bottom of the opened selections. */
+#qualificationsCloseTab{
+  margin-top:14px !important;
+  margin-bottom:0 !important;
+}
+
+
+/* Qualifications divider / Close spacing revision:
+   - lighter navy-blue divider
+   - preserve all existing selection spacing
+   - lower only the divider to create room for Close
+   - Close sits exactly 20px above the divider */
+#qualificationsGapDivider{
+  background:linear-gradient(
+    to right,
+    transparent 0%,
+    #d8e2ee 8%,
+    #41698f 24%,
+    #41698f 76%,
+    #d8e2ee 92%,
+    transparent 100%
+  ) !important;
+}
+#qualificationsGapDivider::after{
+  border-color:#41698f !important;
+}
+
+/* Do not move the selections. Close is overlaid beneath them. */
+#resultsSelections.open{
+  position:relative !important;
+}
+#qualificationsCloseTab{
+  position:absolute !important;
+  left:50% !important;
+  transform:translateX(-50%) !important;
+  margin:0 !important;
+  z-index:21 !important;
+}
+
 </style>
 </head>
 <body>
 <div class="wrap"><div class="card">
 <h1>Local 1795 Pay Calculator</h1>
 <div class="results-toolbar" id="resultsToolbar">
-  <button type="button" class="qualifications-tab" id="qualificationsTab" aria-expanded="false">View Qualifications</button>
+  
 </div>
 <div class="wizard-progress" id="wizardProgress">Step 1 of 5</div>
 
@@ -1852,6 +2046,7 @@ input:focus{
 
 <div class="wizard-results" id="wizardResults">
 <div id="resultsSelections"></div>
+<div id="qualificationsGapDivider" aria-hidden="true"></div>
 
 <div id="fySummaryTabs" class="fy-summary-tabs" aria-label="Fiscal year compensation summaries">
   <button type="button" class="fy-summary-tab" data-fy-summary="27" aria-expanded="false">
@@ -2026,14 +2221,11 @@ input:focus{
     <div class="contract-increase-line"><span>Total Contract Inc.</span><span id="totalContractIncrease">—%</span></div>
   </div>
 </div>
-<div class="fy-divider" aria-hidden="true"></div>
 
-<div id="fy26SummaryTabs" class="fy-summary-tabs fy26-summary-tabs">
-  <button type="button" class="fy-summary-tab" data-fy-summary="26" aria-expanded="false">
-    <span class="fy-summary-year">FY26</span>
-    <span class="fy-summary-weekly"><span class="summary-label">Weekly</span><strong id="fy26SummaryWeekly">—</strong></span>
-    <span class="fy-summary-annual"><span class="summary-label">Annual</span><strong id="fy26SummaryAnnual">—</strong></span>
-  </button>
+
+<div id="fy26SummaryTabs" class="fy-summary-tabs fy26-summary-tabs fy26-summary-actions">
+  <button type="button" class="fy-summary-tab fy26-action-button" data-fy-summary="26" aria-expanded="false"><span class="fy-summary-year">FY26</span></button>
+  <button type="button" class="fy26-action-button" id="qualificationsTab" aria-expanded="false">View Qualifications</button>
 </div>
 
 <div class="comp fy26-comp" data-summary-fy="26">
@@ -2706,13 +2898,76 @@ function showStep(n){
 
 
 
+ function positionQualificationsGapDivider(){
+   const panel=document.getElementById("resultsSelections");
+   const divider=document.getElementById("qualificationsGapDivider");
+   const resultsBox=document.getElementById("wizardResults");
+   const fy27=document.querySelector('.fy-summary-tab-wrap[data-fy-wrap="27"]') ||
+              document.querySelector('.fy-summary-tab[data-fy-summary="27"]');
+   const roleButtons=[...panel.querySelectorAll("#wizardSpecial .special-role-buttons")];
+
+   if(!panel.classList.contains("open") || !divider || !resultsBox || !fy27 || !roleButtons.length){
+     if(divider) divider.classList.remove("visible");
+     return;
+   }
+
+   const bubblesBottom=Math.max(...roleButtons.map(el=>el.getBoundingClientRect().bottom));
+   const fyTop=fy27.getBoundingClientRect().top;
+   const resultsTop=resultsBox.getBoundingClientRect().top;
+   const midpoint=(bubblesBottom+fyTop)/2;
+   const close=document.getElementById("qualificationsCloseTab");
+
+   /* Keep selections exactly where they are. Put Close beneath the selection
+      bubbles, then lower the divider so its top edge is exactly 20px below
+      the Close button's bottom edge. */
+   if(close){
+     const panelTop=panel.getBoundingClientRect().top;
+     close.style.top=`${bubblesBottom-panelTop+10}px`;
+     const closeHeight=close.getBoundingClientRect().height;
+     const closeBottom=bubblesBottom+10+closeHeight;
+     divider.style.top=`${closeBottom+20-resultsTop}px`;
+   }else{
+     divider.style.top=`${midpoint-resultsTop-2.5}px`;
+   }
+   divider.classList.add("visible");
+ }
+
+ const qualificationsCloseTab=document.createElement("button");
+ qualificationsCloseTab.type="button";
+ qualificationsCloseTab.id="qualificationsCloseTab";
+ qualificationsCloseTab.textContent="Close";
+ document.getElementById("resultsSelections").appendChild(qualificationsCloseTab);
+
  const qualificationsTab=document.getElementById("qualificationsTab");
  qualificationsTab.addEventListener("click",()=>{
    const panel=document.getElementById("resultsSelections");
    const isOpen=panel.classList.toggle("open");
+   if(isOpen){
+     panel.appendChild(qualificationsCloseTab);
+   }
    qualificationsTab.classList.toggle("open",isOpen);
    qualificationsTab.setAttribute("aria-expanded",isOpen?"true":"false");
+   if(isOpen){
+     requestAnimationFrame(()=>requestAnimationFrame(positionQualificationsGapDivider));
+   }else{
+     document.getElementById("qualificationsGapDivider")?.classList.remove("visible");
+   }
  });
+
+ qualificationsCloseTab.addEventListener("click",()=>{
+   const panel=document.getElementById("resultsSelections");
+   panel.classList.remove("open");
+   qualificationsTab.classList.remove("open");
+   qualificationsTab.setAttribute("aria-expanded","false");
+   document.getElementById("qualificationsGapDivider")?.classList.remove("visible");
+ });
+
+ window.addEventListener("resize",()=>{
+   if(document.getElementById("resultsSelections")?.classList.contains("open")){
+     positionQualificationsGapDivider();
+   }
+ });
+
 
 
 })();
@@ -2778,8 +3033,14 @@ function scheduleCompTotalSync(){
       const wrap=document.createElement("div");
       wrap.className="fy-summary-tab-wrap";
       wrap.dataset.fyWrap=fy;
-      btn.parentNode.insertBefore(wrap,btn);
-      wrap.appendChild(btn);
+      if(fy===26){
+        const actionRow=btn.closest(".fy26-summary-actions");
+        actionRow.parentNode.insertBefore(wrap,actionRow);
+        wrap.appendChild(actionRow);
+      }else{
+        btn.parentNode.insertBefore(wrap,btn);
+        wrap.appendChild(btn);
+      }
       wraps[fy]=wrap;
     }
   });
