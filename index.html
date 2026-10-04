@@ -2065,6 +2065,34 @@ input:focus{
   border-color:#1f3f73 !important;
 }
 
+
+/* Mobile Total Contract Increase: content-sized bubble, larger label.
+   Overrides the earlier forced tall mobile treatment. */
+@media(max-width:600px){
+  .contract-increase-box{
+    width:auto !important;
+    max-width:100% !important;
+    min-height:0 !important;
+    height:auto !important;
+    padding:10px 16px !important;
+    margin-left:auto !important;
+    margin-right:auto !important;
+    box-sizing:border-box !important;
+  }
+
+  .contract-increase-box .contract-increase-label,
+  .contract-increase-box .summary-label,
+  .contract-increase-box > span:first-child{
+    font-size:2em !important;
+    line-height:1.05 !important;
+  }
+
+  #totalContractIncrease{
+    font-weight:800 !important;
+    line-height:1.05 !important;
+  }
+}
+
 </style>
 </head>
 <body>
