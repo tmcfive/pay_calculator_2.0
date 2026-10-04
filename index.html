@@ -1050,6 +1050,61 @@ h1{
   }
 }
 
+
+/* MOBILE CURRENT STEP — normal document flow, no absolute positioning and no
+   artificial blank-space reservation. Current Step follows the relevant date
+   controls immediately, then normal section spacing follows it. */
+@media(max-width:600px){
+  #wizardDate{
+    min-height:0 !important;
+    padding-bottom:0 !important;
+  }
+  #wizardDate:has(#promotionDateRow:not([style*="display:none"])){
+    min-height:0 !important;
+    padding-bottom:0 !important;
+  }
+
+  #wizardDate .row{
+    display:block !important;
+    position:static !important;
+  }
+
+  #wizardDate .field{
+    position:static !important;
+    width:100% !important;
+  }
+
+  #wizardDate .step{
+    position:static !important;
+    transform:none !important;
+    top:auto !important;
+    left:auto !important;
+    width:calc((100% - 16px) / 3) !important;
+    margin:4px 0 0 0 !important;
+    padding:0 !important;
+    align-self:auto !important;
+  }
+
+  #wizardDate .step label{
+    display:block !important;
+    margin:0 0 3px 0 !important;
+    padding:0 !important;
+    line-height:1.1 !important;
+  }
+
+  #wizardDate .stepbox{
+    width:100% !important;
+    margin:0 !important;
+    box-sizing:border-box !important;
+  }
+
+  /* Keep ordinary wizard-section spacing after the complete Date/Current Step
+     section. No extra gap is inserted above or below Current Step. */
+  #wizardDate + #wizardCerts{
+    margin-top:22px !important;
+  }
+}
+
 </style>
 </head>
 <body>
