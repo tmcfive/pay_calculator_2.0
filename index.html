@@ -2757,11 +2757,21 @@ function calcFY(fy,hire,promotion){
      }
    }
  }else if(isOfficer){
-   // Promotion occurred before this FY. Officers start Step 1 on their first July 1
-   // following promotion, then advance one step each July 1, capped at Step 6.
-   const firstOfficerFY=Math.max(27,promotion.getFullYear()+(promotion.getMonth()>=6?1:0)-1999);
-   const officerStep=Math.min(6,Math.max(1,fy-firstOfficerFY+1));
-   startStep=postStep=officerStep;
+   if(isFY26){
+     // Existing FY26 officers use promotion-date tenure and can change step
+     // on their promotion anniversary during FY26.
+     startStep=stepForFY26(rank,yearsAsOf(promotion,fyStart));
+     ann=anniversaryInFY(promotion,fyStart,end);
+     annStep=ann
+       ? stepForFY26(rank,yearsAsOf(promotion,ann))
+       : startStep;
+     postStep=(ann&&annStep!==startStep)?annStep:startStep;
+   }else{
+     // FY27+: officers use the July 1 progression system.
+     const firstOfficerFY=Math.max(27,promotion.getFullYear()+(promotion.getMonth()>=6?1:0)-1999);
+     const officerStep=Math.min(6,Math.max(1,fy-firstOfficerFY+1));
+     startStep=postStep=officerStep;
+   }
  }else{
    // Firefighters use the separate 4-step FY26 schedule in FY26,
    // and the standard 9-step schedule beginning in FY27.
@@ -2852,11 +2862,15 @@ function calcFY(fy,hire,promotion){
  const postIncId=`fy${fy}PostWeeklyIncrease`;
  const prev=fyResults[fy-1];
  if(prev){
-   setText(startPrevId,money(prev.startTotal));
-   setText(startIncId,dollarChange(A.total,prev.startTotal));
-   setText(postPrevId,money(prev.postTotal));
-   setText(postIncId,dollarChange(B.total,prev.postTotal));
- }else{
+    // For FY27, the prior-year weekly baseline is the employee's ending
+    // FY26 weekly rate after any FY26 step increase.
+    const priorStartComparisonTotal=(fy===27)?prev.postTotal:prev.startTotal;
+    const priorPostComparisonTotal=prev.postTotal;
+    setText(startPrevId,money(priorStartComparisonTotal));
+    setText(startIncId,dollarChange(A.total,priorStartComparisonTotal));
+    setText(postPrevId,money(priorPostComparisonTotal));
+    setText(postIncId,dollarChange(B.total,priorPostComparisonTotal));
+  }else{
    setText(startPrevId,"$ —");setText(startIncId,"—%");
    setText(postPrevId,"$ —");setText(postIncId,"—%");
  }
