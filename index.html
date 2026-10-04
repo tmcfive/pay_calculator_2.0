@@ -460,6 +460,43 @@ h1{
   }
 }
 
+
+@media(max-width:600px){
+  /* Put Current Step directly beneath the Month selector without changing
+     the overall Date of Hire section spacing before ProBoard Certifications. */
+  #wizardDate .row{
+    position:relative;
+  }
+  #wizardDate .step{
+    width:calc((100% - 16px) / 3);
+    margin-top:8px !important;
+    margin-right:auto;
+    margin-bottom:0 !important;
+    align-items:flex-start;
+  }
+  #wizardDate .step label{
+    display:block;
+    margin-bottom:6px;
+  }
+  #wizardDate .stepbox{
+    width:100%;
+    box-sizing:border-box;
+  }
+
+  /* High-visibility final action. */
+  #wizardShowResults{
+    background:#198754 !important;
+    border-color:#198754 !important;
+    color:#fff !important;
+  }
+  #wizardShowResults:hover,
+  #wizardShowResults:focus{
+    background:#157347 !important;
+    border-color:#146c43 !important;
+    color:#fff !important;
+  }
+}
+
 </style>
 </head>
 <body>
