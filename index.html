@@ -354,6 +354,38 @@ h1{
 
 .promotion-date-row{margin-top:16px}
 .promotion-date-row>label{display:block;margin-bottom:7px;font-weight:700}
+
+@media(max-width:600px){
+  /* Size each FY/step bubble to its text and center it over its compensation column. */
+  .comp-title .step-badge{
+    display:inline-flex !important;
+    width:max-content !important;
+    max-width:none !important;
+    min-width:0 !important;
+    box-sizing:border-box;
+    justify-self:center !important;
+    align-self:end !important;
+    justify-content:center;
+    align-items:center;
+    padding:3px 5px !important;
+    font-size:7px !important;
+    line-height:1 !important;
+    white-space:nowrap !important;
+  }
+
+  /* Give two-column FY layouts a much clearer center break on phones. */
+  .comp.fy-two-columns .comp-grid{
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr) !important;
+    column-gap:24px !important;
+  }
+  .comp.fy-two-columns .comp-grid > .comp-column:nth-child(1){
+    padding-right:5px;
+  }
+  .comp.fy-two-columns .comp-grid > .comp-column:nth-child(3){
+    padding-left:5px;
+  }
+}
+
 </style>
 </head>
 <body>
