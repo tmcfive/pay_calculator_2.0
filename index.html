@@ -2251,6 +2251,17 @@ input:focus{
   font-weight:400 !important;
 }
 
+
+/* FINAL Step Increase placement:
+   keep its current vertical line, but center it in the entire FY summary bubble. */
+.fy-summary-tab .fy-step-increase-notice{
+  left:50% !important;
+  right:auto !important;
+  transform:translateX(-50%) !important;
+  font-style:italic !important;
+  font-weight:400 !important;
+}
+
 </style>
 </head>
 <body>
@@ -3451,52 +3462,6 @@ const show=document.getElementById("wizardShowResults");
 </script>
 
 
-<script>
-(function(){
-  function positionStepIncreaseNotices(){
-    document.querySelectorAll('.fy-summary-tab .fy-step-increase-notice.visible').forEach(notice=>{
-      const tab=notice.closest('.fy-summary-tab');
-      if(!tab) return;
 
-      const blocks=[...tab.children].filter(el=>
-        el !== notice && !el.classList.contains('fy-summary-year')
-      );
-      const weeklyBlock=blocks[0];
-      const annualBlock=blocks[1];
-      if(!weeklyBlock || !annualBlock) return;
-
-      /* The dollar amount is the main value in each summary block. */
-      const weeklyValue=weeklyBlock.querySelector('.summary-value, strong');
-      const annualValue=annualBlock.querySelector('.summary-value, strong');
-      if(!weeklyValue || !annualValue) return;
-
-      const tr=tab.getBoundingClientRect();
-      const wr=weeklyValue.getBoundingClientRect();
-      const ar=annualValue.getBoundingClientRect();
-
-      const gapLeft=wr.right;
-      const gapRight=ar.left;
-      const midpoint=gapLeft + ((gapRight-gapLeft)/2);
-
-      notice.style.left=(midpoint-tr.left)+'px';
-      notice.style.right='auto';
-      notice.style.transform='translateX(-50%)';
-    });
-  }
-
-  window.addEventListener('resize',positionStepIncreaseNotices);
-  document.addEventListener('click',()=>requestAnimationFrame(positionStepIncreaseNotices));
-  document.addEventListener('change',()=>requestAnimationFrame(positionStepIncreaseNotices));
-
-  /* Reposition after summary values are populated/changed. */
-  const observer=new MutationObserver(()=>requestAnimationFrame(positionStepIncreaseNotices));
-  document.querySelectorAll('.fy-summary-tab').forEach(tab=>{
-    observer.observe(tab,{subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:['class']});
-  });
-
-  requestAnimationFrame(()=>requestAnimationFrame(positionStepIncreaseNotices));
-  setTimeout(positionStepIncreaseNotices,150);
-})();
-</script>
 
 </body></html>
