@@ -3464,4 +3464,42 @@ const show=document.getElementById("wizardShowResults");
 
 
 
+
+<script>
+(function(){
+  function centerStepIncreaseInWhiteBubble(){
+    document.querySelectorAll('.fy-summary-tab .fy-step-increase-notice.visible').forEach(notice=>{
+      const tab=notice.closest('.fy-summary-tab');
+      const year=tab?.querySelector('.fy-summary-year');
+      if(!tab || !year) return;
+
+      const tr=tab.getBoundingClientRect();
+      const yr=year.getBoundingClientRect();
+
+      /* Visual center of the white summary area:
+         from the FY label's right edge to the bubble's right edge. */
+      const whiteLeft=yr.right;
+      const whiteRight=tr.right;
+      const midpoint=whiteLeft + ((whiteRight-whiteLeft)/2);
+
+      notice.style.setProperty('left',(midpoint-tr.left)+'px','important');
+      notice.style.setProperty('right','auto','important');
+      notice.style.setProperty('transform','translateX(-50%)','important');
+    });
+  }
+
+  window.addEventListener('resize',centerStepIncreaseInWhiteBubble);
+  document.addEventListener('click',()=>requestAnimationFrame(centerStepIncreaseInWhiteBubble));
+  document.addEventListener('change',()=>requestAnimationFrame(centerStepIncreaseInWhiteBubble));
+
+  const observer=new MutationObserver(()=>requestAnimationFrame(centerStepIncreaseInWhiteBubble));
+  document.querySelectorAll('.fy-summary-tab').forEach(tab=>{
+    observer.observe(tab,{subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:['class']});
+  });
+
+  requestAnimationFrame(()=>requestAnimationFrame(centerStepIncreaseInWhiteBubble));
+  setTimeout(centerStepIncreaseInWhiteBubble,150);
+})();
+</script>
+
 </body></html>
