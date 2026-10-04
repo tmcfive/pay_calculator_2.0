@@ -329,6 +329,31 @@ h1{
  .contract-increase-line{font-size:9px;gap:6px}
 }
 
+
+.comp.fy-two-columns .comp-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+.comp.fy-two-columns .comp-grid > .comp-column:nth-child(2){display:none}
+@media(max-width:600px){.comp.fy-two-columns .comp-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+
+.previous-line > span:last-child{
+  font-style:italic;
+}
+
+
+/* Previous-FY comparison styling */
+.previous-line > span:last-child{
+  font-style:normal;
+  color:var(--muted);
+}
+.comp-column:nth-child(1) .increase-line > span:last-child,
+.comp-column:nth-child(2) .increase-line > span:last-child{
+  font-style:normal !important;
+  color:var(--muted);
+}
+
+
+.promotion-date-row{margin-top:16px}
+.promotion-date-row>label{display:block;margin-bottom:7px;font-weight:700}
 </style>
 </head>
 <body>
@@ -351,15 +376,25 @@ h1{
 </div>
 
 <div class="wizard-step" id="wizardDate">
-<h2>Date of Hire/Promotion</h2>
+<h2>Date of Hire</h2>
 <div class="row">
-<div class="field"><label>Date</label>
+<div class="field"><label>Date of Hire</label>
 <div class="date-selects">
-<select id="hireMonth" aria-label="Month"><option value="">Month</option></select>
-<select id="hireDay" aria-label="Day"><option value="">Day</option></select>
-<select id="hireYear" aria-label="Year"><option value="">Year</option></select>
+<select id="hireMonth" aria-label="Hire Month"><option value="">Month</option></select>
+<select id="hireDay" aria-label="Hire Day"><option value="">Day</option></select>
+<select id="hireYear" aria-label="Hire Year"><option value="">Year</option></select>
 </div>
-<div class="helper" id="helper"></div></div>
+<div class="helper" id="helper"></div>
+<div class="promotion-date-row" id="promotionDateRow" style="display:none">
+<label>Date of Promotion</label>
+<div class="date-selects">
+<select id="promotionMonth" aria-label="Promotion Month"><option value="">Month</option></select>
+<select id="promotionDay" aria-label="Promotion Day"><option value="">Day</option></select>
+<select id="promotionYear" aria-label="Promotion Year"><option value="">Year</option></select>
+</div>
+<div class="helper" id="promotionHelper"></div>
+</div>
+</div>
 <div class="step"><label>Current Step</label><div class="stepbox step-clickable" id="step" role="button" tabindex="0" aria-expanded="false"><span id="stepValue">—</span>
 <div class="step-date-bubble" id="stepDateBubble"><span class="step-date-bubble-label">Next Step Date</span><span class="step-date-bubble-value" id="stepDateBubbleValue">—</span></div>
 </div></div>
@@ -415,7 +450,7 @@ h1{
 <div class="comp fy27-comp">
 <div class="comp-grid fy-grid">
 <div class="comp-column">
-<div class="comp-title"><h2>FY27 Weekly Compensation as of <span class="fy27-start-date">July 1, 2026</span></h2><span class="step-badge">Step <span class="fy27-start-step">—</span></span></div>
+<div class="comp-title"><h2>FY27 Weekly Compensation as of <span class="fy27-start-date">July 1, 2026</span></h2><span class="step-badge"><span class="fy27-start-step">—</span></span></div>
 <div class="line"><span>Base Pay</span><span id="base">$ —</span></div>
 <div class="line"><span><span class="desktop-comp-label">ProBoard Certifications</span><span class="mobile-comp-label">ProBoard Certs</span></span><span id="certPay">$0.00</span></div>
 <div class="line"><span>EMT Pay</span><span id="emt">$0.00</span></div>
@@ -430,7 +465,7 @@ h1{
 <div class="line increase-line"><span>Increase from Previous FY</span><span id="weeklyIncrease">—%</span></div>
 </div>
 <div class="comp-column">
-<div class="comp-title"><h2>FY27 Weekly Compensation as of <span class="fy27-post-date">—</span></h2><span class="step-badge">Step <span class="fy27-post-step">—</span></span></div>
+<div class="comp-title"><h2>FY27 Weekly Compensation as of <span class="fy27-post-date">—</span></h2><span class="step-badge"><span class="fy27-post-step">—</span></span></div>
 <div class="line"><span>Base Pay</span><span id="fy27PostBase">$ —</span></div>
 <div class="line"><span><span class="desktop-comp-label">ProBoard Certifications</span><span class="mobile-comp-label">ProBoard Certs</span></span><span id="fy27PostCert">$0.00</span></div>
 <div class="line"><span>EMT Pay</span><span id="fy27PostEmt">$0.00</span></div>
@@ -464,7 +499,7 @@ h1{
 <div class="comp fy28-comp">
 <div class="comp-grid fy-grid">
 <div class="comp-column">
-<div class="comp-title"><h2>FY28 Weekly Compensation as of <span class="fy28-start-date">July 1, 2027</span></h2><span class="step-badge">Step <span class="fy28-start-step">—</span></span></div>
+<div class="comp-title"><h2>FY28 Weekly Compensation as of <span class="fy28-start-date">July 1, 2027</span></h2><span class="step-badge"><span class="fy28-start-step">—</span></span></div>
 <div class="line"><span>Base Pay</span><span id="fy28Base">$ —</span></div>
 <div class="line"><span><span class="desktop-comp-label">ProBoard Certifications</span><span class="mobile-comp-label">ProBoard Certs</span></span><span id="fy28CertPay">$0.00</span></div>
 <div class="line"><span>EMT Pay</span><span id="fy28Emt">$0.00</span></div>
@@ -479,7 +514,7 @@ h1{
 <div class="line increase-line"><span>Increase from Previous FY</span><span id="fy28WeeklyIncrease">—%</span></div>
 </div>
 <div class="comp-column">
-<div class="comp-title"><h2>FY28 Weekly Compensation as of <span class="fy28-post-date">—</span></h2><span class="step-badge">Step <span class="fy28-post-step">—</span></span></div>
+<div class="comp-title"><h2>FY28 Weekly Compensation as of <span class="fy28-post-date">—</span></h2><span class="step-badge"><span class="fy28-post-step">—</span></span></div>
 <div class="line"><span>Base Pay</span><span id="fy28PostBase">$ —</span></div>
 <div class="line"><span><span class="desktop-comp-label">ProBoard Certifications</span><span class="mobile-comp-label">ProBoard Certs</span></span><span id="fy28PostCert">$0.00</span></div>
 <div class="line"><span>EMT Pay</span><span id="fy28PostEmt">$0.00</span></div>
@@ -513,7 +548,7 @@ h1{
 <div class="comp fy29-comp">
 <div class="comp-grid fy-grid">
 <div class="comp-column">
-<div class="comp-title"><h2>FY29 Weekly Compensation as of <span class="fy29-start-date">July 1, 2028</span></h2><span class="step-badge">Step <span class="fy29-start-step">—</span></span></div>
+<div class="comp-title"><h2>FY29 Weekly Compensation as of <span class="fy29-start-date">July 1, 2028</span></h2><span class="step-badge"><span class="fy29-start-step">—</span></span></div>
 <div class="line"><span>Base Pay</span><span id="fy29Base">$ —</span></div>
 <div class="line"><span><span class="desktop-comp-label">ProBoard Certifications</span><span class="mobile-comp-label">ProBoard Certs</span></span><span id="fy29CertPay">$0.00</span></div>
 <div class="line"><span>EMT Pay</span><span id="fy29Emt">$0.00</span></div>
@@ -528,7 +563,7 @@ h1{
 <div class="line increase-line"><span>Increase from Previous FY</span><span id="fy29WeeklyIncrease">—%</span></div>
 </div>
 <div class="comp-column">
-<div class="comp-title"><h2>FY29 Weekly Compensation as of <span class="fy29-post-date">—</span></h2><span class="step-badge">Step <span class="fy29-post-step">—</span></span></div>
+<div class="comp-title"><h2>FY29 Weekly Compensation as of <span class="fy29-post-date">—</span></h2><span class="step-badge"><span class="fy29-post-step">—</span></span></div>
 <div class="line"><span>Base Pay</span><span id="fy29PostBase">$ —</span></div>
 <div class="line"><span><span class="desktop-comp-label">ProBoard Certifications</span><span class="mobile-comp-label">ProBoard Certs</span></span><span id="fy29PostCert">$0.00</span></div>
 <div class="line"><span>EMT Pay</span><span id="fy29PostEmt">$0.00</span></div>
@@ -568,7 +603,7 @@ h1{
 <div class="comp fy26-comp">
 <div class="comp-grid fy-grid">
 <div class="comp-column">
-<div class="comp-title"><h2>FY26 Weekly Compensation as of <span class="fy26-start-date">July 1, 2025</span></h2><span class="step-badge">Step <span class="fy26-start-step">—</span></span></div>
+<div class="comp-title"><h2>FY26 Weekly Compensation as of <span class="fy26-start-date">July 1, 2025</span></h2><span class="step-badge"><span class="fy26-start-step">—</span></span></div>
 <div class="line"><span>Base Pay</span><span id="fy26Base">$ —</span></div>
 <div class="line"><span><span class="desktop-comp-label">ProBoard Certifications</span><span class="mobile-comp-label">ProBoard Certs</span></span><span id="fy26CertPay">$0.00</span></div>
 <div class="line"><span>EMT Pay</span><span id="fy26Emt">$0.00</span></div>
@@ -581,7 +616,7 @@ h1{
 <div class="line total-line"><span>Total Weekly Pay</span><span id="fy26WeeklyTotal">$ —</span></div>
 </div>
 <div class="comp-column">
-<div class="comp-title"><h2>FY26 Weekly Compensation as of <span class="fy26-post-date">—</span></h2><span class="step-badge">Step <span class="fy26-post-step">—</span></span></div>
+<div class="comp-title"><h2>FY26 Weekly Compensation as of <span class="fy26-post-date">—</span></h2><span class="step-badge"><span class="fy26-post-step">—</span></span></div>
 <div class="line"><span>Base Pay</span><span id="fy26PostBase">$ —</span></div>
 <div class="line"><span><span class="desktop-comp-label">ProBoard Certifications</span><span class="mobile-comp-label">ProBoard Certs</span></span><span id="fy26PostCert">$0.00</span></div>
 <div class="line"><span>EMT Pay</span><span id="fy26PostEmt">$0.00</span></div>
@@ -693,20 +728,22 @@ function dollarChange(cur,prev){
  if(!Number.isFinite(cur)||!Number.isFinite(prev))return "—";
  const diff=cur-prev;
  const sign=diff>0?"+":diff<0?"-":"";
- return `${sign}$${Math.abs(diff).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2})}/week`;
+ return `${sign}$${Math.abs(diff).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2})}`;
 }
 function pctChange(cur,prev){
  if(!Number.isFinite(cur)||!Number.isFinite(prev)||prev===0)return "—";
  return `${(((cur-prev)/prev)*100).toFixed(2)}%`;
 }
 function displayDate(d){return d.toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"});}
-function selectedDate(){
- const m=+document.getElementById("hireMonth").value,d=+document.getElementById("hireDay").value,y=+document.getElementById("hireYear").value;
+function selectedDateFrom(prefix){
+ const m=+document.getElementById(prefix+"Month").value,d=+document.getElementById(prefix+"Day").value,y=+document.getElementById(prefix+"Year").value;
  if(!m||!d||!y)return null;
  const x=new Date(y,m-1,d);
  if(x.getFullYear()!==y||x.getMonth()!==m-1||x.getDate()!==d)return null;
  return x;
 }
+function selectedDate(){return selectedDateFrom("hire");}
+function selectedPromotionDate(){return selectedDateFrom("promotion");}
 function ids(fy){
  const p=`fy${fy}`;
  if(fy===26)return {
@@ -726,31 +763,97 @@ function ids(fy){
  };
 }
 const fyResults={};
-function calcFY(fy,hire){
+
+function setMiddleColumnVisibility(fy,show){
+ const section=document.querySelector(`.fy${fy}-comp`);
+ if(!section)return;
+ section.classList.toggle("fy-two-columns",!show);
+}
+
+function calcFY(fy,hire,promotion){
  const I=ids(fy), chart=payCharts[fy];
  const startYear=2000+fy-1, fyStart=new Date(startYear,6,1), end=new Date(startYear+1,5,30);
- const start=(hire>fyStart)?hire:fyStart;
  const isOfficer=(rank==="Lieutenant"||rank==="Deputy Chief");
  const isFY26=(fy===26);
- const startStep=isFY26?stepForFY26(rank,yearsAsOf(hire,start)):(isOfficer?officerStepAsOf(start):stepFor(rank,yearsAsOf(hire,start)));
- const ann=isFY26?anniversaryInFY(hire,start,end):(isOfficer?null:anniversaryInFY(hire,start,end));
- const annStep=ann?(isFY26?stepForFY26(rank,yearsAsOf(hire,ann)):stepFor(rank,yearsAsOf(hire,ann))):startStep;
- const postStep=isFY26?((ann&&annStep!==startStep)?annStep:startStep):(isOfficer?startStep:((ann&&annStep!==startStep)?annStep:startStep));
+ const promotionInFY=isOfficer&&promotion&&promotion>=fyStart&&promotion<=end;
+ const beforePromotion=isOfficer&&promotion&&promotion>fyStart;
+ const start=(isOfficer?fyStart:((hire>fyStart)?hire:fyStart));
+
+ let startRank=rank,postRank=rank,startStep,postStep,ann=null,annStep=null;
+ if(isFY26&&promotionInFY){
+   // FY26 promotion transition: LT comes from FF Step 4; DC comes from LT Step 4.
+   startRank=(rank==="Lieutenant")?"Firefighter":"Lieutenant";
+   startStep=4;
+   postRank=rank;
+   postStep=3;
+   ann=promotion;annStep=postStep;
+ }else if(!isFY26&&promotionInFY){
+   // FY27+: use prior rank through the promotion date, then selected officer rank Step 1.
+   postRank=rank;postStep=1;ann=promotion;annStep=1;
+   if(rank==="Lieutenant"){
+     startRank="Firefighter";
+     startStep=stepFor("Firefighter",yearsAsOf(hire,fyStart));
+   }else{
+     startRank="Lieutenant";
+     // Deputy Chief promoted after July 1, 2026: assume LT Step 1 on 7/1/26,
+     // then advance one LT step each July 1 until the DC promotion.
+     startStep=Math.min(6,1+(fy-27));
+   }
+ }else if(isOfficer&&promotion&&promotion>end){
+   // Entire FY occurs before the selected promotion, so calculate the employee
+   // in the prior rank using the pay/step rules for THIS fiscal year.
+   if(rank==="Lieutenant"){
+     startRank=postRank="Firefighter";
+     startStep=postStep=isFY26
+       ? stepForFY26("Firefighter",yearsAsOf(hire,fyStart))
+       : stepFor("Firefighter",yearsAsOf(hire,fyStart));
+   }else{
+     startRank=postRank="Lieutenant";
+     if(isFY26){
+       // Before a later Deputy Chief promotion, FY26 Lieutenant status uses
+       // the FY26 Lieutenant step schedule.
+       startStep=postStep=stepForFY26("Lieutenant",yearsAsOf(hire,fyStart));
+     }else{
+       // From 7/1/26 forward, assume Lieutenant Step 1, advancing each July 1.
+       startStep=postStep=Math.min(6,1+(fy-27));
+     }
+   }
+ }else if(isOfficer){
+   // Promotion occurred before this FY. Officers start Step 1 on their first July 1
+   // following promotion, then advance one step each July 1, capped at Step 6.
+   const firstOfficerFY=Math.max(27,promotion.getFullYear()+(promotion.getMonth()>=6?1:0)-1999);
+   const officerStep=Math.min(6,Math.max(1,fy-firstOfficerFY+1));
+   startStep=postStep=officerStep;
+ }else{
+   // Firefighters use the separate 4-step FY26 schedule in FY26,
+   // and the standard 9-step schedule beginning in FY27.
+   startStep=isFY26?stepForFY26(rank,yearsAsOf(hire,start)):stepFor(rank,yearsAsOf(hire,start));
+   ann=anniversaryInFY(hire,start,end);
+   annStep=ann
+     ?(isFY26?stepForFY26(rank,yearsAsOf(hire,ann)):stepFor(rank,yearsAsOf(hire,ann)))
+     :startStep;
+   postStep=(ann&&annStep!==startStep)?annStep:startStep;
+ }
+
+ const changesStepThisFY=promotionInFY||(Number.isFinite(startStep)&&Number.isFinite(postStep)&&postStep!==startStep);
+ setMiddleColumnVisibility(fy,changesStepThisFY);
  const longevityStartAnnual=isFY26?fy26LongevityAnnual(yearsAsOf(hire,start)):0;
  const longevityAnnAnnual=(isFY26&&ann)?fy26LongevityAnnual(yearsAsOf(hire,ann)):longevityStartAnnual;
  const longevityChanges=isFY26&&ann&&longevityAnnAnnual!==longevityStartAnnual;
- const actualStepDate=(ann&&((annStep!==startStep)||longevityChanges))?ann:null;
+ const actualStepDate=promotionInFY?promotion:((ann&&((annStep!==startStep)||longevityChanges))?ann:null);
  document.querySelectorAll(`.fy${fy}-start-date`).forEach(e=>e.textContent=displayDate(start));
  document.querySelectorAll(`.fy${fy}-post-date`).forEach(e=>{
-   if(isOfficer && !isFY26)e.textContent="No mid-year step increase";
-   else e.textContent=actualStepDate?displayDate(actualStepDate):"No step increase this FY";
+   if(actualStepDate)e.textContent=displayDate(actualStepDate);
+   else if(isOfficer)e.textContent="No mid-year step increase";
+   else e.textContent="No step increase this FY";
  });
- const firePreventionMultiplier=(firePrevention==="Yes"&&fy!==26&&rank==="Lieutenant")?1.15:
-   (firePrevention==="Yes"&&rank==="Deputy Chief")?1.10:1;
- const fy26FirePreventionFixedBase=(firePrevention==="Yes"&&fy===26&&rank==="Lieutenant")?1813.16:
-   (firePrevention==="Yes"&&fy===26&&rank==="Deputy Chief")?2128.48:null;
- const startBase=fy26FirePreventionFixedBase??(chart?.[rank]?.[startStep]*firePreventionMultiplier),
-       postBase=fy26FirePreventionFixedBase??(chart?.[rank]?.[postStep]*firePreventionMultiplier);
+
+ const multiplierFor=(r)=>(firePrevention==="Yes"&&fy!==26&&r==="Lieutenant")?1.15:
+   (firePrevention==="Yes"&&r==="Deputy Chief")?1.10:1;
+ const fy26FixedFor=(r)=>(firePrevention==="Yes"&&fy===26&&r==="Lieutenant")?1813.16:
+   (firePrevention==="Yes"&&fy===26&&r==="Deputy Chief")?2128.48:null;
+ const startBase=fy26FixedFor(startRank)??(chart?.[startRank]?.[startStep]*multiplierFor(startRank));
+ const postBase=fy26FixedFor(postRank)??(chart?.[postRank]?.[postStep]*multiplierFor(postRank));
  if(!Number.isFinite(startBase)||!Number.isFinite(postBase)){clearFY(fy);return;}
  const lt1=chart.Lieutenant[1],lt6=chart.Lieutenant[6];
  // FY26 EMT Pay is always 8% of FY26 Lieutenant Step 4 for every employee.
@@ -771,10 +874,10 @@ function calcFY(fy,hire){
  const fy26NightRates={Firefighter:19.19,Lieutenant:20.42,"Deputy Chief":21.65};
  // All FYs: round each weekly component to displayed cents before annualizing.
  const roundCents=v=>Math.round((v+Number.EPSILON)*100)/100;
- const weekly=(base,longevityAnnual=0)=>{
-   const night=(firePrevention==="Yes"&&(rank==="Lieutenant"||rank==="Deputy Chief"))
+ const weekly=(base,longevityAnnual=0,segmentRank=rank)=>{
+   const night=(firePrevention==="Yes"&&(segmentRank==="Lieutenant"||segmentRank==="Deputy Chief"))
     ? 0
-    : ((fy===26)?fy26NightRates[rank]:base*.02);
+    : ((fy===26)?fy26NightRates[segmentRank]:base*.02);
    const tech=(fy===26)?0:base*.01;
    const longevity=(fy===26)?longevityAnnual/52:0;
    const w={
@@ -790,9 +893,11 @@ function calcFY(fy,hire){
    w.total=roundCents(w.base+w.cert+w.emt+w.night+w.tech+w.edu+w.emsCoor);
    return w;
  };
- const A=weekly(startBase,longevityStartAnnual),B=weekly(postBase,longevityAnnAnnual);
- document.querySelectorAll(`.fy${fy}-start-step`).forEach(e=>e.textContent=startStep);
- document.querySelectorAll(`.fy${fy}-post-step`).forEach(e=>e.textContent=postStep);
+ const A=weekly(startBase,longevityStartAnnual,startRank),
+       B=weekly(postBase,longevityAnnAnnual,postRank);
+ const stepRankPrefix=r=>r==="Firefighter"?"FF":r==="Lieutenant"?"LT":r==="Deputy Chief"?"DC":"";
+ document.querySelectorAll(`.fy${fy}-start-step`).forEach(e=>e.textContent=`${stepRankPrefix(startRank)}-Step ${startStep}`);
+ document.querySelectorAll(`.fy${fy}-post-step`).forEach(e=>e.textContent=`${stepRankPrefix(postRank)}-Step ${postStep}`);
  setText(I.sb,money(A.base));setText(I.sc,money(A.cert));setText(I.se,money(A.emt));setText(I.sn,money(A.night));setText(I.st,money(A.tech));setText(I.sd,money(A.edu));setText(I.sx,money(A.emsCoor));setText(I.sw,money(A.total));
  setText(I.pb,money(B.base));setText(I.pc,money(B.cert));setText(I.pe,money(B.emt));setText(I.pn,money(B.night));setText(I.pt,money(B.tech));setText(I.pd,money(B.edu));setText(I.px,money(B.emsCoor));setText(I.pw,money(B.total));
 
@@ -816,7 +921,7 @@ function calcFY(fy,hire){
  fyResults[fy]={startTotal:A.total,postTotal:B.total};
 
  // Exact day-level proration. New step takes effect on the anniversary date.
- const change=(ann && ((postStep!==startStep)||longevityChanges))?ann:null;
+ const change=(ann && (promotionInFY||(postStep!==startStep)||longevityChanges))?ann:null;
  const afterEnd=new Date(end.getFullYear(),end.getMonth(),end.getDate()+1);
  const d1=change?daysBetween(start,change):daysBetween(start,afterEnd);
  const d2=change?daysBetween(change,afterEnd):0;
@@ -835,7 +940,13 @@ function calcFY(fy,hire){
  const annualEmt=weightedAnnual(A.emt,B.emt);
  const annualNight=weightedAnnual(A.night,B.night);
  const annualTech=weightedAnnual(A.tech,B.tech);
- const annualLongevity=weightedAnnual(A.longevity,B.longevity);
+ // FY26 longevity is an exact annual stipend, not a rounded weekly amount.
+ // Prorate the exact annual rates only when eligibility changes during FY26
+ // or the employee was hired after the fiscal year began.
+ const fullFYDays=daysBetween(fyStart,afterEnd);
+ const annualLongevity=isFY26
+   ? (longevityStartAnnual*d1+longevityAnnAnnual*d2)/fullFYDays
+   : weightedAnnual(A.longevity,B.longevity);
  const annualEdu=weightedAnnual(A.edu,B.edu);
   const annualEmsCoor=weightedAnnual(A.emsCoor,B.emsCoor);
  // ProBoard is an established annual stipend and is not a weekly rate multiplied by the annualization factor.
@@ -854,7 +965,7 @@ function calcFY(fy,hire){
  const fullFYAnnualEmt=partialFirstFY?weightedAnnual(A.emt,B.emt)/employedFYFraction:annualEmt;
  const fullFYAnnualNight=partialFirstFY?weightedAnnual(A.night,B.night)/employedFYFraction:annualNight;
  const fullFYAnnualTech=partialFirstFY?weightedAnnual(A.tech,B.tech)/employedFYFraction:annualTech;
- const fullFYAnnualLongevity=partialFirstFY?weightedAnnual(A.longevity,B.longevity)/employedFYFraction:annualLongevity;
+ const fullFYAnnualLongevity=partialFirstFY?annualLongevity/employedFYFraction:annualLongevity;
  const fullFYAnnualEdu=partialFirstFY?weightedAnnual(A.edu,B.edu)/employedFYFraction:annualEdu;
  const fullFYAnnualEmsCoor=partialFirstFY?weightedAnnual(A.emsCoor,B.emsCoor)/employedFYFraction:annualEmsCoor;
  const fullFYAnnualCert=partialFirstFY?cert*275:annualCert;
@@ -882,6 +993,7 @@ function calcFY(fy,hire){
  fyResults[fy].comparisonAnnualTotal=comparisonAnnualTotal;
 }
 function clearFY(fy){
+ setMiddleColumnVisibility(fy,false);
  document.querySelectorAll(`.fy${fy}-start-step,.fy${fy}-post-step`).forEach(e=>e.textContent="—");
  const I=ids(fy);
  ["sb","sn","st","sw","pb","pn","pt","pw","ab","an","at","ah","aa"].forEach(k=>setText(I[k],"$ —"));
@@ -951,21 +1063,25 @@ function update(){
  enforceFirePreventionEligibility();
  Object.keys(fyResults).forEach(k=>delete fyResults[k]);
  document.querySelectorAll(".ems-coor-line").forEach(el=>el.style.display=(emsCoordinator==="Yes"?"":"none"));
- const hire=selectedDate(),helper=document.getElementById("helper");
- helper.textContent="";
+ const hire=selectedDate(),promotion=selectedPromotionDate(),helper=document.getElementById("helper"),promotionHelper=document.getElementById("promotionHelper");
+ helper.textContent="";promotionHelper.textContent="";
+ const isOfficerRank=(rank==="Lieutenant"||rank==="Deputy Chief");
+ document.getElementById("promotionDateRow").style.display=isOfficerRank?"block":"none";
  const fy26StartDate=new Date(2025,6,1);
  document.querySelectorAll(".fy27-previous-annual-line").forEach(el=>{
    el.style.display=(hire&&hire>fy26StartDate)?"none":"";
  });
  if(hire && hire>new Date()){helper.textContent="Date cannot be in the future.";}
- const current=(hire&&rank&&hire<=new Date())
-   ?((rank==="Lieutenant"||rank==="Deputy Chief")?officerStepAsOf(new Date()):stepFor(rank,yearsAsOf(hire,new Date())))
+ if(promotion && promotion>new Date()){promotionHelper.textContent="Date cannot be in the future.";}
+ if(hire&&promotion&&promotion<hire){promotionHelper.textContent="Promotion date cannot be before hire date.";}
+ const current=(hire&&rank&&hire<=new Date()&&(!isOfficerRank||promotion))
+   ?(isOfficerRank?officerStepAsOf(new Date()):stepFor(rank,yearsAsOf(hire,new Date())))
    :null;
  setText("stepValue",current?`Step ${current}`:"—");
- updateStepStatus(hire,current);
+ updateStepStatus(isOfficerRank?(promotion||hire):hire,current);
  [26,27,28,29].forEach(fy=>{
    const fyEnd=new Date(2000+fy,5,30);
-   if(hire&&rank&&hire<=fyEnd)calcFY(fy,hire); else clearFY(fy);
+   if(hire&&rank&&hire<=fyEnd&&(!isOfficerRank||promotion))calcFY(fy,hire,promotion); else clearFY(fy);
  });
  updateTotalContractIncrease();
 }
@@ -980,11 +1096,12 @@ exclusive("certs","cert",v=>cert=Number(v));
 exclusive("degrees","degree",v=>degree=v);
 const monthNames=["January","February","March","April","May","June","July","August","September","October","November","December"];
 const monthSel=document.getElementById("hireMonth"),daySel=document.getElementById("hireDay"),yearSel=document.getElementById("hireYear");
-monthNames.forEach((name,i)=>monthSel.add(new Option(name,i+1)));
-for(let d=1;d<=31;d++)daySel.add(new Option(d,d));
+const promotionMonthSel=document.getElementById("promotionMonth"),promotionDaySel=document.getElementById("promotionDay"),promotionYearSel=document.getElementById("promotionYear");
+[monthSel,promotionMonthSel].forEach(sel=>monthNames.forEach((name,i)=>sel.add(new Option(name,i+1))));
+[daySel,promotionDaySel].forEach(sel=>{for(let d=1;d<=31;d++)sel.add(new Option(d,d));});
 const currentYear=new Date().getFullYear();
-for(let y=currentYear;y>=1988;y--)yearSel.add(new Option(y,y));
-[monthSel,daySel,yearSel].forEach(el=>el.addEventListener("change",update));
+[yearSel,promotionYearSel].forEach(sel=>{for(let y=currentYear;y>=1988;y--)sel.add(new Option(y,y));});
+[monthSel,daySel,yearSel,promotionMonthSel,promotionDaySel,promotionYearSel].forEach(el=>el.addEventListener("change",update));
 const currentStepBox=document.getElementById("step");
 const stepDateBubble=document.getElementById("stepDateBubble");
 function toggleStepBubble(force){
@@ -1096,11 +1213,16 @@ document.querySelectorAll('.special-role-buttons button').forEach(btn=>{
  });
 
  function dateComplete(){
-   return document.getElementById("hireMonth").value &&
+   const hireComplete=document.getElementById("hireMonth").value &&
           document.getElementById("hireDay").value &&
           document.getElementById("hireYear").value;
+   const officer=(rank==="Lieutenant"||rank==="Deputy Chief");
+   const promotionComplete=document.getElementById("promotionMonth").value &&
+          document.getElementById("promotionDay").value &&
+          document.getElementById("promotionYear").value;
+   return hireComplete && (!officer||promotionComplete);
  }
- ["hireMonth","hireDay","hireYear"].forEach(id=>{
+ ["hireMonth","hireDay","hireYear","promotionMonth","promotionDay","promotionYear"].forEach(id=>{
    document.getElementById(id).addEventListener("change",()=>{
      if(dateComplete() && !results.classList.contains("active")) setTimeout(()=>showStep(2),0);
    });
