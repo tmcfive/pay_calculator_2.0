@@ -2127,6 +2127,63 @@ input:focus{
   }
 }
 
+
+/* Step-increase callout in FY27-FY29 summary headers. */
+.fy-summary-tab{
+  position:relative !important;
+}
+.fy-step-increase-notice{
+  display:none;
+  position:absolute;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%);
+  font-style:italic;
+  font-weight:700;
+  white-space:nowrap;
+  pointer-events:none;
+}
+.fy-step-increase-notice.visible{
+  display:block;
+}
+
+/* On mobile, place each crest in the actual midpoint between the title text
+   edge and the calculator/page border, rather than merely using equal grid columns. */
+@media(max-width:600px){
+  .calculator-title-row{
+    position:relative !important;
+    display:block !important;
+    width:100% !important;
+    padding:0 !important;
+  }
+  .calculator-title-row h1{
+    width:max-content !important;
+    max-width:58% !important;
+    margin:0 auto !important;
+    text-align:center !important;
+  }
+  .calculator-title-logo{
+    position:absolute !important;
+    top:50% !important;
+    width:48px !important;
+    height:48px !important;
+    transform:translate(-50%,-50%) !important;
+  }
+  .calculator-title-logo:first-child{
+    left:10.5% !important;
+  }
+  .calculator-title-logo:last-child{
+    left:89.5% !important;
+  }
+}
+
+
+@media(max-width:600px){
+  .calculator-title-row{
+    margin-bottom:30px !important;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -2224,17 +2281,17 @@ input:focus{
 
 <div id="fySummaryTabs" class="fy-summary-tabs" aria-label="Fiscal year compensation summaries">
   <button type="button" class="fy-summary-tab" data-fy-summary="27" aria-expanded="false">
-    <span class="fy-summary-year">FY27</span>
+    <span class="fy-summary-year">FY27</span><span class="fy-step-increase-notice" aria-hidden="true">Step Increase!</span>
     <span class="fy-summary-weekly"><span class="summary-label">Weekly</span><strong id="fy27SummaryWeekly">—</strong><small id="fy27SummaryWeeklyIncrease" class="summary-change">—</small></span>
     <span class="fy-summary-annual"><span class="summary-label">Annual</span><strong id="fy27SummaryAnnual">—</strong><small id="fy27SummaryAnnualIncrease" class="summary-change">—</small></span>
   </button>
   <button type="button" class="fy-summary-tab" data-fy-summary="28" aria-expanded="false">
-    <span class="fy-summary-year">FY28</span>
+    <span class="fy-summary-year">FY28</span><span class="fy-step-increase-notice" aria-hidden="true">Step Increase!</span>
     <span class="fy-summary-weekly"><span class="summary-label">Weekly</span><strong id="fy28SummaryWeekly">—</strong><small id="fy28SummaryWeeklyIncrease" class="summary-change">—</small></span>
     <span class="fy-summary-annual"><span class="summary-label">Annual</span><strong id="fy28SummaryAnnual">—</strong><small id="fy28SummaryAnnualIncrease" class="summary-change">—</small></span>
   </button>
   <button type="button" class="fy-summary-tab" data-fy-summary="29" aria-expanded="false">
-    <span class="fy-summary-year">FY29</span>
+    <span class="fy-summary-year">FY29</span><span class="fy-step-increase-notice" aria-hidden="true">Step Increase!</span>
     <span class="fy-summary-weekly"><span class="summary-label">Weekly</span><strong id="fy29SummaryWeekly">—</strong><small id="fy29SummaryWeeklyIncrease" class="summary-change">—</small></span>
     <span class="fy-summary-annual"><span class="summary-label">Annual</span><strong id="fy29SummaryAnnual">—</strong><small id="fy29SummaryAnnualIncrease" class="summary-change">—</small></span>
   </button>
@@ -2640,6 +2697,10 @@ function calcFY(fy,hire,promotion){
 
  const changesStepThisFY=promotionInFY||(Number.isFinite(startStep)&&Number.isFinite(postStep)&&postStep!==startStep);
  setMiddleColumnVisibility(fy,changesStepThisFY);
+ const stepIncreaseNotice=document.querySelector(`.fy-summary-tab[data-fy-summary="${fy}"] .fy-step-increase-notice`);
+ if(stepIncreaseNotice){
+   stepIncreaseNotice.classList.toggle("visible",Boolean(changesStepThisFY));
+ }
  const longevityStartAnnual=isFY26?fy26LongevityAnnual(yearsAsOf(hire,start)):0;
  const longevityAnnAnnual=(isFY26&&ann)?fy26LongevityAnnual(yearsAsOf(hire,ann)):longevityStartAnnual;
  const longevityChanges=isFY26&&ann&&longevityAnnAnnual!==longevityStartAnnual;
@@ -3300,4 +3361,26 @@ const show=document.getElementById("wizardShowResults");
   });
 })();
 </script>
+
+<script>
+(function(){
+  function centerMobileHeaderLogos(){
+    if(!window.matchMedia("(max-width:600px)").matches) return;
+    const row=document.querySelector(".calculator-title-row");
+    const title=row?.querySelector("h1");
+    const logos=row?.querySelectorAll(".calculator-title-logo");
+    if(!row||!title||!logos||logos.length!==2) return;
+    const rr=row.getBoundingClientRect();
+    const tr=title.getBoundingClientRect();
+    const leftCenter=((rr.left+tr.left)/2)-rr.left;
+    const rightCenter=((tr.right+rr.right)/2)-rr.left;
+    logos[0].style.left=`${leftCenter}px`;
+    logos[1].style.left=`${rightCenter}px`;
+  }
+  window.addEventListener("resize",centerMobileHeaderLogos);
+  requestAnimationFrame(centerMobileHeaderLogos);
+  setTimeout(centerMobileHeaderLogos,100);
+})();
+</script>
+
 </body></html>
