@@ -1105,6 +1105,31 @@ h1{
   }
 }
 
+
+/* Mobile-only targeted date spacing refinements. Preserve all other spacing. */
+@media(max-width:600px){
+  /* Lieutenant / Deputy Chief:
+     reduce the gap above Date of Promotion by 90%.
+     Existing promotion row margin is 16px -> 1.6px. */
+  #wizardDate:has(#promotionDateRow:not([style*="display:none"])) #promotionDateRow{
+    margin-top:1.6px !important;
+  }
+
+  /* Lieutenant / Deputy Chief:
+     reduce the gap between Promotion Month row and Current Step by 50%.
+     Current Step's normal-flow top margin is 4px -> 2px. */
+  #wizardDate:has(#promotionDateRow:not([style*="display:none"])) .step{
+    margin-top:2px !important;
+  }
+
+  /* Firefighter:
+     with Promotion hidden, reduce Hire Month row -> Current Step gap by 90%.
+     Current Step's normal-flow top margin is 4px -> 0.4px. */
+  #wizardDate:has(#promotionDateRow[style*="display:none"]) .step{
+    margin-top:0.4px !important;
+  }
+}
+
 </style>
 </head>
 <body>
