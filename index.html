@@ -993,6 +993,63 @@ h1{
   }
 }
 
+
+/* Mobile Current Step final placement.
+   Put the whole Current Step unit immediately below the relevant Month select.
+   Keep a small non-overlapping gap and preserve the section's overall bottom
+   boundary so ProBoard Certifications does not move upward. */
+@media(max-width:600px){
+  #wizardDate .row{
+    position:relative !important;
+  }
+
+  #wizardDate .step{
+    position:absolute !important;
+    left:0 !important;
+    width:calc((100% - 16px) / 3) !important;
+    margin:0 !important;
+    padding:0 !important;
+    transform:none !important;
+  }
+
+  #wizardDate .step label{
+    display:block !important;
+    margin:0 0 2px 0 !important;
+    padding:0 !important;
+    line-height:1.1 !important;
+  }
+
+  #wizardDate .stepbox{
+    width:100% !important;
+    margin:0 !important;
+    box-sizing:border-box !important;
+  }
+
+  /* Firefighter: immediately below Date of Hire Month. */
+  #wizardDate .step{
+    top:118px !important;
+  }
+
+  /* Lieutenant / Deputy Chief: immediately below Date of Promotion Month.
+     The screenshot shows the promotion select bottom at about this point;
+     this leaves a small clear gap before "Current Step", with no overlap. */
+  #wizardDate:has(#promotionDateRow:not([style*="display:none"])) .step{
+    top:232px !important;
+  }
+
+  /* Keep the following wizard section at the same overall vertical position.
+     Space is retained below Current Step rather than between Month and Current Step. */
+  #wizardDate{
+    min-height:360px !important;
+    padding-bottom:0 !important;
+    box-sizing:border-box !important;
+  }
+  #wizardDate:has(#promotionDateRow:not([style*="display:none"])){
+    min-height:500px !important;
+    padding-bottom:0 !important;
+  }
+}
+
 </style>
 </head>
 <body>
