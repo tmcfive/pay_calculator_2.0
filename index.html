@@ -1953,6 +1953,14 @@ input:focus{
   z-index:21 !important;
 }
 
+
+/* Final Qualifications toggle:
+   no separate Close tab; the lower button toggles its own label.
+   Divider remains an overlay and is positioned by live visible geometry. */
+#qualificationsCloseTab{
+  display:none !important;
+}
+
 </style>
 </head>
 <body>
@@ -2914,52 +2922,27 @@ function showStep(n){
    const bubblesBottom=Math.max(...roleButtons.map(el=>el.getBoundingClientRect().bottom));
    const fyTop=fy27.getBoundingClientRect().top;
    const resultsTop=resultsBox.getBoundingClientRect().top;
+   const dividerHeight=divider.getBoundingClientRect().height || 5;
    const midpoint=(bubblesBottom+fyTop)/2;
-   const close=document.getElementById("qualificationsCloseTab");
 
-   /* Keep selections exactly where they are. Put Close beneath the selection
-      bubbles, then lower the divider so its top edge is exactly 20px below
-      the Close button's bottom edge. */
-   if(close){
-     const panelTop=panel.getBoundingClientRect().top;
-     close.style.top=`${bubblesBottom-panelTop+10}px`;
-     const closeHeight=close.getBoundingClientRect().height;
-     const closeBottom=bubblesBottom+10+closeHeight;
-     divider.style.top=`${closeBottom+20-resultsTop}px`;
-   }else{
-     divider.style.top=`${midpoint-resultsTop-2.5}px`;
-   }
+   /* Center the divider itself on the exact visible midpoint. */
+   divider.style.top=`${midpoint-resultsTop-(dividerHeight/2)}px`;
    divider.classList.add("visible");
  }
-
- const qualificationsCloseTab=document.createElement("button");
- qualificationsCloseTab.type="button";
- qualificationsCloseTab.id="qualificationsCloseTab";
- qualificationsCloseTab.textContent="Close";
- document.getElementById("resultsSelections").appendChild(qualificationsCloseTab);
 
  const qualificationsTab=document.getElementById("qualificationsTab");
  qualificationsTab.addEventListener("click",()=>{
    const panel=document.getElementById("resultsSelections");
    const isOpen=panel.classList.toggle("open");
-   if(isOpen){
-     panel.appendChild(qualificationsCloseTab);
-   }
+
    qualificationsTab.classList.toggle("open",isOpen);
    qualificationsTab.setAttribute("aria-expanded",isOpen?"true":"false");
+   qualificationsTab.textContent=isOpen?"Close Qualifications":"View Qualifications";
    if(isOpen){
      requestAnimationFrame(()=>requestAnimationFrame(positionQualificationsGapDivider));
    }else{
      document.getElementById("qualificationsGapDivider")?.classList.remove("visible");
    }
- });
-
- qualificationsCloseTab.addEventListener("click",()=>{
-   const panel=document.getElementById("resultsSelections");
-   panel.classList.remove("open");
-   qualificationsTab.classList.remove("open");
-   qualificationsTab.setAttribute("aria-expanded","false");
-   document.getElementById("qualificationsGapDivider")?.classList.remove("visible");
  });
 
  window.addEventListener("resize",()=>{
