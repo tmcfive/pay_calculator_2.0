@@ -236,7 +236,7 @@ h1{
 
 
 
-/* Increase-from-Previous-FY VALUE only, first two (weekly) columns */
+/* Inc.-from-Previous-FY VALUE only, first two (weekly) columns */
 .comp-column:nth-child(1) .increase-line > span:last-child,
 .comp-column:nth-child(2) .increase-line > span:last-child{
   font-size:75% !important;
@@ -1716,6 +1716,31 @@ input:focus{
   }
 }
 
+
+/* Step bubbles:
+   1px gap below the header text, with red border and light-red fill. */
+.comp .fy-grid > .comp-column .comp-title .step-badge{
+  border-color:var(--red-theme) !important;
+  background:#f8e6e8 !important;
+  color:var(--red-theme-dark) !important;
+}
+
+/* Mobile and any statically positioned step badge: exactly 1px below header text. */
+@media(max-width:600px){
+  .comp .fy-grid > .comp-column .comp-title .step-badge{
+    margin-top:1px !important;
+  }
+}
+
+/* In the 3-column desktop layout the left badge is intentionally static;
+   reduce its header-to-bubble gap from 3px to 1px as well. */
+@media(min-width:601px){
+  .fy-summary-tab-wrap > .comp.summary-open:not(.fy-two-columns)
+  .fy-grid > .comp-column:nth-child(1) > .comp-title .step-badge{
+    margin-top:1px !important;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -1813,18 +1838,18 @@ input:focus{
 <div id="fySummaryTabs" class="fy-summary-tabs" aria-label="Fiscal year compensation summaries">
   <button type="button" class="fy-summary-tab" data-fy-summary="27" aria-expanded="false">
     <span class="fy-summary-year">FY27</span>
-    <span class="fy-summary-weekly"><span class="summary-label">Weekly</span><strong id="fy27SummaryWeekly">—</strong><small id="fy27SummaryWeeklyIncrease" class="summary-change">—</small></span>
-    <span class="fy-summary-annual"><span class="summary-label">Annual</span><strong id="fy27SummaryAnnual">—</strong><small id="fy27SummaryAnnualIncrease" class="summary-change">—</small></span>
+    <span class="fy-summary-weekly"><span class="summary-label">Weekly</span><strong id="fy27SummaryWeekly">—</strong><small id="fy27SummaryWeeklyInc." class="summary-change">—</small></span>
+    <span class="fy-summary-annual"><span class="summary-label">Annual</span><strong id="fy27SummaryAnnual">—</strong><small id="fy27SummaryAnnualInc." class="summary-change">—</small></span>
   </button>
   <button type="button" class="fy-summary-tab" data-fy-summary="28" aria-expanded="false">
     <span class="fy-summary-year">FY28</span>
-    <span class="fy-summary-weekly"><span class="summary-label">Weekly</span><strong id="fy28SummaryWeekly">—</strong><small id="fy28SummaryWeeklyIncrease" class="summary-change">—</small></span>
-    <span class="fy-summary-annual"><span class="summary-label">Annual</span><strong id="fy28SummaryAnnual">—</strong><small id="fy28SummaryAnnualIncrease" class="summary-change">—</small></span>
+    <span class="fy-summary-weekly"><span class="summary-label">Weekly</span><strong id="fy28SummaryWeekly">—</strong><small id="fy28SummaryWeeklyInc." class="summary-change">—</small></span>
+    <span class="fy-summary-annual"><span class="summary-label">Annual</span><strong id="fy28SummaryAnnual">—</strong><small id="fy28SummaryAnnualInc." class="summary-change">—</small></span>
   </button>
   <button type="button" class="fy-summary-tab" data-fy-summary="29" aria-expanded="false">
     <span class="fy-summary-year">FY29</span>
-    <span class="fy-summary-weekly"><span class="summary-label">Weekly</span><strong id="fy29SummaryWeekly">—</strong><small id="fy29SummaryWeeklyIncrease" class="summary-change">—</small></span>
-    <span class="fy-summary-annual"><span class="summary-label">Annual</span><strong id="fy29SummaryAnnual">—</strong><small id="fy29SummaryAnnualIncrease" class="summary-change">—</small></span>
+    <span class="fy-summary-weekly"><span class="summary-label">Weekly</span><strong id="fy29SummaryWeekly">—</strong><small id="fy29SummaryWeeklyInc." class="summary-change">—</small></span>
+    <span class="fy-summary-annual"><span class="summary-label">Annual</span><strong id="fy29SummaryAnnual">—</strong><small id="fy29SummaryAnnualInc." class="summary-change">—</small></span>
   </button>
 </div>
 
@@ -1844,7 +1869,7 @@ input:focus{
 <div class="line"><span>Clothing</span><span class="not-weekly"><span class="npw-line1">Not paid</span><span class="npw-line2">weekly</span></span></div>
 <div class="line total-line"><span>Total Weekly Pay</span><span id="weeklyTotal">$ —</span></div>
 <div class="line previous-line"><span>Previous FY Pay</span><span id="previousWeeklyPay">$ —</span></div>
-<div class="line increase-line"><span>Increase from Previous FY</span><span id="weeklyIncrease">—%</span></div>
+<div class="line increase-line"><span>Inc. from Previous FY</span><span id="weeklyInc.">—%</span></div>
 </div>
 <div class="comp-column">
 <div class="comp-title"><h2><span class="desktop-weekly-label">Weekly Compensation as of <span class="fy27-post-date">—</span></span><span class="mobile-weekly-label">Weekly Comp. as of <span class="fy27-post-date">—</span></span></h2><span class="step-badge"><span class="fy27-post-step">—</span></span></div>
@@ -1859,7 +1884,7 @@ input:focus{
 <div class="line"><span>Clothing</span><span class="not-weekly"><span class="npw-line1">Not paid</span><span class="npw-line2">weekly</span></span></div>
 <div class="line total-line"><span>Total Weekly Pay</span><span id="fy27PostTotal">$ —</span></div>
 <div class="line previous-line"><span>Previous FY Pay</span><span id="fy27PostPreviousWeeklyPay">$ —</span></div>
-<div class="line increase-line"><span>Increase from Previous FY</span><span id="fy27PostWeeklyIncrease">—%</span></div>
+<div class="line increase-line"><span>Inc. from Previous FY</span><span id="fy27PostWeeklyInc.">—%</span></div>
 </div>
 <div class="comp-column">
 <div class="comp-title"><h2>Annual Compensation</h2></div>
@@ -1874,7 +1899,7 @@ input:focus{
 <div class="line"><span>Clothing</span><span class="clothing-value">$800.00</span></div>
 <div class="line total-line"><span>Total Annual Pay</span><span id="annualTotal">$ —</span></div>
 <div class="line previous-line fy27-previous-annual-line"><span>Previous FY Annual Pay</span><span id="previousAnnualPay">$ —</span></div>
-<div class="line increase-line"><span>Increase from Previous FY</span><span id="annualIncrease">—%</span></div>
+<div class="line increase-line"><span>Inc. from Previous FY</span><span id="annualInc.">—%</span></div>
 </div>
 </div>
 </div>
@@ -1894,7 +1919,7 @@ input:focus{
 <div class="line"><span>Clothing</span><span class="not-weekly"><span class="npw-line1">Not paid</span><span class="npw-line2">weekly</span></span></div>
 <div class="line total-line"><span>Total Weekly Pay</span><span id="fy28WeeklyTotal">$ —</span></div>
 <div class="line previous-line"><span>Previous FY Pay</span><span id="fy28PreviousWeeklyPay">$ —</span></div>
-<div class="line increase-line"><span>Increase from Previous FY</span><span id="fy28WeeklyIncrease">—%</span></div>
+<div class="line increase-line"><span>Inc. from Previous FY</span><span id="fy28WeeklyInc.">—%</span></div>
 </div>
 <div class="comp-column">
 <div class="comp-title"><h2><span class="desktop-weekly-label">Weekly Compensation as of <span class="fy28-post-date">—</span></span><span class="mobile-weekly-label">Weekly Comp. as of <span class="fy28-post-date">—</span></span></h2><span class="step-badge"><span class="fy28-post-step">—</span></span></div>
@@ -1909,7 +1934,7 @@ input:focus{
 <div class="line"><span>Clothing</span><span class="not-weekly"><span class="npw-line1">Not paid</span><span class="npw-line2">weekly</span></span></div>
 <div class="line total-line"><span>Total Weekly Pay</span><span id="fy28PostTotal">$ —</span></div>
 <div class="line previous-line"><span>Previous FY Pay</span><span id="fy28PostPreviousWeeklyPay">$ —</span></div>
-<div class="line increase-line"><span>Increase from Previous FY</span><span id="fy28PostWeeklyIncrease">—%</span></div>
+<div class="line increase-line"><span>Inc. from Previous FY</span><span id="fy28PostWeeklyInc.">—%</span></div>
 </div>
 <div class="comp-column">
 <div class="comp-title"><h2>Annual Compensation</h2></div>
@@ -1924,7 +1949,7 @@ input:focus{
 <div class="line"><span>Clothing</span><span class="clothing-value">$800.00</span></div>
 <div class="line total-line"><span>Total Annual Pay</span><span id="fy28AnnualTotal">$ —</span></div>
 <div class="line previous-line"><span>Previous FY Annual Pay</span><span id="fy28PreviousAnnualPay">$ —</span></div>
-<div class="line increase-line"><span>Increase from Previous FY</span><span id="fy28AnnualIncrease">—%</span></div>
+<div class="line increase-line"><span>Inc. from Previous FY</span><span id="fy28AnnualInc.">—%</span></div>
 </div>
 </div>
 </div>
@@ -1944,7 +1969,7 @@ input:focus{
 <div class="line"><span>Clothing</span><span class="not-weekly"><span class="npw-line1">Not paid</span><span class="npw-line2">weekly</span></span></div>
 <div class="line total-line"><span>Total Weekly Pay</span><span id="fy29WeeklyTotal">$ —</span></div>
 <div class="line previous-line"><span>Previous FY Pay</span><span id="fy29PreviousWeeklyPay">$ —</span></div>
-<div class="line increase-line"><span>Increase from Previous FY</span><span id="fy29WeeklyIncrease">—%</span></div>
+<div class="line increase-line"><span>Inc. from Previous FY</span><span id="fy29WeeklyInc.">—%</span></div>
 </div>
 <div class="comp-column">
 <div class="comp-title"><h2><span class="desktop-weekly-label">Weekly Compensation as of <span class="fy29-post-date">—</span></span><span class="mobile-weekly-label">Weekly Comp. as of <span class="fy29-post-date">—</span></span></h2><span class="step-badge"><span class="fy29-post-step">—</span></span></div>
@@ -1959,7 +1984,7 @@ input:focus{
 <div class="line"><span>Clothing</span><span class="not-weekly"><span class="npw-line1">Not paid</span><span class="npw-line2">weekly</span></span></div>
 <div class="line total-line"><span>Total Weekly Pay</span><span id="fy29PostTotal">$ —</span></div>
 <div class="line previous-line"><span>Previous FY Pay</span><span id="fy29PostPreviousWeeklyPay">$ —</span></div>
-<div class="line increase-line"><span>Increase from Previous FY</span><span id="fy29PostWeeklyIncrease">—%</span></div>
+<div class="line increase-line"><span>Inc. from Previous FY</span><span id="fy29PostWeeklyInc.">—%</span></div>
 </div>
 <div class="comp-column">
 <div class="comp-title"><h2>Annual Compensation</h2></div>
@@ -1974,13 +1999,13 @@ input:focus{
 <div class="line"><span>Clothing</span><span class="clothing-value">$1,175.00</span></div>
 <div class="line total-line"><span>Total Annual Pay</span><span id="fy29AnnualTotal">$ —</span></div>
 <div class="line previous-line"><span>Previous FY Annual Pay</span><span id="fy29PreviousAnnualPay">$ —</span></div>
-<div class="line increase-line"><span>Increase from Previous FY</span><span id="fy29AnnualIncrease">—%</span></div>
+<div class="line increase-line"><span>Inc. from Previous FY</span><span id="fy29AnnualInc.">—%</span></div>
 </div>
 </div>
 </div>
 <div class="contract-increase-wrap">
   <div class="contract-increase-box">
-    <div class="contract-increase-line"><span>Total Contract Increase</span><span id="totalContractIncrease">—%</span></div>
+    <div class="contract-increase-line"><span>Total Contract Inc.</span><span id="totalContractInc.">—%</span></div>
   </div>
 </div>
 <div class="fy-divider" aria-hidden="true"></div>
@@ -2299,9 +2324,9 @@ function calcFY(fy,hire,promotion){
  // Compare the matching July 1 rate to the prior FY July 1 rate, and the matching
  // post-anniversary rate to the prior FY post-anniversary rate.
  const startPrevId=fy===27?"previousWeeklyPay":`fy${fy}PreviousWeeklyPay`;
- const startIncId=fy===27?"weeklyIncrease":`fy${fy}WeeklyIncrease`;
+ const startIncId=fy===27?"weeklyInc.":`fy${fy}WeeklyInc.`;
  const postPrevId=`fy${fy}PostPreviousWeeklyPay`;
- const postIncId=`fy${fy}PostWeeklyIncrease`;
+ const postIncId=`fy${fy}PostWeeklyInc.`;
  const prev=fyResults[fy-1];
  if(prev){
    setText(startPrevId,money(prev.startTotal));
@@ -2371,7 +2396,7 @@ function calcFY(fy,hire,promotion){
 
  // Annual comparisons: FY28 vs FY27 and FY29 vs FY28.
  const annualPrevId=fy===27?"previousAnnualPay":`fy${fy}PreviousAnnualPay`;
- const annualIncId=fy===27?"annualIncrease":`fy${fy}AnnualIncrease`;
+ const annualIncId=fy===27?"annualInc.":`fy${fy}AnnualInc.`;
  const previousFY=fyResults[fy-1];
  if(previousFY && previousFY.annualTotal!==undefined){
    const comparisonPreviousAnnual=(fy===27 && previousFY.comparisonAnnualTotal!==undefined)
@@ -2394,11 +2419,11 @@ function clearFY(fy){
  if(I.al)setText(I.al,"$0.00");
  ["sc","se","sd","pc","pe","pd","ac","ae","ad"].forEach(k=>setText(I[k],"$0.00"));
  const startPrevId=fy===27?"previousWeeklyPay":`fy${fy}PreviousWeeklyPay`;
- const startIncId=fy===27?"weeklyIncrease":`fy${fy}WeeklyIncrease`;
+ const startIncId=fy===27?"weeklyInc.":`fy${fy}WeeklyInc.`;
  setText(startPrevId,"$ —");setText(startIncId,"—%");
- setText(`fy${fy}PostPreviousWeeklyPay`,"$ —");setText(`fy${fy}PostWeeklyIncrease`,"—%");
+ setText(`fy${fy}PostPreviousWeeklyPay`,"$ —");setText(`fy${fy}PostWeeklyInc.`,"—%");
  const annualPrevId=fy===27?"previousAnnualPay":`fy${fy}PreviousAnnualPay`;
- const annualIncId=fy===27?"annualIncrease":`fy${fy}AnnualIncrease`;
+ const annualIncId=fy===27?"annualInc.":`fy${fy}AnnualInc.`;
  setText(annualPrevId,"$ —");setText(annualIncId,"—%");
  delete fyResults[fy];
 }
@@ -2443,14 +2468,14 @@ function updateStepStatus(hire,current){
 }
 
 
-function updateTotalContractIncrease(){
- const ids=["annualIncrease","fy28AnnualIncrease","fy29AnnualIncrease"];
+function updateTotalContractInc.(){
+ const ids=["annualInc.","fy28AnnualInc.","fy29AnnualInc."];
  const vals=ids.map(id=>{
    const raw=document.getElementById(id)?.textContent?.trim()||"";
    const n=parseFloat(raw.replace("%",""));
    return Number.isFinite(n)?n:null;
  });
- setText("totalContractIncrease",vals.every(v=>v!==null)?`${vals.reduce((a,b)=>a+b,0).toFixed(2)}%`:"—%");
+ setText("totalContractInc.",vals.every(v=>v!==null)?`${vals.reduce((a,b)=>a+b,0).toFixed(2)}%`:"—%");
 }
 
 function update(){
@@ -2477,7 +2502,7 @@ function update(){
    const fyEnd=new Date(2000+fy,5,30);
    if(hire&&rank&&hire<=fyEnd&&(!isOfficerRank||promotion))calcFY(fy,hire,promotion); else clearFY(fy);
  });
- updateTotalContractIncrease();
+ updateTotalContractInc.();
 }
 function exclusive(container,attr,setter){
  document.querySelectorAll(`#${container} button`).forEach(b=>b.onclick=()=>{
@@ -2757,24 +2782,24 @@ function scheduleCompTotalSync(){
     const map={
       26:{weekly:["fy26PostTotal","fy26WeeklyTotal"],annual:"fy26AnnualTotal"},
       27:{weekly:["fy27PostTotal","weeklyTotal"],annual:"annualTotal",
-          weeklyIncrease:["fy27PostWeeklyIncrease","weeklyIncrease"],annualIncrease:"annualIncrease"},
+          weeklyInc.:["fy27PostWeeklyInc.","weeklyInc."],annualInc.:"annualInc."},
       28:{weekly:["fy28PostTotal","fy28WeeklyTotal"],annual:"fy28AnnualTotal",
-          weeklyIncrease:["fy28PostWeeklyIncrease","fy28WeeklyIncrease"],annualIncrease:"fy28AnnualIncrease"},
+          weeklyInc.:["fy28PostWeeklyInc.","fy28WeeklyInc."],annualInc.:"fy28AnnualInc."},
       29:{weekly:["fy29PostTotal","fy29WeeklyTotal"],annual:"fy29AnnualTotal",
-          weeklyIncrease:["fy29PostWeeklyIncrease","fy29WeeklyIncrease"],annualIncrease:"fy29AnnualIncrease"}
+          weeklyInc.:["fy29PostWeeklyInc.","fy29WeeklyInc."],annualInc.:"fy29AnnualInc."}
     };
     Object.entries(map).forEach(([fy,cfg])=>{
       const w=document.getElementById(`fy${fy}SummaryWeekly`);
       const a=document.getElementById(`fy${fy}SummaryAnnual`);
       if(w) w.textContent=firstValue(cfg.weekly);
       if(a) a.textContent=value(cfg.annual);
-      if(cfg.weeklyIncrease){
-        const wi=document.getElementById(`fy${fy}SummaryWeeklyIncrease`);
-        if(wi) wi.textContent=`Increase from Previous FY: ${firstValue(cfg.weeklyIncrease)}`;
+      if(cfg.weeklyInc.){
+        const wi=document.getElementById(`fy${fy}SummaryWeeklyInc.`);
+        if(wi) wi.textContent=`Inc. from Previous FY: ${firstValue(cfg.weeklyInc.)}`;
       }
-      if(cfg.annualIncrease){
-        const ai=document.getElementById(`fy${fy}SummaryAnnualIncrease`);
-        if(ai) ai.textContent=`Increase from Previous FY: ${value(cfg.annualIncrease)}`;
+      if(cfg.annualInc.){
+        const ai=document.getElementById(`fy${fy}SummaryAnnualInc.`);
+        if(ai) ai.textContent=`Inc. from Previous FY: ${value(cfg.annualInc.)}`;
       }
     });
   }
@@ -2836,9 +2861,9 @@ const show=document.getElementById("wizardShowResults");
 
   const watchIds=[
     "fy26WeeklyTotal","fy26PostTotal","fy26AnnualTotal",
-    "weeklyTotal","fy27PostTotal","annualTotal","weeklyIncrease","fy27PostWeeklyIncrease","annualIncrease",
-    "fy28WeeklyTotal","fy28PostTotal","fy28AnnualTotal","fy28WeeklyIncrease","fy28PostWeeklyIncrease","fy28AnnualIncrease",
-    "fy29WeeklyTotal","fy29PostTotal","fy29AnnualTotal","fy29WeeklyIncrease","fy29PostWeeklyIncrease","fy29AnnualIncrease"
+    "weeklyTotal","fy27PostTotal","annualTotal","weeklyInc.","fy27PostWeeklyInc.","annualInc.",
+    "fy28WeeklyTotal","fy28PostTotal","fy28AnnualTotal","fy28WeeklyInc.","fy28PostWeeklyInc.","fy28AnnualInc.",
+    "fy29WeeklyTotal","fy29PostTotal","fy29AnnualTotal","fy29WeeklyInc.","fy29PostWeeklyInc.","fy29AnnualInc."
   ];
   const obs=new MutationObserver(()=>refreshFYSummaries());
   watchIds.forEach(id=>{
