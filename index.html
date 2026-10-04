@@ -1208,6 +1208,20 @@ h1{
   text-transform:none !important;
 }
 
+
+/* Mobile: exact 1px visible gap before Current Step for both rank paths. */
+@media(max-width:600px){
+  /* Firefighter: Date of Hire selectors -> Current Step */
+  #wizardDate:has(#promotionDateRow[style*="display:none"]) .step{
+    margin-top:1px !important;
+  }
+
+  /* Lieutenant / Deputy Chief: Date of Promotion selectors -> Current Step */
+  #wizardDate:has(#promotionDateRow:not([style*="display:none"])) .step{
+    margin-top:1px !important;
+  }
+}
+
 </style>
 </head>
 <body>
