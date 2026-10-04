@@ -1266,6 +1266,67 @@ h1{
   }
 }
 
+
+/* FY summary-tab results view */
+.fy-summary-tabs{
+  display:none;
+  width:100%;
+  margin:10px 0 16px;
+}
+.results.active .fy-summary-tabs{display:block;}
+.fy-summary-tab{
+  width:100%;
+  display:grid;
+  grid-template-columns:minmax(70px,.7fr) minmax(150px,1.3fr) minmax(150px,1.3fr);
+  align-items:center;
+  gap:14px;
+  margin:0 0 8px;
+  padding:14px 16px;
+  border:1px solid #c7d2e3;
+  border-radius:8px;
+  background:#fff;
+  color:inherit;
+  font:inherit;
+  text-align:left;
+  cursor:pointer;
+  box-sizing:border-box;
+}
+.fy-summary-tab:hover,.fy-summary-tab:focus{background:#f5f7fa;}
+.fy-summary-tab.active{
+  border-color:var(--blue,#1f5f99);
+  box-shadow:0 0 0 1px var(--blue,#1f5f99);
+}
+.fy-summary-year{font-weight:800;font-size:18px;}
+.fy-summary-weekly,.fy-summary-annual{
+  display:flex;
+  align-items:baseline;
+  gap:8px;
+}
+.fy-summary-annual{justify-content:flex-end;text-align:right;}
+.fy-summary-tab .summary-label{font-size:12px;color:var(--muted,#667085);font-weight:700;}
+.fy-summary-tab strong{font-size:17px;}
+
+/* FY27–FY29 full breakdowns begin collapsed; clicking a summary line opens one. */
+.results.fy-summary-mode .comp[data-summary-fy="27"],
+.results.fy-summary-mode .comp[data-summary-fy="28"],
+.results.fy-summary-mode .comp[data-summary-fy="29"]{display:none !important;}
+.results.fy-summary-mode .comp[data-summary-fy].summary-open{display:block !important;}
+
+@media(max-width:600px){
+  .fy-summary-tab{
+    grid-template-columns:52px minmax(0,1fr) minmax(0,1fr);
+    gap:8px;
+    padding:12px 9px;
+  }
+  .fy-summary-year{font-size:16px;}
+  .fy-summary-weekly,.fy-summary-annual{
+    display:block;
+  }
+  .fy-summary-annual{text-align:right;}
+  .fy-summary-tab .summary-label{display:block;margin-bottom:2px;font-size:10px;}
+  .fy-summary-tab strong{font-size:14px;}
+}
+
 </style>
 </head>
 <body>
@@ -1359,7 +1420,26 @@ h1{
 
 <div class="wizard-results" id="wizardResults">
 <div id="resultsSelections"></div>
-<div class="comp fy27-comp">
+
+<div id="fySummaryTabs" class="fy-summary-tabs" aria-label="Fiscal year compensation summaries">
+  <button type="button" class="fy-summary-tab" data-fy-summary="27" aria-expanded="false">
+    <span class="fy-summary-year">FY27</span>
+    <span class="fy-summary-weekly"><span class="summary-label">Weekly</span><strong id="fy27SummaryWeekly">—</strong></span>
+    <span class="fy-summary-annual"><span class="summary-label">Annual</span><strong id="fy27SummaryAnnual">—</strong></span>
+  </button>
+  <button type="button" class="fy-summary-tab" data-fy-summary="28" aria-expanded="false">
+    <span class="fy-summary-year">FY28</span>
+    <span class="fy-summary-weekly"><span class="summary-label">Weekly</span><strong id="fy28SummaryWeekly">—</strong></span>
+    <span class="fy-summary-annual"><span class="summary-label">Annual</span><strong id="fy28SummaryAnnual">—</strong></span>
+  </button>
+  <button type="button" class="fy-summary-tab" data-fy-summary="29" aria-expanded="false">
+    <span class="fy-summary-year">FY29</span>
+    <span class="fy-summary-weekly"><span class="summary-label">Weekly</span><strong id="fy29SummaryWeekly">—</strong></span>
+    <span class="fy-summary-annual"><span class="summary-label">Annual</span><strong id="fy29SummaryAnnual">—</strong></span>
+  </button>
+</div>
+
+<div class="comp fy27-comp" data-summary-fy="27">
 <div class="fy-stripe-header">FY27</div>
 <div class="comp-grid fy-grid">
 <div class="comp-column">
@@ -1409,7 +1489,7 @@ h1{
 </div>
 </div>
 </div>
-<div class="comp fy28-comp">
+<div class="comp fy28-comp" data-summary-fy="28">
 <div class="fy-stripe-header">FY28</div>
 <div class="comp-grid fy-grid">
 <div class="comp-column">
@@ -1459,7 +1539,7 @@ h1{
 </div>
 </div>
 </div>
-<div class="comp fy29-comp">
+<div class="comp fy29-comp" data-summary-fy="29">
 <div class="fy-stripe-header">FY29</div>
 <div class="comp-grid fy-grid">
 <div class="comp-column">
@@ -2221,6 +2301,74 @@ function scheduleCompTotalSync(){
 // disabled: replaced by shared CSS divider boundary
 
 // Previous total-row observer disabled; divider alignment is now structural.
+
+</script>
+<script>
+
+(function(){
+  const resultsEl=document.getElementById("results");
+  const tabs=[...document.querySelectorAll(".fy-summary-tab")];
+
+  function moneyTextFrom(id){
+    const el=document.getElementById(id);
+    return el ? el.textContent.trim() : "—";
+  }
+
+  function refreshFYSummaries(){
+    /* Summary weekly rate uses the FY's final/current weekly total shown by the
+       existing calculator. Annual uses the existing FY annual total. */
+    const map={
+      27:{weekly:["postTotal","startTotal"],annual:"annualTotal"},
+      28:{weekly:["fy28PostTotal","fy28StartTotal"],annual:"fy28AnnualTotal"},
+      29:{weekly:["fy29PostTotal","fy29StartTotal"],annual:"fy29AnnualTotal"}
+    };
+    Object.entries(map).forEach(([fy,cfg])=>{
+      let weekly="—";
+      for(const id of cfg.weekly){
+        const v=moneyTextFrom(id);
+        if(v && v!=="—"){weekly=v;break;}
+      }
+      document.getElementById(`fy${fy}SummaryWeekly`).textContent=weekly;
+      document.getElementById(`fy${fy}SummaryAnnual`).textContent=moneyTextFrom(cfg.annual);
+    });
+  }
+
+  function closeAllFYBreakdowns(){
+    document.querySelectorAll('.comp[data-summary-fy]').forEach(el=>el.classList.remove("summary-open"));
+    tabs.forEach(b=>{b.classList.remove("active");b.setAttribute("aria-expanded","false");});
+  }
+
+  tabs.forEach(btn=>btn.addEventListener("click",()=>{
+    const fy=btn.dataset.fySummary;
+    const target=document.querySelector(`.comp[data-summary-fy="${fy}"]`);
+    const opening=!btn.classList.contains("active");
+    closeAllFYBreakdowns();
+    if(opening && target){
+      btn.classList.add("active");
+      btn.setAttribute("aria-expanded","true");
+      target.classList.add("summary-open");
+    }
+  }));
+
+  const show=document.getElementById("wizardShowResults");
+  if(show){
+    show.addEventListener("click",()=>{
+      requestAnimationFrame(()=>{
+        resultsEl?.classList.add("fy-summary-mode");
+        closeAllFYBreakdowns();
+        refreshFYSummaries();
+      });
+    });
+  }
+
+  /* Keep summaries synchronized when qualifications are edited after results exist. */
+  const obs=new MutationObserver(()=>refreshFYSummaries());
+  ["startTotal","postTotal","annualTotal","fy28StartTotal","fy28PostTotal","fy28AnnualTotal",
+   "fy29StartTotal","fy29PostTotal","fy29AnnualTotal"].forEach(id=>{
+     const el=document.getElementById(id);
+     if(el)obs.observe(el,{childList:true,characterData:true,subtree:true});
+  });
+})();
 
 </script>
 </body></html>
