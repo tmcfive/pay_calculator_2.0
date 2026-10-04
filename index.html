@@ -1986,10 +1986,15 @@ input:focus{
   /* Make the Total Contract Increase bubble twice its existing mobile size
      without changing the desktop version. */
   .contract-increase-box{
-    transform:scale(2) !important;
+    transform:none !important;
     transform-origin:center center !important;
+    width:100% !important;
+    max-width:100% !important;
+    min-height:92px !important;
+    padding:20px 18px !important;
     margin-top:28px !important;
     margin-bottom:28px !important;
+    box-sizing:border-box !important;
   }
 
   /* Decorative divider between Total Contract Increase and the two lower
@@ -2029,9 +2034,35 @@ input:focus{
 }
 
 
-/* Emphasize the Total Contract Inc. percentage value. */
+/* Keep the mobile Total Contract Inc. value emphasized without scaling
+   the entire bubble beyond the viewport. */
 #totalContractIncrease{
   font-weight:800 !important;
+}
+@media(max-width:600px){
+  #totalContractIncrease{
+    font-size:2em !important;
+    line-height:1.05 !important;
+  }
+}
+
+
+/* Dark-blue divider palette — no green/teal hues. */
+#qualificationsGapDivider,
+.contract-fy26-divider{
+  background:linear-gradient(
+    to right,
+    transparent 0%,
+    #c7d4e8 8%,
+    #1f3f73 24%,
+    #1f3f73 76%,
+    #c7d4e8 92%,
+    transparent 100%
+  ) !important;
+}
+#qualificationsGapDivider::after,
+.contract-fy26-divider::after{
+  border-color:#1f3f73 !important;
 }
 
 </style>
