@@ -386,6 +386,80 @@ h1{
   }
 }
 
+
+@media(max-width:600px){
+  /* Compact compensation headers: title left, rank/step badge right. */
+  .comp .comp-title{
+    display:grid !important;
+    grid-template-columns:minmax(0,1fr) auto !important;
+    grid-template-rows:auto !important;
+    column-gap:4px !important;
+    align-items:start !important;
+    min-height:0 !important;
+    height:auto !important;
+    margin-bottom:7px !important;
+  }
+  .comp .comp-title h2{
+    align-self:start !important;
+    margin:0 !important;
+    padding:0 !important;
+  }
+  .comp .comp-title .step-badge{
+    justify-self:end !important;
+    align-self:start !important;
+    margin:0 !important;
+  }
+
+  /* Annual columns do not need a separate FY-only bubble. */
+  .comp .comp-column:nth-child(3) .comp-title > .step-badge{
+    display:none !important;
+  }
+  .comp .comp-column:nth-child(3) .comp-title{
+    grid-template-columns:minmax(0,1fr) !important;
+  }
+
+  /* Override older fixed header heights that created the large vertical gap. */
+  .fy-grid > .comp-column:nth-child(1) .comp-title,
+  .fy-grid > .comp-column:nth-child(2) .comp-title,
+  .fy-grid > .comp-column:nth-child(3) .comp-title{
+    min-height:0 !important;
+    height:auto !important;
+    align-items:start !important;
+  }
+}
+
+
+@media(max-width:600px){
+  /* Make the final selection action obvious and easy to tap. */
+  #wizardSpecial .special-role-row{
+    margin-bottom:28px !important;
+  }
+  .wizard-results-action{
+    display:flex;
+    justify-content:center;
+    width:100%;
+    margin-top:30px !important;
+    padding-bottom:28px;
+  }
+  #wizardShowResults{
+    display:block;
+    width:min(88%,340px);
+    min-height:54px;
+    margin:0 auto;
+    padding:14px 22px;
+    font-size:17px;
+    font-weight:800;
+    text-align:center;
+    border-radius:11px;
+  }
+
+  /* Keep enough bottom room that the newest progressive control is never
+     visually pinned against the phone's lower edge. */
+  .wizard:not(.results-mode){
+    padding-bottom:36px;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -474,7 +548,7 @@ h1{
 </div>
 
 
-<div style="margin-top:18px"><button type="button" id="wizardShowResults">View Compensation</button></div>
+<div class="wizard-results-action" style="margin-top:18px"><button type="button" id="wizardShowResults">View Compensation</button></div>
 </div>
 
 <div class="wizard-results" id="wizardResults">
@@ -1198,7 +1272,13 @@ document.querySelectorAll('.special-role-buttons button').forEach(btn=>{
    progress.style.display="";
    progress.textContent=`Step ${current+1} of ${steps.length}`;
    const newest=document.getElementById(steps[current]);
-   if(current>0 && newest) newest.scrollIntoView({behavior:"smooth",block:"nearest"});
+   if(current>0 && newest){
+     if(window.matchMedia("(max-width:600px)").matches){
+       requestAnimationFrame(()=>window.scrollTo({top:document.documentElement.scrollHeight,behavior:"smooth"}));
+     }else{
+       newest.scrollIntoView({behavior:"smooth",block:"nearest"});
+     }
+   }
  }
 
  function moveControlsToResults(){
