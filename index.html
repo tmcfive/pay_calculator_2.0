@@ -2244,6 +2244,13 @@ input:focus{
   font-weight:400 !important;
 }
 
+
+/* FINAL Step Increase typography: italic, not bold. */
+.fy-summary-tab .fy-step-increase-notice{
+  font-style:italic !important;
+  font-weight:400 !important;
+}
+
 </style>
 </head>
 <body>
@@ -3449,18 +3456,30 @@ const show=document.getElementById("wizardShowResults");
   function positionStepIncreaseNotices(){
     document.querySelectorAll('.fy-summary-tab .fy-step-increase-notice.visible').forEach(notice=>{
       const tab=notice.closest('.fy-summary-tab');
-      const weekly=tab?.querySelector('.fy-summary-weekly strong');
-      const annual=tab?.querySelector('.fy-summary-annual strong');
-      if(!tab||!weekly||!annual) return;
+      if(!tab) return;
+
+      const blocks=[...tab.children].filter(el=>
+        el !== notice && !el.classList.contains('fy-summary-year')
+      );
+      const weeklyBlock=blocks[0];
+      const annualBlock=blocks[1];
+      if(!weeklyBlock || !annualBlock) return;
+
+      /* The dollar amount is the main value in each summary block. */
+      const weeklyValue=weeklyBlock.querySelector('.summary-value, strong');
+      const annualValue=annualBlock.querySelector('.summary-value, strong');
+      if(!weeklyValue || !annualValue) return;
 
       const tr=tab.getBoundingClientRect();
-      const wr=weekly.getBoundingClientRect();
-      const ar=annual.getBoundingClientRect();
+      const wr=weeklyValue.getBoundingClientRect();
+      const ar=annualValue.getBoundingClientRect();
 
-      /* Exact midpoint between the weekly value's furthest-right edge
-         and the annual value's furthest-left edge. */
-      const midpoint=(wr.right+ar.left)/2;
-      notice.style.left=`${midpoint-tr.left}px`;
+      const gapLeft=wr.right;
+      const gapRight=ar.left;
+      const midpoint=gapLeft + ((gapRight-gapLeft)/2);
+
+      notice.style.left=(midpoint-tr.left)+'px';
+      notice.style.right='auto';
       notice.style.transform='translateX(-50%)';
     });
   }
@@ -3468,8 +3487,15 @@ const show=document.getElementById("wizardShowResults");
   window.addEventListener('resize',positionStepIncreaseNotices);
   document.addEventListener('click',()=>requestAnimationFrame(positionStepIncreaseNotices));
   document.addEventListener('change',()=>requestAnimationFrame(positionStepIncreaseNotices));
-  requestAnimationFrame(positionStepIncreaseNotices);
-  setTimeout(positionStepIncreaseNotices,120);
+
+  /* Reposition after summary values are populated/changed. */
+  const observer=new MutationObserver(()=>requestAnimationFrame(positionStepIncreaseNotices));
+  document.querySelectorAll('.fy-summary-tab').forEach(tab=>{
+    observer.observe(tab,{subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:['class']});
+  });
+
+  requestAnimationFrame(()=>requestAnimationFrame(positionStepIncreaseNotices));
+  setTimeout(positionStepIncreaseNotices,150);
 })();
 </script>
 
