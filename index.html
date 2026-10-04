@@ -1222,6 +1222,19 @@ h1{
   }
 }
 
+
+/* Mobile: exact 2.5px gap from the bottom of the relevant date-selection
+   boxes to the top of the Current Step text for both rank paths. */
+@media(max-width:600px){
+  #wizardDate:has(#promotionDateRow[style*="display:none"]) .step{
+    margin-top:2.5px !important;
+  }
+
+  #wizardDate:has(#promotionDateRow:not([style*="display:none"])) .step{
+    margin-top:2.5px !important;
+  }
+}
+
 </style>
 </head>
 <body>
