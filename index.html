@@ -1493,6 +1493,229 @@ h1{
   }
 }
 
+
+/* RED DESIGN THEME
+   Keep all page/card/control backgrounds white. Red becomes the dominant
+   selection, border, focus, and active-state color. */
+:root{
+  --red-theme:#b4232d;
+  --red-theme-dark:#8f1821;
+}
+
+/* Major containers and controls */
+.wizard,
+.wizard-step,
+.wizard-results,
+.comp,
+.fy-summary-tab-wrap,
+.fy-summary-tab,
+.field select,
+.field input,
+.stepbox,
+select,
+input{
+  background:#fff !important;
+}
+
+/* Selection buttons and standard control borders */
+.choice button,
+.rank-buttons button,
+button[data-rank],
+button[data-value],
+.field select,
+.field input,
+select,
+input,
+.stepbox,
+.qualifications-tab{
+  border-color:var(--red-theme) !important;
+}
+
+/* Selected / active choices */
+.choice button.active,
+.choice button.selected,
+.rank-buttons button.active,
+.rank-buttons button.selected,
+button[data-rank].active,
+button[data-rank].selected,
+button[data-value].active,
+button[data-value].selected,
+button[aria-pressed="true"]{
+  background:var(--red-theme) !important;
+  border-color:var(--red-theme) !important;
+  color:#fff !important;
+}
+
+/* Focus states */
+button:focus-visible,
+select:focus,
+input:focus{
+  outline:2px solid var(--red-theme) !important;
+  outline-offset:2px;
+}
+
+/* FY tabs and expanded FY borders */
+.fy-summary-tab-wrap{
+  border-color:var(--red-theme) !important;
+}
+.fy-summary-tab-wrap.active{
+  border-color:var(--red-theme) !important;
+  box-shadow:0 0 0 1px var(--red-theme) !important;
+}
+.fy-summary-tab-wrap > .comp.summary-open{
+  border-top-color:var(--red-theme) !important;
+}
+
+/* Keep FY tab surfaces white even when expanded. */
+.fy-summary-tab,
+.fy-summary-tab.active,
+.fy-summary-tab:hover,
+.fy-summary-tab:focus{
+  background:#fff !important;
+}
+
+/* Primary action */
+#wizardShowResults{
+  background:var(--red-theme) !important;
+  border-color:var(--red-theme) !important;
+  color:#fff !important;
+}
+#wizardShowResults:hover,
+#wizardShowResults:focus{
+  background:var(--red-theme-dark) !important;
+  border-color:var(--red-theme-dark) !important;
+}
+
+/* Dividers / emphasized borders */
+.fy-divider{
+  border-top-color:var(--red-theme) !important;
+  border-bottom-color:var(--red-theme) !important;
+  background:#fff !important;
+}
+
+
+/* ProBoard Certifications + College Degree:
+   use the same red selection-box treatment as the other wizard choices. */
+#wizardCerts button,
+#wizardDegree button{
+  border-color:var(--red-theme) !important;
+  background:#fff !important;
+}
+
+#wizardCerts button.active,
+#wizardCerts button.selected,
+#wizardCerts button[aria-pressed="true"],
+#wizardDegree button.active,
+#wizardDegree button.selected,
+#wizardDegree button[aria-pressed="true"]{
+  background:var(--red-theme) !important;
+  border-color:var(--red-theme) !important;
+  color:#fff !important;
+}
+
+
+/* Date selectors: keep the single red control border, but remove the
+   redundant second focus outline when Month / Day / Year is selected. */
+#wizardDate select:focus,
+#wizardDate select:focus-visible{
+  outline:none !important;
+  box-shadow:none !important;
+}
+
+
+/* Keep View Compensation green while the rest of the selection theme remains red. */
+#wizardShowResults{
+  background:#198754 !important;
+  border-color:#198754 !important;
+  color:#fff !important;
+}
+#wizardShowResults:hover,
+#wizardShowResults:focus,
+#wizardShowResults:focus-visible{
+  background:#157347 !important;
+  border-color:#146c43 !important;
+  color:#fff !important;
+  outline:none !important;
+}
+
+
+/* FY label accent:
+   red starts at the inside-left edge of the FY tab and extends exactly
+   25px beyond the rendered FYxx text. */
+.fy-summary-tab .fy-summary-year{
+  display:inline-block !important;
+  position:relative !important;
+  background:var(--red-theme) !important;
+  color:#fff !important;
+  margin-left:-16px !important;
+  padding-left:16px !important;
+  padding-right:25px !important;
+  box-sizing:content-box !important;
+}
+
+
+/* FY label block refinement:
+   fill the FY tab vertically from border to border, start at the inside-left
+   border, end 10px past the FY text, and keep the FY text white. */
+.fy-summary-tab{
+  align-items:stretch !important;
+}
+.fy-summary-tab .fy-summary-year{
+  display:flex !important;
+  align-items:center !important;
+  align-self:stretch !important;
+  background:var(--red-theme) !important;
+  color:#fff !important;
+  margin-top:0 !important;
+  margin-bottom:0 !important;
+  margin-left:-16px !important;
+  padding-left:16px !important;
+  padding-right:10px !important;
+  box-sizing:content-box !important;
+}
+
+
+/* FY label block length correction:
+   keep the red block full-height from top border to bottom border,
+   but reduce the requested 10px extension past FYxx by 50% to 5px. */
+.fy-summary-tab .fy-summary-year{
+  padding-right:5px !important;
+  align-self:stretch !important;
+  color:#fff !important;
+}
+
+
+/* CORRECT FY RED BLOCK
+   The grid's original first column was stretching the red background much
+   farther than the FY text. Make that column content-sized instead.
+   Red fills vertically to the tab borders and ends exactly 10px after FYxx. */
+.fy-summary-tab{
+  grid-template-columns:max-content minmax(150px,1.3fr) minmax(150px,1.3fr) !important;
+  align-items:stretch !important;
+}
+.fy-summary-tab .fy-summary-year{
+  display:flex !important;
+  align-items:center !important;
+  width:max-content !important;
+  min-width:0 !important;
+  justify-self:start !important;
+  align-self:stretch !important;
+  margin:-14px 0 -14px -16px !important;
+  padding:14px 10px 14px 16px !important;
+  background:var(--red-theme) !important;
+  color:#fff !important;
+  box-sizing:content-box !important;
+}
+@media(max-width:600px){
+  .fy-summary-tab{
+    grid-template-columns:max-content minmax(0,1fr) minmax(0,1fr) !important;
+  }
+  .fy-summary-tab .fy-summary-year{
+    margin:-12px 0 -12px -9px !important;
+    padding:12px 10px 12px 9px !important;
+  }
+}
+
 </style>
 </head>
 <body>
