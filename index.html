@@ -2393,7 +2393,6 @@ input:focus{
 
 <div class="wizard-results" id="wizardResults">
 <div id="resultsSelections"></div>
-<div id="qualificationsGapDivider" aria-hidden="true"></div>
 
 <div id="fySummaryTabs" class="fy-summary-tabs" aria-label="Fiscal year compensation summaries">
   <button type="button" class="fy-summary-tab" data-fy-summary="27" aria-expanded="false">
@@ -3410,30 +3409,6 @@ function showStep(n){
 
 
 
- function positionQualificationsGapDivider(){
-   const panel=document.getElementById("resultsSelections");
-   const divider=document.getElementById("qualificationsGapDivider");
-   const resultsBox=document.getElementById("wizardResults");
-   const fy27=document.querySelector('.fy-summary-tab-wrap[data-fy-wrap="27"]') ||
-              document.querySelector('.fy-summary-tab[data-fy-summary="27"]');
-   const roleButtons=[...panel.querySelectorAll("#wizardSpecial .special-role-buttons")];
-
-   if(!panel.classList.contains("open") || !divider || !resultsBox || !fy27 || !roleButtons.length){
-     if(divider) divider.classList.remove("visible");
-     return;
-   }
-
-   const bubblesBottom=Math.max(...roleButtons.map(el=>el.getBoundingClientRect().bottom));
-   const fyTop=fy27.getBoundingClientRect().top;
-   const resultsTop=resultsBox.getBoundingClientRect().top;
-   const dividerHeight=divider.getBoundingClientRect().height || 5;
-   const midpoint=(bubblesBottom+fyTop)/2;
-
-   /* Center the divider itself on the exact visible midpoint. */
-   divider.style.top=`${midpoint-resultsTop-(dividerHeight/2)}px`;
-   divider.classList.add("visible");
- }
-
  const qualificationsTab=document.getElementById("qualificationsTab");
  qualificationsTab.addEventListener("click",()=>{
    const panel=document.getElementById("resultsSelections");
@@ -3442,18 +3417,8 @@ function showStep(n){
    qualificationsTab.classList.toggle("open",isOpen);
    qualificationsTab.setAttribute("aria-expanded",isOpen?"true":"false");
    qualificationsTab.textContent=isOpen?"Close Qualifications":"View Qualifications";
-   if(isOpen){
-     requestAnimationFrame(()=>requestAnimationFrame(positionQualificationsGapDivider));
-   }else{
-     document.getElementById("qualificationsGapDivider")?.classList.remove("visible");
-   }
  });
 
- window.addEventListener("resize",()=>{
-   if(document.getElementById("resultsSelections")?.classList.contains("open")){
-     positionQualificationsGapDivider();
-   }
- });
 
 
 
