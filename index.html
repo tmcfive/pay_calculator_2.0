@@ -2289,10 +2289,44 @@ input:focus{
 .backpay-box{width:min(100%,520px);margin:12px auto 4px;padding:14px 16px;border:1px solid #cfd6df;border-radius:10px;background:#fff;box-sizing:border-box;text-align:center}
 .backpay-main{display:flex;align-items:center;justify-content:space-between;gap:12px;font-weight:700;color:#182b47}
 .backpay-main strong{font-size:1.55em;color:#198754;white-space:nowrap}
-.backpay-tax-note{margin-top:3px;font-size:11px;font-weight:400;font-style:italic;color:#777f8c;text-align:left}
+.backpay-tax-note{margin-top:1px;font-size:11px;font-weight:400;font-style:italic;color:#777f8c;text-align:left}
 .backpay-dates{margin-top:5px;font-size:13px;color:#5a6575}
 .backpay-detail{margin-top:7px;font-size:11px;line-height:1.4;color:#5a6575}
 @media(max-width:600px){.backpay-box{width:100%;padding:12px}.backpay-main strong{font-size:1.35em}}
+
+/* FY27–FY29: compact expand hint fully contained within the red label. */
+.fy-summary-tab[data-fy-summary="27"] .fy-summary-year,
+.fy-summary-tab[data-fy-summary="28"] .fy-summary-year,
+.fy-summary-tab[data-fy-summary="29"] .fy-summary-year{
+  flex-direction:column !important;
+  justify-content:center !important;
+  align-items:center !important;
+  width:112px !important;
+  box-sizing:border-box !important;
+  padding-right:8px !important;
+  padding-left:16px !important;
+  text-align:center !important;
+  gap:3px !important;
+}
+.fy-summary-year .fy-expand-hint{
+  display:block;
+  font-size:10px;
+  line-height:1.1;
+  font-weight:400;
+  font-style:italic;
+  white-space:nowrap;
+  color:#fff;
+}
+@media(max-width:600px){
+  .fy-summary-tab[data-fy-summary="27"] .fy-summary-year,
+  .fy-summary-tab[data-fy-summary="28"] .fy-summary-year,
+  .fy-summary-tab[data-fy-summary="29"] .fy-summary-year{
+    width:91px !important;
+    padding-left:9px !important;
+    padding-right:5px !important;
+  }
+  .fy-summary-year .fy-expand-hint{font-size:8px;}
+}
 </style>
 </head>
 <body>
@@ -2397,17 +2431,17 @@ input:focus{
 
 <div id="fySummaryTabs" class="fy-summary-tabs" aria-label="Fiscal year compensation summaries">
   <button type="button" class="fy-summary-tab" data-fy-summary="27" aria-expanded="false">
-    <span class="fy-summary-year">FY27</span><span class="fy-step-increase-notice" aria-hidden="true">Step Increase!</span>
+    <span class="fy-summary-year"><span>FY27</span><span class="fy-expand-hint">Click to expand!</span></span><span class="fy-step-increase-notice" aria-hidden="true">Step Increase!</span>
     <span class="fy-summary-weekly"><span class="summary-label">Weekly</span><strong id="fy27SummaryWeekly">—</strong><small id="fy27SummaryWeeklyIncrease" class="summary-change">—</small></span>
     <span class="fy-summary-annual"><span class="summary-label">Annual</span><strong id="fy27SummaryAnnual">—</strong><small id="fy27SummaryAnnualIncrease" class="summary-change">—</small></span>
   </button>
   <button type="button" class="fy-summary-tab" data-fy-summary="28" aria-expanded="false">
-    <span class="fy-summary-year">FY28</span><span class="fy-step-increase-notice" aria-hidden="true">Step Increase!</span>
+    <span class="fy-summary-year"><span>FY28</span><span class="fy-expand-hint">Click to expand!</span></span><span class="fy-step-increase-notice" aria-hidden="true">Step Increase!</span>
     <span class="fy-summary-weekly"><span class="summary-label">Weekly</span><strong id="fy28SummaryWeekly">—</strong><small id="fy28SummaryWeeklyIncrease" class="summary-change">—</small></span>
     <span class="fy-summary-annual"><span class="summary-label">Annual</span><strong id="fy28SummaryAnnual">—</strong><small id="fy28SummaryAnnualIncrease" class="summary-change">—</small></span>
   </button>
   <button type="button" class="fy-summary-tab" data-fy-summary="29" aria-expanded="false">
-    <span class="fy-summary-year">FY29</span><span class="fy-step-increase-notice" aria-hidden="true">Step Increase!</span>
+    <span class="fy-summary-year"><span>FY29</span><span class="fy-expand-hint">Click to expand!</span></span><span class="fy-step-increase-notice" aria-hidden="true">Step Increase!</span>
     <span class="fy-summary-weekly"><span class="summary-label">Weekly</span><strong id="fy29SummaryWeekly">—</strong><small id="fy29SummaryWeeklyIncrease" class="summary-change">—</small></span>
     <span class="fy-summary-annual"><span class="summary-label">Annual</span><strong id="fy29SummaryAnnual">—</strong><small id="fy29SummaryAnnualIncrease" class="summary-change">—</small></span>
   </button>
@@ -3147,7 +3181,7 @@ function updateBackPay(hire,promotion){
   amount-=clothingAlreadyPaid;
   total.textContent=money(amount);
   dates.textContent=displayDate(start)+" – "+displayDate(end)+" ("+days+" days)";
-  detail.textContent="Estimate before taxes. FY26 rates and anniversary-based steps are assumed to continue. Old-contract longevity payments are deducted only when the hire anniversary has occurred ("+money(longevityAlreadyPaid)+" deducted). Holiday and clothing are estimated as accrued; the $250 clothing payment dated October 13, 2026 is deducted from this estimate ("+money(clothingAlreadyPaid)+" deducted). Actual payroll treatment may differ.";
+  detail.textContent="Estimate before taxes. FY26 rates and anniversary-based steps are assumed to continue. Old-contract longevity payments are deducted only when the hire anniversary has already occurred ("+money(longevityAlreadyPaid)+" deducted). Holiday and clothing are estimated as accrued; the $250 clothing payment dated October 13, 2026 is deducted from this estimate ("+money(clothingAlreadyPaid)+" deducted). Actual payroll treatment may differ.";
 }
 
 function updateTotalContractIncrease(){
