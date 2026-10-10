@@ -1616,7 +1616,8 @@ input:focus{
 /* ProBoard Certifications + College Degree:
    use the same red selection-box treatment as the other wizard choices. */
 #wizardCerts button,
-#wizardDegree button{
+#wizardDegree button,
+#wizardFY26Degree button{
   border-color:var(--red-theme) !important;
   background:#fff !important;
 }
@@ -1626,7 +1627,10 @@ input:focus{
 #wizardCerts button[aria-pressed="true"],
 #wizardDegree button.active,
 #wizardDegree button.selected,
-#wizardDegree button[aria-pressed="true"]{
+#wizardDegree button[aria-pressed="true"],
+#wizardFY26Degree button.active,
+#wizardFY26Degree button.selected,
+#wizardFY26Degree button[aria-pressed="true"]{
   background:var(--red-theme) !important;
   border-color:var(--red-theme) !important;
   color:#fff !important;
@@ -2281,6 +2285,13 @@ input:focus{
   font-weight:400 !important;
 }
 
+
+.backpay-box{width:min(100%,520px);margin:12px auto 4px;padding:14px 16px;border:1px solid #cfd6df;border-radius:10px;background:#fff;box-sizing:border-box;text-align:center}
+.backpay-main{display:flex;align-items:center;justify-content:space-between;gap:12px;font-weight:700;color:#182b47}
+.backpay-main strong{font-size:1.55em;color:#198754;white-space:nowrap}
+.backpay-dates{margin-top:5px;font-size:13px;color:#5a6575}
+.backpay-detail{margin-top:7px;font-size:11px;line-height:1.4;color:#5a6575}
+@media(max-width:600px){.backpay-box{width:100%;padding:12px}.backpay-main strong{font-size:1.35em}}
 </style>
 </head>
 <body>
@@ -2347,6 +2358,14 @@ input:focus{
 <button data-degree="Bachelor's">Bachelor’s</button>
 </div>
 
+</div>
+
+<div class="wizard-step" id="wizardFY26Degree">
+<h2>Were you paid for this degree in FY26?</h2>
+<div class="buttons" id="fy26DegreePaid">
+<button type="button" data-fy26-degree="Yes">Yes</button>
+<button type="button" data-fy26-degree="No">No</button>
+</div>
 </div>
 
 <div class="wizard-step" id="wizardSpecial">
@@ -2549,7 +2568,11 @@ input:focus{
     <div class="contract-increase-line"><span>Total Contract Increase</span><span id="totalContractIncrease">—%</span></div>
   </div>
 </div>
-
+<div class="backpay-box" aria-live="polite">
+  <div class="backpay-main"><span>Estimated Back Pay</span><strong id="estimatedBackPay">—</strong></div>
+  <div class="backpay-dates" id="backPayDates">July 1, 2026 – today</div>
+  <div class="backpay-detail" id="backPayDetail">Compared with continued FY26 rates and anniversary-based steps. Includes estimated holiday and clothing accruals; old-contract longevity is deducted only after its anniversary payment date.</div>
+</div>
 
 <div id="fy26SummaryTabs" class="fy-summary-tabs fy26-summary-tabs fy26-summary-actions">
   <button type="button" class="fy-summary-tab fy26-action-button" data-fy-summary="26" aria-expanded="false"><span class="fy-summary-year">FY26</span></button>
@@ -2626,7 +2649,7 @@ const payCharts={
     "Deputy Chief":{1:2153.59,2:2207.43,3:2262.61,4:2319.18,5:2377.16,6:2436.59}
   }
 };
-let rank="",cert=0,degree="";
+let rank="",cert=0,degree="",fy26DegreePaid=null;
 let firePrevention="No";
 let emsCoordinator="No";
 const money=v=>new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',minimumFractionDigits:2,maximumFractionDigits:2}).format(v);
@@ -2833,14 +2856,14 @@ function calcFY(fy,hire,promotion){
  const emt=emtBase*.08, certW=(cert*275)/52;
   const emsCoor=(emsCoordinator==="Yes")?(fy===26?40:100):0;
  let edu=0;
- if(fy===26){
+ if(fy===26 && fy26DegreePaid==="Yes"){
    // FY26 education is a fixed annual amount regardless of rank:
    // Associate's $2,500; Bachelor's $4,500.
    if(degree==="Associate's")edu=2500/52;
    if(degree==="Bachelor's")edu=4500/52;
- }else if(Number.isFinite(lt6)){
+ }else if(fy!==26 && Number.isFinite(lt6)){
    if(degree==="Associate's")edu=lt6*.025;
-   if(degree==="Bachelor's")edu=lt6*.04;
+   if(degree==="Bachelor's")edu=lt6*.0425;
  }
  const fy26NightRates={Firefighter:19.19,Lieutenant:20.42,"Deputy Chief":21.65};
  // All FYs: round each weekly component to displayed cents before annualizing.
@@ -3024,6 +3047,108 @@ function updateStepStatus(hire,current){
 }
 
 
+
+// Retroactive estimate: day-by-day comparison from July 1, 2026 through today.
+// Old-contract assumption: FY26 pay table and stipends remain in force, with
+// anniversary-based FY26 step progression. This is an estimate of earned value,
+// not a payroll withholding/tax or actual check-date calculation.
+function backPaySegment(day,hire,promotion,useNew){
+  const fy=Math.min(29,day.getMonth()>=6?day.getFullYear()-1999:day.getFullYear()-2000);
+  const chart=payCharts[useNew?fy:26];
+  const fyStart=new Date(2000+fy-1,6,1);
+  let activeRank=rank;
+  if((rank==="Lieutenant"||rank==="Deputy Chief")&&promotion&&day<promotion){
+    activeRank=rank==="Lieutenant"?"Firefighter":"Lieutenant";
+  }
+  let step;
+  if(!useNew){
+    // FY26 officer steps 3/4; for a future DC promotion the LT promotion
+    // date is unknown, so use hire tenure for that prior-rank estimate.
+    const tenureDate=(activeRank==="Firefighter"||activeRank!==rank)?hire:(promotion||hire);
+    step=stepForFY26(activeRank,yearsAsOf(tenureDate,day));
+  }else if(activeRank==="Firefighter"){
+    step=stepFor(activeRank,yearsAsOf(hire,day));
+  }else if(activeRank===rank && promotion && promotion>new Date(2026,5,30)){
+    const startFY=Math.max(27,promotion.getFullYear()+(promotion.getMonth()>=6?1:0)-1999);
+    step=Math.min(6,Math.max(1,fy-startFY+1));
+  }else{
+    step=Math.min(6,Math.max(1,fy-26));
+  }
+  const baseChart=chart[activeRank];
+  if(!baseChart)return null;
+  const fp=firePrevention==="Yes" && activeRank!=="Firefighter";
+  const round=v=>Math.round((v+Number.EPSILON)*100)/100;
+  let base=baseChart[step];
+  if(!Number.isFinite(base))return null;
+  if(fp){
+    if(!useNew)base=activeRank==="Lieutenant"?1813.16:2128.48;
+    else base*=activeRank==="Lieutenant"?1.15:1.10;
+  }
+  base=round(base);
+  const certPay=round(cert*275/52);
+  const emt=round(chart.Lieutenant[useNew?1:4]*0.08);
+  const night=fp?0:round(useNew?base*.02:({Firefighter:19.19,Lieutenant:20.42,"Deputy Chief":21.65})[activeRank]);
+  const tech=useNew?round(base*.01):0;
+  let edu=0;
+  if(degree==="Associate's")edu=useNew?chart.Lieutenant[6]*.025:(fy26DegreePaid==="Yes"?2500/52:0);
+  if(degree==="Bachelor's")edu=useNew?chart.Lieutenant[6]*.0425:(fy26DegreePaid==="Yes"?4500/52:0);
+  edu=round(edu);
+  const ems=emsCoordinator==="Yes"?(useNew?100:40):0;
+  const weekly=round(base+certPay+emt+night+tech+edu+ems);
+  const eligible=base+certPay+emt+night+tech;
+  const holiday=fp?0:eligible*3.25/52;
+  const clothing=(useNew?(fy===29?1175:800):680)/52;
+  return weekly+holiday+clothing;
+}
+function updateBackPay(hire,promotion){
+  const total=document.getElementById("estimatedBackPay");
+  const dates=document.getElementById("backPayDates");
+  const detail=document.getElementById("backPayDetail");
+  if(!total)return;
+  const today=new Date();today.setHours(0,0,0,0);
+  const contractStart=new Date(2026,6,1);
+  const supportedEnd=new Date(2029,5,30);
+  const end=today<supportedEnd?today:supportedEnd;
+  const start=hire&&hire>contractStart?hire:contractStart;
+  dates.textContent=displayDate(contractStart)+" – "+displayDate(end);
+  if(!hire||!rank||((rank==="Lieutenant"||rank==="Deputy Chief")&&!promotion)||hire>today||end<start){
+    total.textContent="—";
+    detail.textContent="Complete your rank, hire date and any required promotion date to estimate back pay.";
+    return;
+  }
+  if(degree!=="None" && degree && fy26DegreePaid===null){
+    total.textContent="—";
+    detail.textContent="Select whether you were paid for your degree in FY26 to calculate the old-contract comparison.";
+    return;
+  }
+  let amount=0,days=0;
+  for(let d=new Date(start);d<=end;d.setDate(d.getDate()+1)){
+    const newer=backPaySegment(d,hire,promotion,true);
+    const older=backPaySegment(d,hire,promotion,false);
+    if(!Number.isFinite(newer)||!Number.isFinite(older)){
+      total.textContent="—";detail.textContent="Insufficient rank or step information for the comparison.";return;
+    }
+    amount+=(newer-older)/7;
+    days++;
+  }
+  // Old-contract longevity is a lump-sum payment on the hire anniversary,
+  // not an amount accrued daily. Deduct each payment only once it has occurred.
+  let longevityAlreadyPaid=0;
+  for(let year=start.getFullYear();year<=end.getFullYear();year++){
+    const anniversary=new Date(year,hire.getMonth(),hire.getDate());
+    if(anniversary<start||anniversary>end)continue;
+    longevityAlreadyPaid+=fy26LongevityAnnual(yearsAsOf(hire,anniversary));
+  }
+  amount-=longevityAlreadyPaid;
+  // For this calculator's intended use after October 13, 2026,
+  // always deduct the $250 FY26 clothing installment once.
+  const clothingAlreadyPaid=250;
+  amount-=clothingAlreadyPaid;
+  total.textContent=money(amount);
+  dates.textContent=displayDate(start)+" – "+displayDate(end)+" ("+days+" days)";
+  detail.textContent="Estimate before taxes. FY26 rates and anniversary-based steps are assumed to continue. Old-contract longevity payments are deducted only when the hire anniversary has occurred ("+money(longevityAlreadyPaid)+" deducted). Holiday and clothing are estimated as accrued; the $250 clothing payment dated October 13, 2026 is deducted from this estimate ("+money(clothingAlreadyPaid)+" deducted). Actual payroll treatment may differ.";
+}
+
 function updateTotalContractIncrease(){
  const ids=["annualIncrease","fy28AnnualIncrease","fy29AnnualIncrease"];
  const vals=ids.map(id=>{
@@ -3059,6 +3184,7 @@ function update(){
    if(hire&&rank&&hire<=fyEnd&&(!isOfficerRank||promotion))calcFY(fy,hire,promotion); else clearFY(fy);
  });
  updateTotalContractIncrease();
+ updateBackPay(hire,promotion);
 }
 function exclusive(container,attr,setter){
  document.querySelectorAll(`#${container} button`).forEach(b=>b.onclick=()=>{
@@ -3126,7 +3252,11 @@ document.querySelectorAll('.special-role-buttons button').forEach(btn=>{
 
 // Version 2 progressive questionnaire
 (function(){
- const steps=["wizardRank","wizardDate","wizardCerts","wizardDegree","wizardSpecial"];
+ const allSteps=["wizardRank","wizardDate","wizardCerts","wizardDegree","wizardFY26Degree","wizardSpecial"];
+ const getSteps=()=>degree==="None"
+   ?allSteps.filter(id=>id!=="wizardFY26Degree")
+   :allSteps;
+ let steps=getSteps();
  let current=0;
  const progress=document.getElementById("wizardProgress");
  const results=document.getElementById("wizardResults");
@@ -3149,6 +3279,7 @@ function scrollToTrueBottom(){
 }
 
 function showStep(n){
+   steps=getSteps();
    current=Math.max(0,Math.min(n,steps.length-1));
    steps.forEach((id,i)=>{
      const step=document.getElementById(id);
@@ -3165,7 +3296,7 @@ function showStep(n){
 
  function moveControlsToResults(){
    const target=document.getElementById("resultsSelections");
-   ["wizardRank","wizardDate","wizardCerts","wizardDegree","wizardSpecial"].forEach(id=>{
+   allSteps.forEach(id=>{
      const step=document.getElementById(id);
      if(step) target.appendChild(step);
    });
@@ -3180,7 +3311,7 @@ function showStep(n){
  function restoreWizardSteps(){
    const card=document.querySelector(".card");
    const results=document.getElementById("wizardResults");
-   ["wizardRank","wizardDate","wizardCerts","wizardDegree","wizardSpecial"].forEach(id=>{
+   allSteps.forEach(id=>{
      const step=document.getElementById(id);
      if(step) card.insertBefore(step,results);
    });
@@ -3189,6 +3320,7 @@ function showStep(n){
  }
 
  function showResults(){
+   steps=getSteps();
    steps.forEach(id=>document.getElementById(id).classList.remove("active"));
    progress.style.display="none";
    results.classList.add("active");
@@ -3238,7 +3370,21 @@ function showStep(n){
    if(e.target.closest("button[data-cert]") && !results.classList.contains("active")) setTimeout(()=>showStep(3),0);
  });
  document.getElementById("degrees").addEventListener("click",e=>{
-   if(e.target.closest("button[data-degree]") && !results.classList.contains("active")) setTimeout(()=>showStep(4),0);
+   if(e.target.closest("button[data-degree]")){
+     if(degree==="None"){
+       fy26DegreePaid=null;
+       document.querySelectorAll("#fy26DegreePaid button").forEach(b=>b.classList.remove("selected"));
+     }
+     if(!results.classList.contains("active")) setTimeout(()=>showStep(degree==="None"||fy26DegreePaid!==null? (degree==="None"?4:5):4),0);
+   }
+ });
+ document.getElementById("fy26DegreePaid").addEventListener("click",e=>{
+   const btn=e.target.closest("button[data-fy26-degree]");
+   if(!btn)return;
+   fy26DegreePaid=btn.dataset.fy26Degree;
+   document.querySelectorAll("#fy26DegreePaid button").forEach(b=>b.classList.toggle("selected",b===btn));
+   update();
+   if(!results.classList.contains("active"))showStep(5);
  });
  document.getElementById("wizardShowResults").addEventListener("click",showResults);
 
