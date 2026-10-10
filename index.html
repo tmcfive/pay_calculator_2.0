@@ -3294,6 +3294,23 @@ function showStep(n){
    }
  }
 
+ // The results view moves all wizard steps into Qualifications. Keep the
+ // FY26 degree question conditional there as well as in the initial wizard.
+ function syncFY26DegreeQuestion(){
+   const question=document.getElementById("wizardFY26Degree");
+   if(!question)return;
+   const hasDegree=degree==="Associate's"||degree==="Bachelor's";
+   if(!hasDegree){
+     fy26DegreePaid=null;
+     document.querySelectorAll("#fy26DegreePaid button").forEach(b=>b.classList.remove("selected"));
+   }
+   if(question.closest("#resultsSelections")){
+     question.style.display=hasDegree?"block":"none";
+   }else{
+     question.style.removeProperty("display");
+   }
+ }
+
  function moveControlsToResults(){
    const target=document.getElementById("resultsSelections");
    allSteps.forEach(id=>{
@@ -3304,6 +3321,7 @@ function showStep(n){
      step.classList.add("active");
      step.style.display="block";
    });
+   syncFY26DegreeQuestion();
    const viewBtn=document.getElementById("wizardShowResults");
    if(viewBtn) viewBtn.style.display="none";
  }
@@ -3315,6 +3333,7 @@ function showStep(n){
      const step=document.getElementById(id);
      if(step) card.insertBefore(step,results);
    });
+   syncFY26DegreeQuestion();
    const viewBtn=document.getElementById("wizardShowResults");
    if(viewBtn) viewBtn.style.display="";
  }
@@ -3371,6 +3390,7 @@ function showStep(n){
  });
  document.getElementById("degrees").addEventListener("click",e=>{
    if(e.target.closest("button[data-degree]")){
+     syncFY26DegreeQuestion();
      if(degree==="None"){
        fy26DegreePaid=null;
        document.querySelectorAll("#fy26DegreePaid button").forEach(b=>b.classList.remove("selected"));
