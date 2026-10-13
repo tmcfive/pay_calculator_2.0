@@ -2540,7 +2540,7 @@ input:focus{
 <div class="line"><span>College Degree</span><span id="fy28AnnualDegreePay">$0.00</span></div>
 <div class="line ems-coor-line" style="display:none"><span>EMS Coor. Pay</span><span id="fy28AnnualEmsCoorPay">$0.00</span></div>
 <div class="line"><span>Holiday Pay</span><span id="fy28AnnualHolidayPay">$ —</span></div>
-<div class="line"><span>Clothing</span><span class="clothing-value">$800.00</span></div>
+<div class="line"><span>Clothing</span><span class="clothing-value">$1,175.00</span></div>
 <div class="line total-line"><span>Total Annual Pay</span><span id="fy28AnnualTotal">$ —</span></div>
 <div class="line previous-line"><span>Previous FY Annual Pay</span><span id="fy28PreviousAnnualPay">$ —</span></div>
 <div class="line increase-line"><span>Inc. from Previous FY</span><span id="fy28AnnualIncrease">—%</span></div>
@@ -2985,11 +2985,11 @@ function calcFY(fy,hire,promotion){
  // ProBoard is an established annual stipend and is not a weekly rate multiplied by the annualization factor.
  const employedFYFraction=partialFirstFY?Math.min(1,totalDays/daysBetween(fyStart,new Date(end.getFullYear(),end.getMonth(),end.getDate()+1))):1;
  const annualCert=(cert*275)*employedFYFraction;
- // Holiday uses the FY's day-weighted average eligible weekly compensation; education remains excluded.
- const eligibleA=A.base+A.cert+A.emt+A.night+A.tech, eligibleB=B.base+B.cert+B.emt+B.night+B.tech;
+ // Holiday uses the FY's day-weighted average eligible weekly compensation, including education incentive when earned.
+ const eligibleA=A.base+A.cert+A.emt+A.night+A.tech+A.edu, eligibleB=B.base+B.cert+B.emt+B.night+B.tech+B.edu;
  const avgEligible=(eligibleA*d1+eligibleB*d2)/(d1+d2);
  const holiday=(firePrevention==="Yes")?0:(avgEligible*3.25*employedFYFraction);
- const clothing=(fy===26?680:(fy===29?1175:800))*employedFYFraction;
+ const clothing=(fy===26?680:(fy>=28?1175:800))*employedFYFraction;
  const annualTotal=annualBase+annualCert+annualEmt+annualNight+annualTech+annualLongevity+annualEdu+annualEmsCoor+holiday+clothing;
 
  // For an employee hired after the FY began, preserve the prorated annualTotal for
@@ -3003,7 +3003,7 @@ function calcFY(fy,hire,promotion){
  const fullFYAnnualEmsCoor=partialFirstFY?weightedAnnual(A.emsCoor,B.emsCoor)/employedFYFraction:annualEmsCoor;
  const fullFYAnnualCert=partialFirstFY?cert*275:annualCert;
  const fullFYHoliday=partialFirstFY?((firePrevention==="Yes")?0:avgEligible*3.25):holiday;
- const fullFYClothing=partialFirstFY?(fy===26?680:(fy===29?1175:800)):clothing;
+ const fullFYClothing=partialFirstFY?(fy===26?680:(fy>=28?1175:800)):clothing;
  const comparisonAnnualTotal=fullFYAnnualBase+fullFYAnnualCert+fullFYAnnualEmt+fullFYAnnualNight+fullFYAnnualTech+fullFYAnnualLongevity+fullFYAnnualEdu+fullFYAnnualEmsCoor+fullFYHoliday+fullFYClothing;
 
  setText(I.ab,money(annualBase));setText(I.ac,money(annualCert));setText(I.ae,money(annualEmt));setText(I.an,money(annualNight));if(I.al)setText(I.al,money(annualLongevity));setText(I.at,money(annualTech));setText(I.ad,money(annualEdu));setText(I.ax,money(annualEmsCoor));setText(I.ah,money(holiday));setText(I.aa,money(annualTotal));
@@ -3130,9 +3130,9 @@ function backPaySegment(day,hire,promotion,useNew){
   edu=round(edu);
   const ems=emsCoordinator==="Yes"?(useNew?100:40):0;
   const weekly=round(base+certPay+emt+night+tech+edu+ems);
-  const eligible=base+certPay+emt+night+tech;
+  const eligible=base+certPay+emt+night+tech+edu;
   const holiday=fp?0:eligible*3.25/52;
-  const clothing=(useNew?(fy===29?1175:800):680)/52;
+  const clothing=(useNew?(fy>=28?1175:800):680)/52;
   return weekly+holiday+clothing;
 }
 function updateBackPay(hire,promotion){
