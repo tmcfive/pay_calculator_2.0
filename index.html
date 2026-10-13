@@ -3185,13 +3185,13 @@ function updateBackPay(hire,promotion){
 }
 
 function updateTotalContractIncrease(){
- const ids=["annualIncrease","fy28AnnualIncrease","fy29AnnualIncrease"];
- const vals=ids.map(id=>{
-   const raw=document.getElementById(id)?.textContent?.trim()||"";
-   const n=parseFloat(raw.replace("%",""));
-   return Number.isFinite(n)?n:null;
- });
- setText("totalContractIncrease",vals.every(v=>v!==null)?`${vals.reduce((a,b)=>a+b,0).toFixed(2)}%`:"—%");
+ // Compare the displayed FY29 annual compensation directly with FY26.
+ // This is the total percentage change over the contract, not the sum of
+ // individual fiscal-year percentage increases.
+ const fy26=fyResults[26]?.annualTotal;
+ const fy29=fyResults[29]?.annualTotal;
+ const valid=Number.isFinite(fy26)&&Number.isFinite(fy29)&&fy26>0;
+ setText("totalContractIncrease",valid?`${((fy29-fy26)/fy26*100).toFixed(2)}%`:"—%");
 }
 
 function update(){
