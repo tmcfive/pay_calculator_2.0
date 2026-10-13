@@ -274,6 +274,8 @@ h1{
 .wizard-step{display:none;animation:wizardFade .18s ease-out}
 .wizard-step.active{display:block}
 .wizard-step h2{margin-top:8px}
+/* Tighten only the Date of Hire heading-to-date-selectors gap, on desktop and mobile. */
+#wizardDate > h2{margin-bottom:4px}
 .wizard-progress{font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;opacity:.58;margin:2px 0 12px}
 .wizard-back{display:none;margin:4px 0 14px;border:0;background:transparent;text-decoration:underline;cursor:pointer;font:inherit;opacity:.72}
 .wizard-back.show{display:inline-block}
@@ -2349,9 +2351,9 @@ input:focus{
 </div>
 
 <div class="wizard-step" id="wizardDate">
-<h2>Date of Hire</h2>
+<h2>Date of Hire <span style="font-size:0.75em;font-weight:500;font-style:italic;color:#555;">(Include prev. Town Time)</span></h2>
 <div class="row">
-<div class="field"><label>Date of Hire</label>
+<div class="field">
 <div class="date-selects">
 <select id="hireMonth" aria-label="Hire Month"><option value="">Month</option></select>
 <select id="hireDay" aria-label="Hire Day"><option value="">Day</option></select>
