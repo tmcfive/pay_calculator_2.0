@@ -3318,9 +3318,10 @@ function scrollToTrueBottom(){
 function showStep(n){
    steps=getSteps();
    current=Math.max(0,Math.min(n,steps.length-1));
-   steps.forEach((id,i)=>{
+   allSteps.forEach(id=>{
      const step=document.getElementById(id);
-     step.classList.toggle("active",i<=current);
+     const index=steps.indexOf(id);
+     step.classList.toggle("active",index!==-1 && index<=current);
    });
    results.classList.remove("active");
    progress.style.display="";
@@ -3341,8 +3342,11 @@ function showStep(n){
      fy26DegreePaid=null;
      document.querySelectorAll("#fy26DegreePaid button").forEach(b=>b.classList.remove("selected"));
    }
-   if(question.closest("#resultsSelections")){
-     question.style.display=hasDegree?"block":"none";
+   if(!hasDegree){
+     question.classList.remove("active");
+     question.style.display="none";
+   }else if(question.closest("#resultsSelections")){
+     question.style.display="block";
    }else{
      question.style.removeProperty("display");
    }
@@ -3704,4 +3708,5 @@ const show=document.getElementById("wizardShowResults");
 })();
 </script>
 
+<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "7a6b8f06d9294f91b7971a865ad5ca07"}'></script><!-- End Cloudflare Web Analytics -->
 </body></html>
